@@ -10,7 +10,7 @@ import androidx.core.os.bundleOf
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     companion object {
-        const val ARG: String = "arg"
+        private const val ARG: String = "arg"
         fun newInstance(text: String) = DetailsFragment().apply {
             arguments = bundleOf(
                 ARG to text
@@ -22,7 +22,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         val args = requireArguments()
         val text: TextView = view.findViewById(R.id.photoTextView)
         text.setText(args.getString(ARG, ""))
-        (activity as MainActivity?)!!.supportActionBar!!.setTitle("Details")
+        (activity as MainActivity?)?.supportActionBar?.setTitle(R.string.toolbar_details)
     }
 
 }

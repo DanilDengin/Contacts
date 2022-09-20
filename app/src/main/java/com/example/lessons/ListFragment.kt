@@ -6,19 +6,18 @@ import android.view.View
 import android.widget.TextView
 
 
-
 class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val icon: TextView? = view.findViewById(R.id.contact1)
-        icon?.setOnClickListener() {
-            this.switch()
+        (activity as MainActivity?)?.supportActionBar?.setTitle(R.string.toolbar_list)
+        val icon: TextView = view.findViewById(R.id.contact1)
+        icon.setOnClickListener() {
+            changeFragment()
         }
-        (activity as MainActivity?)!!.supportActionBar!!.setTitle("List")
     }
 
 
-    private fun switch() {
+    private fun changeFragment() {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
             .replace(R.id.fragment_container, DetailsFragment.newInstance(R.id.contact1.toString()))

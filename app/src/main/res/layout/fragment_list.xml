@@ -10,41 +10,36 @@
 
     <TextView
         android:id="@+id/contact1"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="140dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/style_main_frame"
-        app:barrierMargin="2pt"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
+        android:layout_marginHorizontal="20dp"
+        app:barrierMargin="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/photoListTextView"
         android:layout_width="98dp"
         android:layout_height="98dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/style_frame"
         android:text=" Photo1"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/contact1"
-        app:layout_constraintEnd_toEndOf="@+id/contact1"
-        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="@+id/contact1"
-        app:layout_constraintTop_toTopOf="@+id/contact1"
-        app:layout_constraintVertical_bias="0.18" />
+        app:layout_constraintTop_toTopOf="@+id/contact1" />
 
     <TextView
         android:id="@+id/nameListTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:background="@drawable/style_frame"
-        android:text="Name"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="12dp"
         android:paddingBottom="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/contact1"
-        app:layout_constraintHorizontal_bias="0.11"
+        android:text="Name"
         app:layout_constraintStart_toEndOf="@+id/photoListTextView"
         app:layout_constraintTop_toTopOf="@+id/photoListTextView" />
 
@@ -54,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/style_frame"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="12dp"
         android:paddingBottom="20dp"
         android:text="Number"
         app:layout_constraintBottom_toBottomOf="@+id/photoListTextView"
