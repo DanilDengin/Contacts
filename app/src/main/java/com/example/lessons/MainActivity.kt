@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             val transaction = supportFragmentManager.beginTransaction()
             transaction
-                .add(R.id.fragment_container, ListFragment())
+                .add(R.id.fragmentContainer, ListFragment())
                 .commit()
         }
     }

@@ -6,16 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/design_default_color_background"
-    tools:context="com.example.lessons.ListFragment">
+    tools:context="com.example.lessons.ListFragment" >
 
     <TextView
-        android:id="@+id/contact1"
+        android:id="@+id/contact1TextView"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/style_main_frame"
-        android:layout_marginHorizontal="20dp"
-        app:barrierMargin="4dp"
+        android:padding="56dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,8 +28,8 @@
         android:background="@drawable/style_frame"
         android:text=" Photo1"
         android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="@+id/contact1"
-        app:layout_constraintTop_toTopOf="@+id/contact1" />
+        app:layout_constraintStart_toStartOf="@+id/contact1TextView"
+        app:layout_constraintTop_toTopOf="@+id/contact1TextView" />
 
     <TextView
         android:id="@+id/nameListTextView"
@@ -43,7 +43,6 @@
         app:layout_constraintStart_toEndOf="@+id/photoListTextView"
         app:layout_constraintTop_toTopOf="@+id/photoListTextView" />
 
-
     <TextView
         android:id="@+id/numberListTextView"
         android:layout_width="wrap_content"
@@ -54,6 +53,5 @@
         android:text="Number"
         app:layout_constraintBottom_toBottomOf="@+id/photoListTextView"
         app:layout_constraintStart_toStartOf="@+id/nameListTextView" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
