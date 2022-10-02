@@ -3,17 +3,12 @@ package com.example.lessons
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
-import android.widget.TextView
 import android.widget.Toast
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 
 class ContactService : Service() {
-    val Danil = Contact(
+    val danil = Contact(
         "Данил",
         "89052550588",
         "8936906342",
@@ -21,7 +16,7 @@ class ContactService : Service() {
         "fwef@mail.ru",
         "description about Danil"
     )
-    val Ilnaz = Contact(
+    val ilnaz = Contact(
         "Ильназ",
         "8888888888",
         "8932141242",
@@ -29,7 +24,7 @@ class ContactService : Service() {
         "fwef@mail.ru",
         "description about Ilnaz"
     )
-    val contacts = arrayOf(Danil, Ilnaz)
+    val contacts = arrayOf(danil, ilnaz)
     private val binder = ContactBinder()
 
     override fun onBind(intent: Intent): IBinder {
@@ -41,27 +36,23 @@ class ContactService : Service() {
         fun getService(): ContactService = this@ContactService
     }
 
-    fun getContacts(func: GetInformation) {
+    fun getContacts(getContactList: GetContactList) {
         Thread {
             Thread.sleep(3000)
-            func.getList(contacts[0], contacts[1])
+            getContactList.getContactList(contacts)
         }.start()
 
     }
 
-    fun getDetailsByID(func: GetInformation, ID: Int) {
+    fun getDetailsById(getDetailsById: GetDetailsById, ID: Int) {
         Thread {
             Thread.sleep(3000)
-            func.getDetails(contacts[ID])
+            getDetailsById.getDetailsById(contacts[ID])
         }.start()
     }
 
 }
 
-interface GetInformation {
-    fun getList(contact1: Contact, contact2: Contact)
-    fun getDetails(contForDetails: Contact)
-}
 
 
 

@@ -8,47 +8,44 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 
 
-class ListFragment : GetInformation, Fragment(R.layout.fragment_list) {
+class ListFragment :GetContactList, Fragment(R.layout.fragment_list) {
+
+    val handler = Handler(Looper.getMainLooper())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as MainActivity?)?.supportActionBar?.setTitle(R.string.toolbar_list)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.contactService.getContacts(this)
+        val icon0: TextView = view.findViewById(R.id.contact0TextView)
         val icon1: TextView = view.findViewById(R.id.contact1TextView)
-        val icon2: TextView = view.findViewById(R.id.contact2TextView)
-        icon1.setOnClickListener() {
+        icon0.setOnClickListener() {
             changeFragment(0)
         }
-        icon2.setOnClickListener() {
+        icon1.setOnClickListener() {
             changeFragment(1)
         }
     }
 
-    private fun changeFragment(ID: Int) {
+    private fun changeFragment(Id: Int) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
-            .replace(R.id.fragmentContainer, DetailsFragment.newInstance(ID.toString()))
+            .replace(R.id.fragmentContainer, DetailsFragment.newInstance(Id))
             .addToBackStack("To Details")
             .commit()
     }
 
-    override fun getList(contact1: Contact, contact2: Contact) {
-        val handler = Handler(Looper.getMainLooper())
+    override fun getContactList(contacts: Array<Contact>) {
         handler.post {
-            val name1: TextView? = view?.findViewById(R.id.name1ListTextView)
-            val num1: TextView? = view?.findViewById(R.id.number1ListTextView)
-            name1?.setText(contact1.name)
-            num1?.setText(contact1.number1)
-            val nameCont2: TextView? = view?.findViewById(R.id.name2ListTextView)
-            val numCont2: TextView? = view?.findViewById(R.id.number2ListTextView)
-            nameCont2?.setText(contact2.name)
-            numCont2?.setText(contact2.number1)
+            val nameContact0: TextView? by lazy { view?.findViewById(R.id.name0ListTextView)}
+            val numberContact0: TextView? by lazy { view?.findViewById(R.id.number0ListTextView)}
+            nameContact0?.setText(contacts[0].name)
+            numberContact0?.setText(contacts[0].number1)
+            val nameContact1: TextView? by lazy { view?.findViewById(R.id.name1ListTextView)}
+            val numberContact1: TextView? by lazy { view?.findViewById(R.id.number1ListTextView)}
+            nameContact1?.setText(contacts[1].name)
+            numberContact1?.setText(contacts[1].number1)
         }
-    }
-
-    override fun getDetails(contForDetails: Contact) {
-        TODO("Not yet implemented")
     }
 
 }

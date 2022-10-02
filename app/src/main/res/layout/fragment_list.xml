@@ -14,7 +14,7 @@
         tools:context="com.example.lessons.ListFragment">
 
         <TextView
-            android:id="@+id/contact1TextView"
+            android:id="@+id/contact0TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -24,17 +24,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/photo1ListTextView"
-            android:layout_width="98dp"
-            android:layout_height="98dp"
+        <ImageView
+            android:id="@+id/photo0ListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/style_frame"
-            android:text=" Photo1"
-            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="@+id/contact0TextView"
+            app:layout_constraintTop_toTopOf="@+id/contact0TextView"
+            app:srcCompat="@drawable/ic_contact" />
+
+        <TextView
+            android:id="@+id/name0ListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/style_frame"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="20dp"
+            android:text="Name"
+            app:layout_constraintStart_toEndOf="@+id/photo0ListTextView"
+            app:layout_constraintTop_toTopOf="@+id/photo0ListTextView" />
+
+        <TextView
+            android:id="@+id/number0ListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/style_frame"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="20dp"
+            android:text="Number"
+            app:layout_constraintBottom_toBottomOf="@+id/photo0ListTextView"
+            app:layout_constraintStart_toStartOf="@+id/name0ListTextView" />
+
+        <TextView
+            android:id="@+id/contact1TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/style_main_frame"
+            android:padding="56dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contact0TextView" />
+
+        <ImageView
+            android:id="@+id/photo1ListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/style_frame"
             app:layout_constraintStart_toStartOf="@+id/contact1TextView"
-            app:layout_constraintTop_toTopOf="@+id/contact1TextView" />
+            app:layout_constraintTop_toTopOf="@+id/contact1TextView"
+            app:srcCompat="@drawable/ic_contact" />
 
         <TextView
             android:id="@+id/name1ListTextView"
@@ -44,7 +88,7 @@
             android:background="@drawable/style_frame"
             android:paddingHorizontal="12dp"
             android:paddingBottom="20dp"
-            android:text="Name"
+            android:text="Name1"
             app:layout_constraintStart_toEndOf="@+id/photo1ListTextView"
             app:layout_constraintTop_toTopOf="@+id/photo1ListTextView" />
 
@@ -55,55 +99,9 @@
             android:background="@drawable/style_frame"
             android:paddingHorizontal="12dp"
             android:paddingBottom="20dp"
-            android:text="Number"
+            android:text="Number2"
             app:layout_constraintBottom_toBottomOf="@+id/photo1ListTextView"
             app:layout_constraintStart_toStartOf="@+id/name1ListTextView" />
-
-        <TextView
-            android:id="@+id/contact2TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/style_main_frame"
-            android:padding="56dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact1TextView" />
-
-        <TextView
-            android:id="@+id/photo2ListTextView"
-            android:layout_width="98dp"
-            android:layout_height="98dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/style_frame"
-            android:text=" Photo2"
-            android:textAlignment="center"
-            app:layout_constraintStart_toStartOf="@+id/contact2TextView"
-            app:layout_constraintTop_toTopOf="@+id/contact2TextView" />
-
-        <TextView
-            android:id="@+id/name2ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Name2"
-            app:layout_constraintStart_toEndOf="@+id/photo2ListTextView"
-            app:layout_constraintTop_toTopOf="@+id/photo2ListTextView" />
-
-        <TextView
-            android:id="@+id/number2ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Number2"
-            app:layout_constraintBottom_toBottomOf="@+id/photo2ListTextView"
-            app:layout_constraintStart_toStartOf="@+id/name2ListTextView" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
