@@ -8,7 +8,7 @@ import android.widget.Toast
 
 
 class ContactService : Service() {
-    val danil = Contact(
+    private val danil = Contact(
         "Данил",
         "89052550588",
         "8936906342",
@@ -16,7 +16,7 @@ class ContactService : Service() {
         "fwef@mail.ru",
         "description about Danil"
     )
-    val ilnaz = Contact(
+    private val ilnaz = Contact(
         "Ильназ",
         "8888888888",
         "8932141242",
@@ -24,7 +24,7 @@ class ContactService : Service() {
         "fwef@mail.ru",
         "description about Ilnaz"
     )
-    val contacts = arrayOf(danil, ilnaz)
+    private val contacts = arrayOf(danil, ilnaz)
     private val binder = ContactBinder()
 
     override fun onBind(intent: Intent): IBinder {
@@ -44,10 +44,10 @@ class ContactService : Service() {
 
     }
 
-    fun getDetailsById(getDetailsById: GetDetailsById, ID: Int) {
+    fun getDetailsById(getDetailsById: GetDetailsById, id: Int) {
         Thread {
             Thread.sleep(3000)
-            getDetailsById.getDetailsById(contacts[ID])
+            getDetailsById.getDetailsById(contacts[id])
         }.start()
     }
 

@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
             contactService = binder.getService()
             bound = true
         }
+
         override fun onServiceDisconnected(name: ComponentName?) {
             bound = false
         }
@@ -41,12 +42,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (bound) {
             unbindService(connection)
             bound = false
             Toast.makeText(this, "Service is destoyed", Toast.LENGTH_LONG).show()
         }
+        super.onDestroy()
     }
 }
 

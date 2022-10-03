@@ -3,22 +3,33 @@ package com.example.lessons
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 
 
-class ListFragment :GetContactList, Fragment(R.layout.fragment_list) {
+class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
 
-    val handler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
+    private var numberContact0: TextView? = null
+    private var nameContact0: TextView? = null
+    private var nameContact1: TextView? = null
+    private var numberContact1: TextView? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity?)?.supportActionBar?.setTitle(R.string.toolbar_list)
+        numberContact0 = requireView().findViewById(R.id.number0ListTextView)
+        nameContact0= requireView().findViewById(R.id.name0ListTextView)
+        nameContact1= requireView().findViewById(R.id.name1ListTextView)
+        numberContact1= requireView().findViewById(R.id.number1ListTextView)
         val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
         mainActivity.contactService.getContacts(this)
-        val icon0: TextView = view.findViewById(R.id.contact0TextView)
-        val icon1: TextView = view.findViewById(R.id.contact1TextView)
+        var icon0: TextView = view.findViewById(R.id.contact0TextView)
+        var icon1: TextView = view.findViewById(R.id.contact1TextView)
         icon0.setOnClickListener() {
             changeFragment(0)
         }
@@ -27,27 +38,30 @@ class ListFragment :GetContactList, Fragment(R.layout.fragment_list) {
         }
     }
 
-    private fun changeFragment(Id: Int) {
+    private fun changeFragment(id: Int) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
-            .replace(R.id.fragmentContainer, DetailsFragment.newInstance(Id))
+            .replace(R.id.fragmentContainer, DetailsFragment.newInstance(id))
             .addToBackStack("To Details")
             .commit()
     }
 
     override fun getContactList(contacts: Array<Contact>) {
         handler.post {
-            val nameContact0: TextView? by lazy { view?.findViewById(R.id.name0ListTextView)}
-            val numberContact0: TextView? by lazy { view?.findViewById(R.id.number0ListTextView)}
             nameContact0?.setText(contacts[0].name)
             numberContact0?.setText(contacts[0].number1)
-            val nameContact1: TextView? by lazy { view?.findViewById(R.id.name1ListTextView)}
-            val numberContact1: TextView? by lazy { view?.findViewById(R.id.number1ListTextView)}
             nameContact1?.setText(contacts[1].name)
             numberContact1?.setText(contacts[1].number1)
         }
     }
 
+    override fun onDestroyView() {
+        numberContact0 = null
+        nameContact0 = null
+        numberContact1= null
+        nameContact1 = null
+        super.onDestroyView()
+    }
 }
 
 
