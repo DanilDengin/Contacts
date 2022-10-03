@@ -44,10 +44,10 @@ class ContactService : Service() {
 
     }
 
-    fun getDetailsById(getDetailsById: GetDetailsById, id: Int) {
+    fun getDetailsById(getDetails: GetDetails, id: Int) {
         Thread {
             Thread.sleep(3000)
-            getDetailsById.getDetailsById(contacts[id])
+            getDetails.getDetails(contacts[id])
         }.start()
     }
 

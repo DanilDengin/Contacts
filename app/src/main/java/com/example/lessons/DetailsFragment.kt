@@ -9,9 +9,9 @@ import android.widget.TextView
 import androidx.core.os.bundleOf
 
 
-class DetailsFragment : GetDetailsById, Fragment(R.layout.fragment_details) {
+class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
-    private var ID: Int = -1
+    private var contactId: Int = -1
     private val handler = Handler(Looper.getMainLooper())
     private var name: TextView? = null
     private var number1: TextView? = null
@@ -38,13 +38,13 @@ class DetailsFragment : GetDetailsById, Fragment(R.layout.fragment_details) {
         email2 = requireView().findViewById(R.id.eMail2TextView)
         description = requireView().findViewById(R.id.descriptionTextView)
         val args = requireArguments()
-        ID = args.getInt(ARG)
+        contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
-        mainActivity.contactService.getDetailsById(this, ID)
+        mainActivity.contactService.getDetailsById(this, contactId)
     }
 
-    override fun getDetailsById(contactForDetails: Contact) {
+    override fun getDetails(contactForDetails: Contact) {
         handler.post {
             name?.setText(contactForDetails.name)
             number1?.setText(contactForDetails.number1)
