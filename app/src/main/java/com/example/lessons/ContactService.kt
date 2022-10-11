@@ -5,24 +5,27 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.widget.Toast
+import java.util.*
 
 
 class ContactService : Service() {
     private val danil = Contact(
-        "Данил",
+        "Danil",
         "89052550588",
         "8936906342",
         "dd@mail.ru",
         "fwef@mail.ru",
-        "description about Danil"
+        "description about Danil",
+        GregorianCalendar(2022, Calendar.OCTOBER, 11 )
     )
     private val ilnaz = Contact(
-        "Ильназ",
+        "Ilnaz",
         "8888888888",
         "8932141242",
         "ik@mail.ru",
         "fwef@mail.ru",
-        "description about Ilnaz"
+        "description about Ilnaz",
+        GregorianCalendar(1999, Calendar.SEPTEMBER, 23)
     )
     private val contacts = arrayOf(danil, ilnaz)
     private val binder = ContactBinder()
@@ -38,7 +41,7 @@ class ContactService : Service() {
 
     fun getContacts(getContactList: GetContactList) {
         Thread {
-            Thread.sleep(3000)
+            Thread.sleep(1000)
             getContactList.getContactList(contacts)
         }.start()
 
@@ -46,7 +49,7 @@ class ContactService : Service() {
 
     fun getDetailsById(getDetails: GetDetails, id: Int) {
         Thread {
-            Thread.sleep(3000)
+            Thread.sleep(1000)
             getDetails.getDetails(contacts[id])
         }.start()
     }

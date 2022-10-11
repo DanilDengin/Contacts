@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">lessons</string>
+    <string name="app_name">Contacts</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="toolbar_details">Details</string>
     <string name="toolbar_list">List</string>
+    <string name="notification_channel">Birthday reminders</string>
 </resources>

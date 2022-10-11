@@ -98,5 +98,26 @@
             app:layout_constraintStart_toStartOf="@+id/eMail1TextView"
             app:layout_constraintTop_toBottomOf="@+id/eMail1TextView" />
 
+        <TextView
+            android:id="@+id/birthdayTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/style_frame"
+            android:paddingHorizontal="12dp"
+            android:text="Birthday"
+            app:layout_constraintStart_toStartOf="@+id/nameTextView"
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/birthdaySwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remind me about birthday"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/birthdayTextView"
+            app:layout_constraintTop_toBottomOf="@+id/birthdayTextView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

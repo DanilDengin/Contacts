@@ -22,14 +22,15 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         numberContact0 = requireView().findViewById(R.id.number0ListTextView)
-        nameContact0= requireView().findViewById(R.id.name0ListTextView)
-        nameContact1= requireView().findViewById(R.id.name1ListTextView)
-        numberContact1= requireView().findViewById(R.id.number1ListTextView)
+        nameContact0 = requireView().findViewById(R.id.name0ListTextView)
+        nameContact1 = requireView().findViewById(R.id.name1ListTextView)
+        numberContact1 = requireView().findViewById(R.id.number1ListTextView)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
         mainActivity.contactService.getContacts(this)
-        var icon0: TextView = view.findViewById(R.id.contact0TextView)
-        var icon1: TextView = view.findViewById(R.id.contact1TextView)
+
+        val icon0: TextView = view.findViewById(R.id.contact0TextView)
+        val icon1: TextView = view.findViewById(R.id.contact1TextView)
         icon0.setOnClickListener() {
             changeFragment(0)
         }
@@ -42,26 +43,27 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
             .replace(R.id.fragmentContainer, DetailsFragment.newInstance(id))
-            .addToBackStack("To Details")
+            .addToBackStack("toDetails")
             .commit()
     }
 
     override fun getContactList(contacts: Array<Contact>) {
         handler.post {
-            nameContact0?.setText(contacts[0].name)
-            numberContact0?.setText(contacts[0].number1)
-            nameContact1?.setText(contacts[1].name)
-            numberContact1?.setText(contacts[1].number1)
+            nameContact0?.text = contacts[0].name
+            numberContact0?.text = contacts[0].number1
+            nameContact1?.text = contacts[1].name
+            numberContact1?.text = contacts[1].number1
         }
     }
 
     override fun onDestroyView() {
         numberContact0 = null
         nameContact0 = null
-        numberContact1= null
+        numberContact1 = null
         nameContact1 = null
         super.onDestroyView()
     }
+
 }
 
 
