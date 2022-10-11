@@ -16,7 +16,7 @@ class ContactService : Service() {
         "dd@mail.ru",
         "fwef@mail.ru",
         "description about Danil",
-        GregorianCalendar(2022, Calendar.OCTOBER, 11 )
+        GregorianCalendar(2022, Calendar.OCTOBER, 12)
     )
     private val ilnaz = Contact(
         "Ilnaz",
@@ -31,7 +31,6 @@ class ContactService : Service() {
     private val binder = ContactBinder()
 
     override fun onBind(intent: Intent): IBinder {
-        Toast.makeText(applicationContext, "Service is active", Toast.LENGTH_SHORT).show()
         return binder
     }
 

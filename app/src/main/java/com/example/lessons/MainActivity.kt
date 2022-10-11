@@ -1,10 +1,8 @@
 package com.example.lessons
 
 
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,9 +10,7 @@ import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -80,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         if (bound) {
             unbindService(connection)
             bound = false
-            Toast.makeText(this, "Service is destoyed", Toast.LENGTH_LONG).show()
         }
         super.onDestroy()
     }

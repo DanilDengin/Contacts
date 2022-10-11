@@ -1,35 +1,31 @@
 package com.example.lessons
 
-import android.app.Notification
-import android.app.NotificationChannel
+import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
+import java.util.*
 
 
 class BirthdayReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val resultIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        resultIntent.putExtra("contactId", intent.getIntExtra("contactId", -1))
-        val resultPendingIntent = PendingIntent.getActivity(
+        val notificationIntent = Intent(context, MainActivity::class.java)
+        notificationIntent.putExtra("contactId", intent.getIntExtra("contactId", -1))
+        val notificationPendingIntent = PendingIntent.getActivity(
             context, intent.getIntExtra("contactId", -1),
-            resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
         )
+
         var builder = NotificationCompat.Builder(context, "Birthday")
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Don't forget to congratulate")
+            .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(intent.getStringExtra("nameOfContact"))
-            .setContentIntent(resultPendingIntent)
+            .setContentIntent(notificationPendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -37,8 +33,30 @@ class BirthdayReceiver : BroadcastReceiver() {
         val notificationManager =
             context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(intent.getIntExtra("contactId", -1), notification)
+
+        intent.getStringExtra("nameOfContact")
+            ?.let { repeatAlarm(context, intent.getIntExtra("contactId", -1), it) }
     }
 
+    private fun repeatAlarm(context: Context, id: Int, nameContact: String) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.add(Calendar.YEAR, 1)
+        val intentBirthdayReceiver = Intent("birthdayReceiver")
+        intentBirthdayReceiver.setClass(context, BirthdayReceiver::class.java)
+        intentBirthdayReceiver.putExtra("nameOfContact", nameContact)
+        intentBirthdayReceiver.putExtra("contactId", id)
+        val pendingIntentBirthday = PendingIntent.getBroadcast(
+            context,
+            id,
+            intentBirthdayReceiver,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntentBirthday)
+    }
 
 }
 

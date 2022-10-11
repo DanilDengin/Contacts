@@ -113,7 +113,7 @@
             android:id="@+id/birthdaySwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remind me about birthday"
+            android:text="@string/switch_text"
             android:textColor="@color/grey"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/birthdayTextView"
