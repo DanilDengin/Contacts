@@ -4,8 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.widget.Toast
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 
 class ContactService : Service() {

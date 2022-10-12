@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import java.util.*
+import java.util.Calendar
 
 
 class BirthdayReceiver : BroadcastReceiver() {

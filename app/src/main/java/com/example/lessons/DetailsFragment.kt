@@ -14,8 +14,10 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Calendar
 import java.util.Calendar.YEAR
+import java.util.GregorianCalendar
+import java.util.StringJoiner
 
 
 class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
@@ -31,8 +33,8 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     private var birthday: TextView? = null
     private var birthdaySwitch: SwitchCompat? = null
     private var contactDateBirthday = GregorianCalendar()
-    private val intentBirthday: Intent by lazy { Intent("birthdayReceiver") }
-    private val pendingIntentBirthday: PendingIntent by lazy {
+    private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) { Intent("birthdayReceiver") }
+    private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
         PendingIntent.getBroadcast(
             context,
             contactId,
@@ -40,7 +42,11 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
-    private val alarmBirthday: AlarmManager by lazy { context?.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager }
+    private val alarmBirthday: AlarmManager by lazy(LazyThreadSafetyMode.NONE) {
+        requireContext().getSystemService(
+            AppCompatActivity.ALARM_SERVICE
+        ) as AlarmManager
+    }
 
     companion object {
         private const val ARG: String = "arg"
@@ -68,7 +74,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         mainActivity.contactService.getDetailsById(this, contactId)
 
         birthdaySwitch?.isClickable = false
-        context?.let { intentBirthday.setClass(it, BirthdayReceiver::class.java) }
+        intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(
                 context,
                 contactId,
@@ -78,7 +84,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         ) {
             birthdaySwitch?.isChecked = true
         }
-        birthdaySwitch?.setOnCheckedChangeListener() { buttonView, isChecked ->
+        birthdaySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 Toast.makeText(
                     context,
