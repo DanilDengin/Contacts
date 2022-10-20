@@ -1,20 +1,27 @@
 package com.example.lessons
 
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
 
+    private val REQUEST_CODE_READ_CONTACTS = 1
+    private var READ_CONTACTS_GRANTED = false
     lateinit var contactService: ContactService
     private var bound = false
     private val connection = object : ServiceConnection {
@@ -35,11 +42,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        if (savedInstanceState == null) {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction
-                .add(R.id.fragmentContainer, ListFragment())
-                .commit()
+        val hasReadContactPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            READ_CONTACTS_GRANTED = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                REQUEST_CODE_READ_CONTACTS
+            )
+        }
+        if (READ_CONTACTS_GRANTED) {
+            showListFragment()
+        }
+
+        if (savedInstanceState == null && READ_CONTACTS_GRANTED) {
+            showListFragment()
         }
 
         val intentService = Intent(this, ContactService::class.java)
@@ -71,6 +90,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                READ_CONTACTS_GRANTED = true
+            }
+        }
+        if (READ_CONTACTS_GRANTED) {
+            showListFragment()
+        } else {
+            Toast.makeText(
+                this,
+                "Without permission the app can't function properly",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun showListFragment() {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction
+            .add(R.id.fragmentContainer, ListFragment())
+            .commit()
+    }
 
     override fun onDestroy() {
         if (bound) {

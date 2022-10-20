@@ -13,8 +13,12 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
     private val handler = Handler(Looper.getMainLooper())
     private var numberContact0: TextView? = null
     private var nameContact0: TextView? = null
+    private var icon0: TextView? = null
     private var nameContact1: TextView? = null
     private var numberContact1: TextView? = null
+    private var icon1: TextView? = null
+    private var id0: String? = null
+    private var id1: String? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -25,40 +29,48 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         numberContact1 = requireView().findViewById(R.id.number1ListTextView)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
-        mainActivity.contactService.getContacts(this)
-
-        val icon0: TextView = view.findViewById(R.id.contact0TextView)
-        val icon1: TextView = view.findViewById(R.id.contact1TextView)
-        icon0.setOnClickListener() {
-            changeFragment(0)
-        }
-        icon1.setOnClickListener() {
-            changeFragment(1)
-        }
+        icon0 = view.findViewById(R.id.contact0TextView)
+        icon1 = view.findViewById(R.id.contact1TextView)
+        mainActivity.contactService.getContacts(this, requireContext())
     }
 
-    private fun changeFragment(id: Int) {
+    private fun changeFragment(id: String?) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
-            .replace(R.id.fragmentContainer, DetailsFragment.newInstance(id))
+            .replace(
+                R.id.fragmentContainer,
+                DetailsFragment.newInstance(requireNotNull(id).toInt())
+            )
             .addToBackStack("toDetails")
             .commit()
     }
 
-    override fun getContactList(contacts: Array<Contact>) {
+    override fun getContactList(contacts: ArrayList<Contact>) {
         handler.post {
-            nameContact0?.text = contacts[0].name
-            numberContact0?.text = contacts[0].number1
-            nameContact1?.text = contacts[1].name
-            numberContact1?.text = contacts[1].number1
+            nameContact0?.text = contacts[2].name
+            numberContact0?.text = contacts[2].number1
+            id0 = contacts[2].id
+            nameContact1?.text = contacts[3].name
+            numberContact1?.text = contacts[3].number1
+            id1 = contacts[3].id
+            icon0?.setOnClickListener() {
+                changeFragment(id0)
+            }
+            icon1?.setOnClickListener() {
+                changeFragment(id1)
+            }
         }
     }
+
 
     override fun onDestroyView() {
         numberContact0 = null
         nameContact0 = null
         numberContact1 = null
         nameContact1 = null
+        icon0 = null
+        icon1 = null
+        handler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
 

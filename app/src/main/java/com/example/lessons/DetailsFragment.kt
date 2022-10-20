@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import java.sql.Date
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
@@ -32,7 +33,8 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     private var description: TextView? = null
     private var birthday: TextView? = null
     private var birthdaySwitch: SwitchCompat? = null
-    private var contactDateBirthday = GregorianCalendar()
+    private var birthdayDate = GregorianCalendar()
+    private var birthdayDateString: String? = null
     private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) { Intent("birthdayReceiver") }
     private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
         PendingIntent.getBroadcast(
@@ -71,7 +73,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
-        mainActivity.contactService.getDetailsById(this, contactId)
+        mainActivity.contactService.getDetailsById(this, contactId.toString(), requireContext())
 
         birthdaySwitch?.isClickable = false
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
@@ -85,7 +87,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             birthdaySwitch?.isChecked = true
         }
         birthdaySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
+            if (isChecked && birthdayDateString != null) {
                 Toast.makeText(
                     context,
                     getString(R.string.toast_remind_birthday),
@@ -99,56 +101,67 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
                 pendingIntentBirthday.cancel()
                 alarmBirthday.cancel(pendingIntentBirthday)
             }
+
         }
     }
 
+
     override fun getDetails(contactForDetails: Contact) {
-        contactDateBirthday = contactForDetails.birthday
+        birthdayDateString = contactForDetails.birthday
         handler.post {
             name?.text = contactForDetails.name
             number1?.text = contactForDetails.number1
             number2?.text = contactForDetails.number2
             email1?.text = contactForDetails.email1
             email2?.text = contactForDetails.email2
+            if (contactForDetails.email1 == null)
+                email1?.visibility = View.GONE
+            if (contactForDetails.email2 == null)
+                email2?.visibility = View.GONE
+            if (contactForDetails.number2 == null)
+                number2?.visibility = View.GONE
             description?.text = contactForDetails.description
-            val data = StringJoiner(".")
-            val format = DecimalFormat("00")
-            data.add(format.format(contactDateBirthday.get(Calendar.DAY_OF_MONTH)))
-                .add(format.format(contactDateBirthday.get(Calendar.MONTH) + 1))
-                .add(format.format(contactDateBirthday.get(YEAR)))
-            birthday?.text = data.toString()
-            birthdaySwitch?.isClickable = true
-            intentBirthday.putExtra(
-                "nameOfContact",
-                getString(R.string.notification_text) + name?.text
-            )
-            intentBirthday.putExtra("contactId", contactId)
+            if (birthdayDateString != null) {
+                birthdayDate.time = Date.valueOf(birthdayDateString)
+                val data = StringJoiner(".")
+                val format = DecimalFormat("00")
+                data.add(format.format(birthdayDate.get(Calendar.DAY_OF_MONTH)))
+                    .add(format.format(birthdayDate.get(Calendar.MONTH) + 1))
+                    .add(format.format(birthdayDate.get(YEAR)))
+                birthday?.text = data.toString()
+                birthdaySwitch?.isClickable = true
+                intentBirthday.putExtra(
+                    "nameOfContact",
+                    activity?.getString(R.string.notification_text) + name?.text
+                )
+                intentBirthday.putExtra("contactId", contactId)
+            }
         }
     }
 
     private fun doAlarm() {
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        if (calendar[Calendar.DAY_OF_YEAR] > contactDateBirthday.get(Calendar.DAY_OF_YEAR)) {
-            calendar.add(YEAR, 1)
+        if (birthdayDateString != null) {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = System.currentTimeMillis()
+            if (calendar[Calendar.DAY_OF_YEAR] > birthdayDate.get(Calendar.DAY_OF_YEAR)) {
+                calendar.add(YEAR, 1)
+            }
+            if (birthdayDate.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDate.get(
+                    Calendar.DAY_OF_MONTH
+                ) == 29
+            ) {
+                birthdayDate.set(Calendar.DAY_OF_MONTH, 28)
+            }
+            calendar[Calendar.MINUTE] = 0
+            calendar[Calendar.HOUR_OF_DAY] = 0
+            calendar[Calendar.DAY_OF_MONTH] = birthdayDate.get(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.MONTH] = birthdayDate.get(Calendar.MONTH)
+            alarmBirthday.set(
+                AlarmManager.RTC,
+                calendar.timeInMillis,
+                pendingIntentBirthday
+            )
         }
-        if (contactDateBirthday.get(Calendar.MONTH) == Calendar.FEBRUARY && contactDateBirthday.get(
-                Calendar.DAY_OF_MONTH
-            ) == 29
-        ) {
-            contactDateBirthday.set(Calendar.DAY_OF_MONTH, 28)
-        }
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.DAY_OF_MONTH] = contactDateBirthday.get(Calendar.DAY_OF_MONTH)
-        calendar[Calendar.MONTH] = contactDateBirthday.get(Calendar.MONTH)
-        alarmBirthday.set(
-            AlarmManager.RTC,
-            calendar.timeInMillis,
-            pendingIntentBirthday
-        )
-
     }
 
     override fun onDestroyView() {
