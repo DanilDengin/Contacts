@@ -21,7 +21,7 @@ class BirthdayReceiver : BroadcastReceiver() {
             notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        var builder = NotificationCompat.Builder(context, "Birthday")
+        val builder = NotificationCompat.Builder(context, "Birthday")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(intent.getStringExtra("nameOfContact"))
@@ -54,7 +54,7 @@ class BirthdayReceiver : BroadcastReceiver() {
             intentBirthdayReceiver,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntentBirthday)
     }
 

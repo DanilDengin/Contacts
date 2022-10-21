@@ -20,8 +20,8 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private val REQUEST_CODE_READ_CONTACTS = 1
-    private var READ_CONTACTS_GRANTED = false
+    private val requestCodeReadContacts = 1
+    private var readContactsGranted = false
     lateinit var contactService: ContactService
     private var bound = false
     private val connection = object : ServiceConnection {
@@ -45,19 +45,19 @@ class MainActivity : AppCompatActivity() {
         val hasReadContactPermission =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
         if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            READ_CONTACTS_GRANTED = true
+            readContactsGranted = true
         } else {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_CONTACTS),
-                REQUEST_CODE_READ_CONTACTS
+                requestCodeReadContacts
             )
         }
-        if (READ_CONTACTS_GRANTED) {
+        if (readContactsGranted) {
             showListFragment()
         }
 
-        if (savedInstanceState == null && READ_CONTACTS_GRANTED) {
+        if (savedInstanceState == null && readContactsGranted) {
             showListFragment()
         }
 
@@ -96,12 +96,12 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+        if (requestCode == requestCodeReadContacts) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                READ_CONTACTS_GRANTED = true
+                readContactsGranted = true
             }
         }
-        if (READ_CONTACTS_GRANTED) {
+        if (readContactsGranted) {
             showListFragment()
         } else {
             Toast.makeText(

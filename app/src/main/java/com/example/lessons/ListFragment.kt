@@ -50,13 +50,13 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
             nameContact0?.text = contacts[2].name
             numberContact0?.text = contacts[2].number1
             id0 = contacts[2].id
-            nameContact1?.text = contacts[3].name
-            numberContact1?.text = contacts[3].number1
-            id1 = contacts[3].id
-            icon0?.setOnClickListener() {
+            nameContact1?.text = contacts[0].name
+            numberContact1?.text = contacts[0].number1
+            id1 = contacts[0].id
+            icon0?.setOnClickListener {
                 changeFragment(id0)
             }
-            icon1?.setOnClickListener() {
+            icon1?.setOnClickListener {
                 changeFragment(id1)
             }
         }

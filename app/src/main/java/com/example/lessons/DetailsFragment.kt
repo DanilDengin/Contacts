@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import java.sql.Date
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
@@ -33,8 +32,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     private var description: TextView? = null
     private var birthday: TextView? = null
     private var birthdaySwitch: SwitchCompat? = null
-    private var birthdayDate = GregorianCalendar()
-    private var birthdayDateString: String? = null
+    private var birthdayDate: GregorianCalendar? = null
     private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) { Intent("birthdayReceiver") }
     private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
         PendingIntent.getBroadcast(
@@ -87,7 +85,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             birthdaySwitch?.isChecked = true
         }
         birthdaySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked && birthdayDateString != null) {
+            if (isChecked) {
                 Toast.makeText(
                     context,
                     getString(R.string.toast_remind_birthday),
@@ -107,7 +105,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
 
     override fun getDetails(contactForDetails: Contact) {
-        birthdayDateString = contactForDetails.birthday
+        birthdayDate = contactForDetails.birthday
         handler.post {
             name?.text = contactForDetails.name
             number1?.text = contactForDetails.number1
@@ -121,13 +119,12 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             if (contactForDetails.number2 == null)
                 number2?.visibility = View.GONE
             description?.text = contactForDetails.description
-            if (birthdayDateString != null) {
-                birthdayDate.time = Date.valueOf(birthdayDateString)
+            if (birthdayDate != null) {
                 val data = StringJoiner(".")
                 val format = DecimalFormat("00")
-                data.add(format.format(birthdayDate.get(Calendar.DAY_OF_MONTH)))
-                    .add(format.format(birthdayDate.get(Calendar.MONTH) + 1))
-                    .add(format.format(birthdayDate.get(YEAR)))
+                data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
+                    .add(format.format(birthdayDate?.get(Calendar.MONTH)!! + 1))
+                    .add(format.format(birthdayDate?.get(YEAR)))
                 birthday?.text = data.toString()
                 birthdaySwitch?.isClickable = true
                 intentBirthday.putExtra(
@@ -140,22 +137,22 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     private fun doAlarm() {
-        if (birthdayDateString != null) {
+        if (birthdayDate != null) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
-            if (calendar[Calendar.DAY_OF_YEAR] > birthdayDate.get(Calendar.DAY_OF_YEAR)) {
+            if (calendar[Calendar.DAY_OF_YEAR] > birthdayDate!!.get(Calendar.DAY_OF_YEAR)) {
                 calendar.add(YEAR, 1)
             }
-            if (birthdayDate.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDate.get(
+            if (birthdayDate!!.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDate!!.get(
                     Calendar.DAY_OF_MONTH
                 ) == 29
             ) {
-                birthdayDate.set(Calendar.DAY_OF_MONTH, 28)
+                birthdayDate!!.set(Calendar.DAY_OF_MONTH, 28)
             }
             calendar[Calendar.MINUTE] = 0
             calendar[Calendar.HOUR_OF_DAY] = 0
-            calendar[Calendar.DAY_OF_MONTH] = birthdayDate.get(Calendar.DAY_OF_MONTH)
-            calendar[Calendar.MONTH] = birthdayDate.get(Calendar.MONTH)
+            calendar[Calendar.DAY_OF_MONTH] = birthdayDate!!.get(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.MONTH] = birthdayDate!!.get(Calendar.MONTH)
             alarmBirthday.set(
                 AlarmManager.RTC,
                 calendar.timeInMillis,
@@ -173,6 +170,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         description = null
         birthday = null
         birthdaySwitch = null
+        handler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
 }
