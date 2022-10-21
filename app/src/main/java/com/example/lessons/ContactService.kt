@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.provider.ContactsContract
-import java.sql.Date
-import java.util.GregorianCalendar
 
 
 class ContactService : Service() {
 
     private val binder = ContactBinder()
+    private val contactProvider = ContactProvider()
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -24,7 +22,6 @@ class ContactService : Service() {
 
     fun getContacts(getContactList: GetContactList, context: Context) {
         Thread {
-            val contactProvider =ContactProvider()
             val contacts = contactProvider.getShortContactsDetails(context)
             Thread.sleep(1000)
             getContactList.getContactList(contacts)
@@ -33,7 +30,6 @@ class ContactService : Service() {
 
     fun getDetailsById(getDetails: GetDetails, id: String, context: Context) {
         Thread {
-            val contactProvider =ContactProvider()
             val contact = contactProvider.getFullContactDetails(id, context)
             Thread.sleep(1000)
             getDetails.getDetails(contact)
