@@ -124,7 +124,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
                     val data = StringJoiner(".")
                     val format = DecimalFormat("00")
                     data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
-                        .add(format.format(birthdayDate?.get(Calendar.MONTH)!! + 1))
+                        .add(format.format(requireNotNull(birthdayDate).get(Calendar.MONTH) + 1))
                         .add(format.format(birthdayDate?.get(YEAR)))
                     birthday?.text = data.toString()
                     birthdaySwitch?.isClickable = true
@@ -142,19 +142,19 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         if (birthdayDate != null) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
-            if (calendar[Calendar.DAY_OF_YEAR] > birthdayDate!!.get(Calendar.DAY_OF_YEAR)) {
+            if (calendar[Calendar.DAY_OF_YEAR] > requireNotNull(birthdayDate).get(Calendar.DAY_OF_YEAR)) {
                 calendar.add(YEAR, 1)
             }
-            if (birthdayDate!!.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDate!!.get(
+            if (requireNotNull(birthdayDate).get(Calendar.MONTH) == Calendar.FEBRUARY && requireNotNull(birthdayDate).get(
                     Calendar.DAY_OF_MONTH
                 ) == 29
             ) {
-                birthdayDate!!.set(Calendar.DAY_OF_MONTH, 28)
+                requireNotNull(birthdayDate).set(Calendar.DAY_OF_MONTH, 28)
             }
             calendar[Calendar.MINUTE] = 0
             calendar[Calendar.HOUR_OF_DAY] = 0
-            calendar[Calendar.DAY_OF_MONTH] = birthdayDate!!.get(Calendar.DAY_OF_MONTH)
-            calendar[Calendar.MONTH] = birthdayDate!!.get(Calendar.MONTH)
+            calendar[Calendar.DAY_OF_MONTH] = requireNotNull(birthdayDate).get(Calendar.DAY_OF_MONTH)
+            calendar[Calendar.MONTH] = requireNotNull(birthdayDate).get(Calendar.MONTH)
             alarmBirthday.set(
                 AlarmManager.RTC,
                 calendar.timeInMillis,
