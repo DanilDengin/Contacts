@@ -42,7 +42,7 @@ class ContactProvider {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        var contact : Contact? = null
+        var contact: Contact? = null
         val cursor = context.contentResolver.query(
             contentUri, null,
             "$idColumn = $id", null, null
@@ -55,25 +55,29 @@ class ContactProvider {
                 val numbers = getNumbers(id, context)
                 val email = getEmail(id, context)
                 val birthday = getBirthday(id, context)
-                if(numbers.size==1)
-                contact = Contact(
-                    name = name,
-                    number1 = numbers[0],
-                    email1 = email[0],
-                    email2 = email[1],
-                    birthday = birthday,
-                    id = id
-                )
-                else if(numbers.size>1)
-                    contact = Contact(
-                        name = name,
-                        number1 = numbers[0],
-                        number2 = numbers[1],
-                        email1 = email[0],
-                        email2 = email[1],
-                        birthday = birthday,
-                        id = id
-                    )
+                when {
+                    numbers.size == 1 -> {
+                        contact = Contact(
+                            name = name,
+                            number1 = numbers[0],
+                            email1 = email[0],
+                            email2 = email[1],
+                            birthday = birthday,
+                            id = id
+                        )
+                    }
+                    numbers.size > 1 -> {
+                        contact = Contact(
+                            name = name,
+                            number1 = numbers[0],
+                            number2 = numbers[1],
+                            email1 = email[0],
+                            email2 = email[1],
+                            birthday = birthday,
+                            id = id
+                        )
+                    }
+                }
             }
         }
         return contact

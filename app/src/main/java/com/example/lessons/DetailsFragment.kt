@@ -105,33 +105,35 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
 
     override fun getDetails(contactForDetails: Contact?) {
-        birthdayDate = contactForDetails!!.birthday
-        handler.post {
-            name?.text = contactForDetails.name
-            number1?.text = contactForDetails.number1
-            number2?.text = contactForDetails.number2
-            email1?.text = contactForDetails.email1
-            email2?.text = contactForDetails.email2
-            if (contactForDetails.email1 == null)
-                email1?.visibility = View.GONE
-            if (contactForDetails.email2 == null)
-                email2?.visibility = View.GONE
-            if (contactForDetails.number2 == null)
-                number2?.visibility = View.GONE
-            description?.text = contactForDetails.description
-            if (birthdayDate != null) {
-                val data = StringJoiner(".")
-                val format = DecimalFormat("00")
-                data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
-                    .add(format.format(birthdayDate?.get(Calendar.MONTH)!! + 1))
-                    .add(format.format(birthdayDate?.get(YEAR)))
-                birthday?.text = data.toString()
-                birthdaySwitch?.isClickable = true
-                intentBirthday.putExtra(
-                    "nameOfContact",
-                    activity?.getString(R.string.notification_text) + name?.text
-                )
-                intentBirthday.putExtra("contactId", contactId)
+        contactForDetails?.let {
+            birthdayDate = contactForDetails.birthday
+            handler.post {
+                name?.text = contactForDetails.name
+                number1?.text = contactForDetails.number1
+                number2?.text = contactForDetails.number2
+                email1?.text = contactForDetails.email1
+                email2?.text = contactForDetails.email2
+                if (contactForDetails.email1 == null)
+                    email1?.visibility = View.GONE
+                if (contactForDetails.email2 == null)
+                    email2?.visibility = View.GONE
+                if (contactForDetails.number2 == null)
+                    number2?.visibility = View.GONE
+                description?.text = contactForDetails.description
+                if (birthdayDate != null) {
+                    val data = StringJoiner(".")
+                    val format = DecimalFormat("00")
+                    data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
+                        .add(format.format(birthdayDate?.get(Calendar.MONTH)!! + 1))
+                        .add(format.format(birthdayDate?.get(YEAR)))
+                    birthday?.text = data.toString()
+                    birthdaySwitch?.isClickable = true
+                    intentBirthday.putExtra(
+                        "nameOfContact",
+                        activity?.getString(R.string.notification_text) + name?.text
+                    )
+                    intentBirthday.putExtra("contactId", contactId)
+                }
             }
         }
     }
