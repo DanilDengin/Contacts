@@ -23,22 +23,11 @@ class ContactProvider {
                     while (cursor.moveToNext()) {
                         val id: String = cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
                         val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
-                        var numbers: Array<String?>? = null
-                        val hasPhoneNumber =
-                            cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
-                                .toInt()
-                        if (hasPhoneNumber > 0) {
-                            numbers = getNumbers(id, context)
-                        }
+                        val numbers: ArrayList<String> = getNumbers(id, context)
                         val contact =
                             Contact(
                                 name = name,
-                                number1 = numbers?.get(0),
-                                number2 = null,
-                                email1 = null,
-                                email2 = null,
-                                description = null,
-                                birthday = null,
+                                number1 = numbers[0],
                                 id = id
                             )
                         contacts.add(contact)
@@ -49,20 +38,11 @@ class ContactProvider {
         return contacts
     }
 
-    fun getFullContactDetails(id: String, context: Context): Contact {
+    fun getFullContactDetails(id: String, context: Context): Contact? {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        var contact = Contact(
-            name = null,
-            number1 = null,
-            number2 = null,
-            email1 = null,
-            email2 = null,
-            description = null,
-            birthday = null,
-            id = id
-        )
+        var contact : Contact? = null
         val cursor = context.contentResolver.query(
             contentUri, null,
             "$idColumn = $id", null, null
@@ -75,28 +55,35 @@ class ContactProvider {
                 val numbers = getNumbers(id, context)
                 val email = getEmail(id, context)
                 val birthday = getBirthday(id, context)
+                if(numbers.size==1)
                 contact = Contact(
                     name = name,
                     number1 = numbers[0],
-                    number2 = numbers[1],
                     email1 = email[0],
                     email2 = email[1],
-                    description = null,
                     birthday = birthday,
                     id = id
                 )
-
+                else if(numbers.size>1)
+                    contact = Contact(
+                        name = name,
+                        number1 = numbers[0],
+                        number2 = numbers[1],
+                        email1 = email[0],
+                        email2 = email[1],
+                        birthday = birthday,
+                        id = id
+                    )
             }
         }
         return contact
     }
 
-    private fun getNumbers(contact_id: String, context: Context): Array<String?> {
+    private fun getNumbers(contact_id: String, context: Context): ArrayList<String> {
         val phoneContentUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val phoneContactId = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
         val numberColumn = ContactsContract.CommonDataKinds.Phone.NUMBER
-        val numbers = arrayOfNulls<String>(2)
-        var count = 0
+        val numbers = ArrayList<String>()
         val phoneCursor = context.contentResolver.query(
             phoneContentUri, null,
             "$phoneContactId = ?", arrayOf(contact_id), null
@@ -106,16 +93,22 @@ class ContactProvider {
             if (phoneCursor != null) {
                 while (phoneCursor.moveToNext()) {
                     val phoneNumber =
-                        StringBuilder(phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(numberColumn)))
+                        StringBuilder(
+                            phoneCursor.getString(
+                                phoneCursor.getColumnIndexOrThrow(
+                                    numberColumn
+                                )
+                            )
+                        )
                     if (phoneNumber[0] == '8') {
                         phoneNumber.replace(0, 1, "+7")
                     }
-                    val number = phoneNumber.toString()
+                    val number = phoneNumber
+                        .toString()
                         .replace(" ", "")
                         .replace("-", "")
                     if (!numbers.contains(number)) {
-                        numbers[count] = number
-                        count++
+                        numbers.add(number)
                     }
                 }
             }

@@ -104,8 +104,8 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
 
-    override fun getDetails(contactForDetails: Contact) {
-        birthdayDate = contactForDetails.birthday
+    override fun getDetails(contactForDetails: Contact?) {
+        birthdayDate = contactForDetails!!.birthday
         handler.post {
             name?.text = contactForDetails.name
             number1?.text = contactForDetails.number1
