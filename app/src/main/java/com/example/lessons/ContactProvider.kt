@@ -24,6 +24,8 @@ class ContactProvider {
                         val id: String = cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
                         val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
                         val numbers: ArrayList<String> = getNumbers(id, context)
+                        if (numbers.size == 0)
+                            continue
                         val contact =
                             Contact(
                                 name = name,

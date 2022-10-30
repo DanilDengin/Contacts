@@ -4,14 +4,11 @@ package com.example.lessons
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,25 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     private val requestCodeReadContacts = 1
     private var readContactsGranted = false
-    lateinit var contactService: ContactService
-    private var bound = false
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as ContactService.ContactBinder
-            contactService = binder.getService()
-            bound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            bound = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
+        Log.e("A", "MA created")
 
         val hasReadContactPermission =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
@@ -53,17 +38,10 @@ class MainActivity : AppCompatActivity() {
                 requestCodeReadContacts
             )
         }
-        if (readContactsGranted) {
-            showListFragment()
-        }
 
         if (savedInstanceState == null && readContactsGranted) {
             showListFragment()
         }
-
-        val intentService = Intent(this, ContactService::class.java)
-        bindService(intentService, connection, Context.BIND_AUTO_CREATE)
-        contactService = ContactService()
 
 
         if (intent.getIntExtra("contactId", -1) != -1) {
@@ -120,10 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if (bound) {
-            unbindService(connection)
-            bound = false
-        }
+        Log.e("A", "Main Activity die")
         super.onDestroy()
     }
 }

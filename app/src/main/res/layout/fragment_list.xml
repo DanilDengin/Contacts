@@ -88,7 +88,7 @@
             android:background="@drawable/style_frame"
             android:paddingHorizontal="12dp"
             android:paddingBottom="20dp"
-            android:text="Name1"
+            android:text="Name"
             app:layout_constraintStart_toEndOf="@+id/photo1ListTextView"
             app:layout_constraintTop_toTopOf="@+id/photo1ListTextView" />
 
@@ -99,10 +99,9 @@
             android:background="@drawable/style_frame"
             android:paddingHorizontal="12dp"
             android:paddingBottom="20dp"
-            android:text="Number2"
+            android:text="Number"
             app:layout_constraintBottom_toBottomOf="@+id/photo1ListTextView"
             app:layout_constraintStart_toStartOf="@+id/name1ListTextView" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -21,13 +21,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".ContactService"
-            android:enabled="true"
-            android:exported="false">
-
-        </service>
-
         <activity
             android:name=".MainActivity"
             android:exported="true">

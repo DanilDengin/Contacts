@@ -1,16 +1,16 @@
 package com.example.lessons
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 
 class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
 
-    private val handler = Handler(Looper.getMainLooper())
     private var numberContact0: TextView? = null
     private var nameContact0: TextView? = null
     private var icon0: TextView? = null
@@ -19,7 +19,9 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
     private var icon1: TextView? = null
     private var id0: String? = null
     private var id1: String? = null
-
+    private val viewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -27,11 +29,14 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         nameContact0 = requireView().findViewById(R.id.name0ListTextView)
         nameContact1 = requireView().findViewById(R.id.name1ListTextView)
         numberContact1 = requireView().findViewById(R.id.number1ListTextView)
+        icon0=requireView().findViewById(R.id.contact0TextView)
+        icon1=requireView().findViewById(R.id.contact1TextView)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
-        icon0 = view.findViewById(R.id.contact0TextView)
-        icon1 = view.findViewById(R.id.contact1TextView)
-        mainActivity.contactService.getContacts(this, requireContext())
+        viewModel.getUsers(requireContext()).observe(viewLifecycleOwner, Observer { users ->
+            getContactList(users)
+        }
+        )
     }
 
     private fun changeFragment(id: String?) {
@@ -45,20 +50,19 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
             .commit()
     }
 
-    override fun getContactList(contacts: ArrayList<Contact>) {
-        handler.post {
-            nameContact0?.text = contacts[2].name
-            numberContact0?.text = contacts[2].number1
-            id0 = contacts[2].id
-            nameContact1?.text = contacts[0].name
-            numberContact1?.text = contacts[0].number1
-            id1 = contacts[0].id
-            icon0?.setOnClickListener {
-                changeFragment(id0)
-            }
-            icon1?.setOnClickListener {
-                changeFragment(id1)
-            }
+    override fun getContactList(contacts: ArrayList<Contact>?) {
+        val contactsNotNull = requireNotNull(contacts)
+        nameContact0?.text = contactsNotNull[2].name
+        numberContact0?.text = contactsNotNull[2].number1
+        id0 = contactsNotNull[2].id
+        nameContact1?.text = contactsNotNull[0].name
+        numberContact1?.text = contactsNotNull[0].number1
+        id1 = contactsNotNull[0].id
+        icon0?.setOnClickListener {
+            changeFragment(id0)
+        }
+        icon1?.setOnClickListener {
+            changeFragment(id1)
         }
     }
 
@@ -70,8 +74,12 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         nameContact1 = null
         icon0 = null
         icon1 = null
-        handler.removeCallbacksAndMessages(null)
         super.onDestroyView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.e("A", "Fragment onStart")
     }
 
 }
