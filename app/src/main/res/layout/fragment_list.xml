@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/design_default_color_background"
-        tools:context="com.example.lessons.ListFragment">
+        tools:context="com.example.lessons.fragments.ListFragment">
 
         <TextView
             android:id="@+id/contact0TextView"

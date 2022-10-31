@@ -1,4 +1,4 @@
-package com.example.lessons
+package com.example.lessons.fragments
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -15,6 +15,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.lessons.Contact
+import com.example.lessons.GetDetails
+import com.example.lessons.MainActivity
+import com.example.lessons.R
+import com.example.lessons.receivers.BirthdayReceiver
+import com.example.lessons.viewmodels.ViewModelForDetails
+import com.example.lessons.viewmodels.ViewModelForDetailsFactory
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
@@ -49,8 +56,11 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             AppCompatActivity.ALARM_SERVICE
         ) as AlarmManager
     }
-    private val viewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    private val viewModel: ViewModelForDetails by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(
+            this,
+            ViewModelForDetailsFactory(requireArguments().getInt(ARG).toString())
+        )[ViewModelForDetails::class.java]
     }
 
     companion object {
@@ -76,7 +86,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
-        viewModel.getUserDetail(contactId.toString(), requireContext())
+        viewModel.getUserDetails(requireContext())
             .observe(viewLifecycleOwner, Observer { userDetails ->
                 getDetails(userDetails)
             })
@@ -109,7 +119,6 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             }
         }
     }
-
 
     override fun getDetails(contactForDetails: Contact) {
         birthdayDate = contactForDetails.birthday

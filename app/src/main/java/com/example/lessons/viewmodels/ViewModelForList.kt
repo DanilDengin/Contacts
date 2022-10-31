@@ -1,4 +1,4 @@
-package com.example.lessons
+package com.example.lessons.viewmodels
 
 import android.content.Context
 import android.os.Handler
@@ -7,42 +7,27 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.lessons.Contact
+import com.example.lessons.repositories.ContactsListRepository
 
-class MainViewModel: ViewModel() {
-    private val contactProvider = ContactProvider()
-    private var users = MutableLiveData<ArrayList<Contact>>()
-    private var user = MutableLiveData<Contact>()
+class ViewModelForList : ViewModel() {
+    private val contactProvider = ContactsListRepository()
+    private var users = MutableLiveData<List<Contact>>()
     private val handler = Handler(Looper.getMainLooper())
-
 
     init {
         Log.e("A", "VM created")
     }
 
-    fun getUsers(context: Context): LiveData<ArrayList<Contact>> {
+    fun getUsers(context: Context): LiveData<List<Contact>> {
         loadUsers(context)
         return users
     }
 
     private fun loadUsers(context: Context) {
         Thread {
-            Thread.sleep(3000)
             handler.post {
                 users.value = contactProvider.getShortContactsDetails(context)
-            }
-        }.start()
-    }
-
-    fun getUserDetail(id: String, context: Context): LiveData<Contact> {
-        loadUserDetail(id, context)
-        return user
-    }
-
-    private fun loadUserDetail( id: String, context: Context) {
-        Thread {
-            Thread.sleep(3000)
-            handler.post {
-                user.value = contactProvider.getFullContactDetails(id, context)
             }
         }.start()
     }
