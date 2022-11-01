@@ -8,13 +8,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.lessons.fragments.DetailsFragment
-import com.example.lessons.fragments.ListFragment
+import com.example.lessons.contactdetails.DetailsFragment
+import com.example.lessons.contactslist.ListFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-        Log.e("A", "MA created")
 
         val hasReadContactPermission =
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
@@ -97,11 +95,6 @@ class MainActivity : AppCompatActivity() {
         transaction
             .add(R.id.fragmentContainer, ListFragment())
             .commit()
-    }
-
-    override fun onDestroy() {
-        Log.e("A", "Main Activity die")
-        super.onDestroy()
     }
 }
 

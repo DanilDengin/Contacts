@@ -1,16 +1,14 @@
-package com.example.lessons.fragments
+package com.example.lessons.contactslist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lessons.Contact
-import com.example.lessons.GetContactList
 import com.example.lessons.MainActivity
 import com.example.lessons.R
-import com.example.lessons.viewmodels.ViewModelForList
+import com.example.lessons.contactdetails.DetailsFragment
 
 
 class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
@@ -23,8 +21,11 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
     private var icon1: TextView? = null
     private var id0: String? = null
     private var id1: String? = null
-    private val viewModel: ViewModelForList by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this)[ViewModelForList::class.java]
+    private val viewModel: ContactsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(
+            this,
+            ContactsListViewModelFactory(requireContext())
+        )[ContactsListViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,10 +38,13 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         icon1 = requireView().findViewById(R.id.contact1TextView)
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
-        viewModel.getUsers(requireContext()).observe(
-            viewLifecycleOwner
-        ) { users ->
-            getContactList(users)
+        viewModel.getUsers().observe(viewLifecycleOwner, ::getContactList)
+
+        icon0?.setOnClickListener {
+            changeFragment(id0)
+        }
+        icon1?.setOnClickListener {
+            changeFragment(id1)
         }
     }
 
@@ -63,12 +67,6 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         nameContact1?.text = contactsNotNull[0].name
         numberContact1?.text = contactsNotNull[0].number1
         id1 = contactsNotNull[0].id
-        icon0?.setOnClickListener {
-            changeFragment(id0)
-        }
-        icon1?.setOnClickListener {
-            changeFragment(id1)
-        }
     }
 
 
@@ -81,12 +79,6 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
         icon1 = null
         super.onDestroyView()
     }
-
-    override fun onStart() {
-        super.onStart()
-        Log.e("A", "Fragment onStart")
-    }
-
 }
 
 

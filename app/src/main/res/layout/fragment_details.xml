@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="@color/design_default_color_on_primary"
         android:clickable="true"
-        tools:context="com.example.lessons.fragments.DetailsFragment">
+        tools:context="com.example.lessons.contactdetails.DetailsFragment">
 
         <ImageView
             android:id="@+id/photoTextView"
