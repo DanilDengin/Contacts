@@ -55,7 +55,7 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             this,
             ContactDetailsViewModelFactory(
                 requireArguments().getInt(ARG).toString(),
-                requireContext()
+                requireActivity().applicationContext
             )
         )[ContactDetailsViewModel::class.java]
     }

@@ -22,7 +22,6 @@ class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
 
     private fun loadUserDetail(id: String, context: Context) {
         Thread {
-            Thread.sleep(3000)
             user.postValue(contactsRepository.getFullContactDetails(id, context))
         }.start()
     }

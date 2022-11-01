@@ -1,5 +1,6 @@
 package com.example.lessons.contactslist
 
+import android.app.Application
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -24,7 +25,7 @@ class ListFragment : GetContactList, Fragment(R.layout.fragment_list) {
     private val viewModel: ContactsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             this,
-            ContactsListViewModelFactory(requireContext())
+            ContactsListViewModelFactory(requireActivity().applicationContext)
         )[ContactsListViewModel::class.java]
     }
 
