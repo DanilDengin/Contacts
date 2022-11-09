@@ -15,7 +15,7 @@ class ContactsRepository {
         val contacts = ArrayList<Contact>()
         val cursor = context.contentResolver.query(
             contentUri, null,
-            null, null, null
+            null, null, "$displayName ASC"
         )
 
         cursor.use {
@@ -87,7 +87,7 @@ class ContactsRepository {
         return contact
     }
 
-    protected fun getNumbers(contact_id: String, context: Context): List<String> {
+    private fun getNumbers(contact_id: String, context: Context): List<String> {
         val phoneContentUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val phoneContactId = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
         val numberColumn = ContactsContract.CommonDataKinds.Phone.NUMBER

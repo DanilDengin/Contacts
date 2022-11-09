@@ -1,107 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/design_default_color_background"
+    android:orientation="vertical"
+    tools:context="com.example.lessons.contactslist.ContactsListFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/listFragment"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/design_default_color_background"
-        tools:context="com.example.lessons.contactslist.ListFragment">
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/contact_item" />
 
-        <TextView
-            android:id="@+id/contact0TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/style_main_frame"
-            android:padding="56dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/photo0ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/style_frame"
-            app:layout_constraintStart_toStartOf="@+id/contact0TextView"
-            app:layout_constraintTop_toTopOf="@+id/contact0TextView"
-            app:srcCompat="@drawable/ic_contact" />
-
-        <TextView
-            android:id="@+id/name0ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Name"
-            app:layout_constraintStart_toEndOf="@+id/photo0ListTextView"
-            app:layout_constraintTop_toTopOf="@+id/photo0ListTextView" />
-
-        <TextView
-            android:id="@+id/number0ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Number"
-            app:layout_constraintBottom_toBottomOf="@+id/photo0ListTextView"
-            app:layout_constraintStart_toStartOf="@+id/name0ListTextView" />
-
-        <TextView
-            android:id="@+id/contact1TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/style_main_frame"
-            android:padding="56dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact0TextView" />
-
-        <ImageView
-            android:id="@+id/photo1ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/style_frame"
-            app:layout_constraintStart_toStartOf="@+id/contact1TextView"
-            app:layout_constraintTop_toTopOf="@+id/contact1TextView"
-            app:srcCompat="@drawable/ic_contact" />
-
-        <TextView
-            android:id="@+id/name1ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Name"
-            app:layout_constraintStart_toEndOf="@+id/photo1ListTextView"
-            app:layout_constraintTop_toTopOf="@+id/photo1ListTextView" />
-
-        <TextView
-            android:id="@+id/number1ListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/style_frame"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="20dp"
-            android:text="Number"
-            app:layout_constraintBottom_toBottomOf="@+id/photo1ListTextView"
-            app:layout_constraintStart_toStartOf="@+id/name1ListTextView" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

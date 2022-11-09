@@ -9,20 +9,24 @@ import com.example.lessons.repositories.ContactsRepository
 
 class ContactsListViewModel(context: Context) : ViewModel() {
     private val contactsRepository = ContactsRepository()
-    private val users = MutableLiveData<List<Contact>>()
+    private val users = MutableLiveData<List<Contact>?>()
 
     init {
         loadUsers(context)
     }
 
-    fun getUsers(): LiveData<List<Contact>> {
+    fun getUsers(): LiveData<List<Contact>?> {
         return users
     }
 
-    private fun loadUsers(context: Context) {
+    fun loadUsers(context: Context) {
         Thread {
             users.postValue(contactsRepository.getShortContactsDetails(context))
         }.start()
+    }
+
+    fun updateUsers(filteredList: List<Contact>?) {
+        users.postValue(filteredList)
     }
 
 }

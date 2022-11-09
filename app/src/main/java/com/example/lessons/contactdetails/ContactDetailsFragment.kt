@@ -4,7 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -29,9 +31,13 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     private var contactId: Int = -1
     private var name: TextView? = null
     private var number1: TextView? = null
+    private var number1Image: ImageView? = null
     private var number2: TextView? = null
+    private var number2Image: ImageView? = null
     private var email1: TextView? = null
+    private var email1Image: ImageView? = null
     private var email2: TextView? = null
+    private var email2Image: ImageView? = null
     private var description: TextView? = null
     private var birthday: TextView? = null
     private var birthdaySwitch: SwitchCompat? = null
@@ -73,16 +79,22 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         name = requireView().findViewById(R.id.nameTextView)
         number1 = requireView().findViewById(R.id.number1TextView)
+        number1Image = requireView().findViewById(R.id.number1Image)
         number2 = requireView().findViewById(R.id.number2TextView)
+        number2Image = requireView().findViewById(R.id.number2Image)
         email1 = requireView().findViewById(R.id.eMail1TextView)
+        email1Image = requireView().findViewById(R.id.email1Image)
         email2 = requireView().findViewById(R.id.eMail2TextView)
+        email2Image = requireView().findViewById(R.id.email2Image)
         description = requireView().findViewById(R.id.descriptionTextView)
         birthday = requireView().findViewById(R.id.birthdayTextView)
         birthdaySwitch = requireView().findViewById(R.id.birthdaySwitch)
         val args = requireArguments()
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
+        setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
+        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.getUserDetails()
             .observe(viewLifecycleOwner, ::getDetails)
 
@@ -122,9 +134,12 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         number2?.text = contactForDetails.number2
         email1?.text = contactForDetails.email1
         email2?.text = contactForDetails.email2
-        email1?.isGone = contactForDetails.email1 == null
-        email2?.isGone = contactForDetails.email2 == null
         number2?.isGone = contactForDetails.number2 == null
+        number2Image?.isGone = contactForDetails.number2 == null
+        email1?.isGone = contactForDetails.email1 == null
+        email1Image?.isGone = contactForDetails.email1 == null
+        email2?.isGone = contactForDetails.email2 == null
+        email2Image?.isGone = contactForDetails.email2 == null
         description?.text = contactForDetails.description
         if (birthdayDate != null) {
             val data = StringJoiner(".")
@@ -134,45 +149,56 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
                 .add(format.format(birthdayDate?.get(YEAR)))
             birthday?.text = data.toString()
             birthdaySwitch?.isClickable = true
-            intentBirthday.putExtra(
-                "nameOfContact",
-                activity?.getString(R.string.notification_text) + name?.text
-            )
-            intentBirthday.putExtra("contactId", contactId)
+            intentBirthday
+                .putExtra(
+                    "nameOfContact",
+                    activity?.getString(R.string.notification_text) + name?.text
+                )
+                .putExtra("contactId", contactId)
         }
     }
 
     private fun doAlarm() {
-        val birthdayDayNotNull = requireNotNull(birthdayDate)
+        val birthdayDateNotNull = requireNotNull(birthdayDate)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        if (calendar[Calendar.DAY_OF_YEAR] > birthdayDayNotNull.get(Calendar.DAY_OF_YEAR)) {
+        if (calendar[Calendar.DAY_OF_YEAR] > birthdayDateNotNull.get(Calendar.DAY_OF_YEAR)) {
             calendar.add(YEAR, 1)
         }
-        if (birthdayDayNotNull.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDayNotNull.get(
+        if (birthdayDateNotNull.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDateNotNull.get(
                 Calendar.DAY_OF_MONTH
             ) == 29
         ) {
-            birthdayDayNotNull.set(Calendar.DAY_OF_MONTH, 28)
+            birthdayDateNotNull.set(Calendar.DAY_OF_MONTH, 28)
         }
         calendar[Calendar.MINUTE] = 0
         calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.DAY_OF_MONTH] = birthdayDayNotNull.get(Calendar.DAY_OF_MONTH)
-        calendar[Calendar.MONTH] = birthdayDayNotNull.get(Calendar.MONTH)
+        calendar[Calendar.DAY_OF_MONTH] = birthdayDateNotNull.get(Calendar.DAY_OF_MONTH)
+        calendar[Calendar.MONTH] = birthdayDateNotNull.get(Calendar.MONTH)
         alarmBirthday.set(
             AlarmManager.RTC,
             calendar.timeInMillis,
             pendingIntentBirthday
         )
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            parentFragmentManager.popBackStack()
+        }
+        return true
     }
 
     override fun onDestroyView() {
         name = null
         number1 = null
+        number1Image = null
         number2 = null
+        number2Image = null
         email1 = null
+        email1Image = null
         email2 = null
+        email2Image = null
         description = null
         birthday = null
         birthdaySwitch = null

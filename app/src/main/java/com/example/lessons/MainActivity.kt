@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.lessons.contactdetails.DetailsFragment
-import com.example.lessons.contactslist.ListFragment
+import com.example.lessons.contactslist.ContactsListFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,8 +43,7 @@ class MainActivity : AppCompatActivity() {
             showListFragment()
         }
 
-
-        if (intent.getIntExtra("contactId", -1) != -1) {
+        if (intent.getIntExtra("contactId", -1) != -1 && savedInstanceState == null) {
             val transaction = supportFragmentManager.beginTransaction()
             transaction
                 .replace(
@@ -55,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
-
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -93,9 +91,7 @@ class MainActivity : AppCompatActivity() {
     private fun showListFragment() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-            .add(R.id.fragmentContainer, ListFragment())
+            .add(R.id.fragmentContainer, ContactsListFragment())
             .commit()
     }
 }
-
-

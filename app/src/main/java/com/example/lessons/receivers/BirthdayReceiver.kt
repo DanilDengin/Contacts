@@ -47,9 +47,10 @@ class BirthdayReceiver : BroadcastReceiver() {
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.add(Calendar.YEAR, 1)
         val intentBirthdayReceiver = Intent("birthdayReceiver")
-        intentBirthdayReceiver.setClass(context, BirthdayReceiver::class.java)
-        intentBirthdayReceiver.putExtra("nameOfContact", nameContact)
-        intentBirthdayReceiver.putExtra("contactId", id)
+        intentBirthdayReceiver
+            .setClass(context, BirthdayReceiver::class.java)
+            .putExtra("nameOfContact", nameContact)
+            .putExtra("contactId", id)
         val pendingIntentBirthday = PendingIntent.getBroadcast(
             context,
             id,
