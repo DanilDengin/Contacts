@@ -13,19 +13,19 @@ import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.contactdetails.DetailsFragment
-import com.example.lessons.contactslist.adapter.ContactsListAdapter
+import com.example.lessons.contactslist.adapter.ContactListAdapter
 
 
-class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
+class ContactListFragment : Fragment(R.layout.fragment_list) {
 
-    private val viewModel: ContactsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: ContactListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             this,
-            ContactsListViewModelFactory(requireActivity().applicationContext)
-        )[ContactsListViewModel::class.java]
+            ContactListViewModelFactory(requireActivity().applicationContext)
+        )[ContactListViewModel::class.java]
     }
-    private val contactsListAdapter: ContactsListAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ContactsListAdapter { id -> changeFragment(id = id) }
+    private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        ContactListAdapter { id -> changeFragment(id = id) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,9 +35,9 @@ class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val recyclerView: RecyclerView = requireView().findViewById(R.id.recyclerView)
-        val horizontalISpaceItemDecorator = ContactsListItemDecorator()
+        val horizontalISpaceItemDecorator = ContactListItemDecorator()
         val layoutManager = LinearLayoutManager(context)
-        viewModel.getUsers().observe(viewLifecycleOwner, ::setContactList)
+        viewModel.getUsers().observe(viewLifecycleOwner, ::submitContactList)
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
@@ -55,8 +55,8 @@ class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
             .commit()
     }
 
-    override fun setContactList(contactsList: List<Contact>?) {
-        contactsListAdapter.setContactsList(contactsList)
+    private fun submitContactList(contactsList: List<Contact>?) {
+        contactsListAdapter.submitList(contactsList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

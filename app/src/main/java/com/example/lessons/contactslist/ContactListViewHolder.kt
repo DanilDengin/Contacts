@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons.Contact
 import com.example.lessons.R
 
-class ContactsListViewHolder(itemView: View, changeFragment: (Int) -> Unit) :
+class ContactListViewHolder(itemView: View, toContactDetailsById: (Int) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.nameListTextView)
     private val number: TextView = itemView.findViewById(R.id.numberListTextView)
 
     init {
         itemView.setOnClickListener {
-            val adapterPosition = absoluteAdapterPosition
+            val adapterPosition = bindingAdapterPosition
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                changeFragment(adapterPosition)
+                toContactDetailsById(adapterPosition)
             }
         }
     }

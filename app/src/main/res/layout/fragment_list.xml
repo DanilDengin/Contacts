@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/design_default_color_background"
     android:orientation="vertical"
-    tools:context="com.example.lessons.contactslist.ContactsListFragment">
+    tools:context="com.example.lessons.contactslist.ContactListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

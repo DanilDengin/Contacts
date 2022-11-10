@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.lessons.contactdetails.DetailsFragment
-import com.example.lessons.contactslist.ContactsListFragment
+import com.example.lessons.contactslist.ContactListFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
     private fun showListFragment() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-            .add(R.id.fragmentContainer, ContactsListFragment())
+            .add(R.id.fragmentContainer, ContactListFragment())
             .commit()
     }
 }

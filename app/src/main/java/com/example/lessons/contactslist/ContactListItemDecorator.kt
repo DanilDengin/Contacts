@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.roundToInt
 
-class ContactsListItemDecorator : RecyclerView.ItemDecoration() {
+class ContactListItemDecorator : RecyclerView.ItemDecoration() {
     private val spaceDp: Int = fromIntToDp(8)
 
     private fun fromIntToDp(spaceInt: Int): Int {
@@ -22,8 +22,11 @@ class ContactsListItemDecorator : RecyclerView.ItemDecoration() {
         val childAdapterPosition = parent.getChildAdapterPosition(view)
             .let { if (it == RecyclerView.NO_POSITION) return else it }
         outRect.bottom =
-            if (childAdapterPosition != parent.adapter!!.itemCount - 1) spaceDp
-            else 0
+            if (childAdapterPosition != parent.adapter!!.itemCount - 1) {
+                spaceDp
+            } else {
+                0
+            }
     }
 
 }

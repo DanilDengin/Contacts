@@ -50,7 +50,7 @@
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/birthdaySwitch"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="28dp"
             android:text="@string/switch_text"
             android:textColor="@color/grey"
             android:textSize="12sp"
