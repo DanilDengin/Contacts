@@ -8,7 +8,7 @@ import com.example.lessons.Contact
 import com.example.lessons.R
 import com.example.lessons.contactslist.ContactListViewHolder
 
-class ContactListAdapter(private val toContactDetailsById: (String) -> Unit) :
+class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
     ListAdapter<Contact, ContactListViewHolder>(DiffCallback()) {
 
     private class DiffCallback : DiffUtil.ItemCallback<Contact>() {
@@ -24,7 +24,7 @@ class ContactListAdapter(private val toContactDetailsById: (String) -> Unit) :
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.contact_item, parent, false)
         return ContactListViewHolder(itemView) { adapterPosition ->
-            toContactDetailsById(currentList[adapterPosition].id)
+            navigateToContactDetailsById(currentList[adapterPosition].id)
         }
     }
 

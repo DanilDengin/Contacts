@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModel
 import com.example.lessons.Contact
 import com.example.lessons.repositories.ContactsRepository
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors.newSingleThreadExecutor
+import java.util.concurrent.Executors
 
 class ContactListViewModel(context: Context) : ViewModel() {
     private val contactsRepository = ContactsRepository()
     private val users = MutableLiveData<List<Contact>?>()
+    private val executor : ExecutorService = Executors.newFixedThreadPool(2)
 
     init {
         loadUsers(context)
@@ -22,16 +23,15 @@ class ContactListViewModel(context: Context) : ViewModel() {
     }
 
     private fun loadUsers(context: Context) {
-        Thread {
+        executor.execute{
             users.postValue(contactsRepository.getShortContactsDetails(context))
-        }.start()
+        }
     }
 
     fun filterUsers(query: String?, context: Context) {
         if (query == null || query.isBlank()) {
             loadUsers(context = context)
         } else {
-            val executor : ExecutorService = newSingleThreadExecutor()
             executor.execute{
                 val trimmedQuery = query.trim()
                 val filteredContacts = ArrayList<Contact>()
@@ -40,8 +40,12 @@ class ContactListViewModel(context: Context) : ViewModel() {
                         filteredContacts.add(contact)
                 }
                 users.postValue(filteredContacts)
-                executor.shutdown()
             }
         }
+    }
+
+    override fun onCleared() {
+        executor.shutdown()
+        super.onCleared()
     }
 }
