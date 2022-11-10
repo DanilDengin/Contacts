@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.contactdetails.DetailsFragment
@@ -36,9 +37,7 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val recyclerView: RecyclerView = requireView().findViewById(R.id.recyclerView)
         val horizontalISpaceItemDecorator = ContactListItemDecorator()
         val layoutManager = LinearLayoutManager(context)
-        viewModel.getUsers().observe(viewLifecycleOwner) { contactList ->
-            contactsListAdapter.submitList(contactList)
-        }
+        viewModel.getUsers().observe(viewLifecycleOwner, contactsListAdapter::submitList)
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
