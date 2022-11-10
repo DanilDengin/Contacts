@@ -4,13 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons.Contact
 import com.example.lessons.R
-import com.example.lessons.contactslist.ContactsListFragment
 import com.example.lessons.contactslist.ContactsListViewHolder
 
-class ContactsListAdapter(private val listFragment: ContactsListFragment) :
+class ContactsListAdapter(private val changeFragment: (String) -> Unit) :
     ListAdapter<Contact, ContactsListViewHolder>(DiffCallback()) {
 
     fun setContactsList(contactsList: List<Contact>?) {
@@ -30,14 +28,9 @@ class ContactsListAdapter(private val listFragment: ContactsListFragment) :
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.contact_item, parent, false)
-        val contactsListViewHolder = ContactsListViewHolder(itemView)
-        itemView.setOnClickListener {
-            val adapterPosition = contactsListViewHolder.absoluteAdapterPosition
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                listFragment.changeFragment(currentList[adapterPosition].id)
-            }
+        return ContactsListViewHolder(itemView) { adapterPosition ->
+            changeFragment(currentList[adapterPosition].id)
         }
-        return contactsListViewHolder
     }
 
     override fun onBindViewHolder(holder: ContactsListViewHolder, position: Int) {
@@ -45,4 +38,6 @@ class ContactsListAdapter(private val listFragment: ContactsListFragment) :
     }
 
     override fun getItemCount() = currentList.size
+
+
 }

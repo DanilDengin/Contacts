@@ -25,7 +25,7 @@ class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
         )[ContactsListViewModel::class.java]
     }
     private val contactsListAdapter: ContactsListAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ContactsListAdapter(this)
+        ContactsListAdapter { id -> changeFragment(id = id) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 
-    fun changeFragment(id: String?) {
+    private fun changeFragment(id: String?) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
             .replace(
@@ -65,42 +65,16 @@ class ContactsListFragment : SetContactList, Fragment(R.layout.fragment_list) {
         searchView.queryHint = "Search"
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query == null || query.trim() == "") {
-                    viewModel.loadUsers(requireContext())
-                }
-                stringFilter(
-                    oldContactList = viewModel.getUsers().value,
-                    query = query, viewModel
-                )
+                viewModel.filterUsers(query = query, requireContext())
                 return false
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                if (query == null || query.trim() == "") {
-                    viewModel.loadUsers(requireContext())
-                }
-                stringFilter(
-                    oldContactList = viewModel.getUsers().value,
-                    query = query, viewModel
-                )
+                viewModel.filterUsers(query = query, requireContext())
                 return false
             }
         })
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun stringFilter(
-        oldContactList: List<Contact>?,
-        query: String?,
-        viewModel: ContactsListViewModel
-    ) {
-        Thread {
-            val filteredContacts = ArrayList<Contact>()
-            oldContactList?.forEach { contact ->
-                if (contact.name.contains(query!!.trim(), ignoreCase = true))
-                    filteredContacts.add(contact)
-            }
-            viewModel.updateUsers(filteredContacts)
-        }.start()
-    }
 }

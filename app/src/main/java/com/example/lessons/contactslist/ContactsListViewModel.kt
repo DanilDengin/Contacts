@@ -19,14 +19,24 @@ class ContactsListViewModel(context: Context) : ViewModel() {
         return users
     }
 
-    fun loadUsers(context: Context) {
+    private fun loadUsers(context: Context) {
         Thread {
             users.postValue(contactsRepository.getShortContactsDetails(context))
         }.start()
     }
 
-    fun updateUsers(filteredList: List<Contact>?) {
-        users.postValue(filteredList)
+    fun filterUsers(query: String?, context: Context) {
+        if (query == null || query.isBlank()) {
+            loadUsers(context = context)
+        } else {
+            Thread {
+                val filteredContacts = ArrayList<Contact>()
+                users.value?.forEach { contact ->
+                    if (contact.name.contains(query.trim(), ignoreCase = true))
+                        filteredContacts.add(contact)
+                }
+                users.postValue(filteredContacts)
+            }.start()
+        }
     }
-
 }
