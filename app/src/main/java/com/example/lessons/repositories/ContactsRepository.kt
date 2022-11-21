@@ -42,7 +42,7 @@ class ContactsRepository {
         return contacts
     }
 
-    fun getFullContactDetails(id: String, context: Context): Contact? {
+    fun getFullContactDetails(id: String, context: Context): Contact {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
@@ -84,7 +84,7 @@ class ContactsRepository {
                 }
             }
         }
-        return contact
+        return requireNotNull(contact)
     }
 
     private fun getNumbers(contact_id: String, context: Context): List<String> {

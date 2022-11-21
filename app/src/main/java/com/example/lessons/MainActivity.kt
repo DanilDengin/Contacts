@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.lessons.contactdetails.DetailsFragment
-import com.example.lessons.contactslist.ContactListFragment
+import com.example.lessons.contactlist.ContactListFragment
 
 
 class MainActivity : AppCompatActivity() {

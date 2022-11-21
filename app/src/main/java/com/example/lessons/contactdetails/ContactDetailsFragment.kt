@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
@@ -29,6 +31,8 @@ import java.util.StringJoiner
 class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     private var contactId: Int = -1
+    private var progressBar: ProgressBar? = null
+    private var container: ConstraintLayout? = null
     private var name: TextView? = null
     private var number1: TextView? = null
     private var number1Image: ImageView? = null
@@ -77,6 +81,8 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressBar = requireView().findViewById(R.id.progressBarDetails)
+        container = requireView().findViewById(R.id.detailsFragment)
         name = requireView().findViewById(R.id.nameTextView)
         number1 = requireView().findViewById(R.id.number1TextView)
         number1Image = requireView().findViewById(R.id.number1Image)
@@ -95,8 +101,8 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewModel.getUserDetails()
-            .observe(viewLifecycleOwner, ::getDetails)
+        viewModel.getUserDetails().observe(viewLifecycleOwner, ::getDetails)
+        viewModel.getProgressBarState().observe(viewLifecycleOwner, ::setLoadingIndicator)
 
         birthdaySwitch?.isClickable = false
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
@@ -189,7 +195,14 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         return true
     }
 
+    private fun setLoadingIndicator(state: Boolean) {
+        progressBar?.isGone = state
+        container?.isGone = state.not()
+    }
+
     override fun onDestroyView() {
+        progressBar = null
+        container = null
         name = null
         number1 = null
         number1Image = null

@@ -1,4 +1,4 @@
-package com.example.lessons.contactslist
+package com.example.lessons.contactlist
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

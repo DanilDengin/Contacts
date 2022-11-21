@@ -1,4 +1,4 @@
-package com.example.lessons.contactdetails
+package com.example.lessons.contactlist
 
 import android.content.Context
 import android.widget.Toast
@@ -9,46 +9,63 @@ import com.example.lessons.Contact
 import com.example.lessons.R
 import com.example.lessons.repositories.ContactsRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
-
+class ContactListViewModel(context: Context) : ViewModel() {
     private val contactsRepository = ContactsRepository()
-    private val user = MutableLiveData<Contact>()
+    private val users = MutableLiveData<List<Contact>?>()
     private val compositeDisposable = CompositeDisposable()
     private val progressBarState = MutableLiveData<Boolean>()
 
+
     init {
-        loadUserDetail(id, context)
+        loadUsers(context)
     }
 
-    fun getUserDetails(): LiveData<Contact> {
-        return user
+    fun getUsers(): LiveData<List<Contact>?> {
+        return users
     }
 
     fun getProgressBarState(): LiveData<Boolean> {
         return progressBarState
     }
 
-    private fun loadUserDetail(id: String, context: Context) {
+    private fun loadUsers(context: Context) {
         compositeDisposable.add(
-            Single.fromCallable { contactsRepository.getFullContactDetails(id, context) }
+            Single.fromCallable { contactsRepository.getShortContactsDetails(context) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { progressBarState.value = false }
                 .doOnTerminate { progressBarState.value = true }
-                .subscribe({ contact -> user.value = contact },
+                .subscribe({ contacts -> users.value = contacts },
                     {
                         Toast.makeText(
                             context,
                             context.getText(R.string.exception),
                             Toast.LENGTH_LONG
                         ).show()
-                    }
-                )
+                    })
         )
+    }
+
+    fun filterUsers(query: String?, context: Context) {
+        if (query == null || query.isBlank()) {
+            loadUsers(context = context)
+        } else {
+            val trimmedQuery = query.trim()
+            users.value?.let { contactList ->
+                Observable.fromCallable { contactList }
+                    .flatMap { Observable.fromIterable(contactList) }
+                    .filter { contact -> contact.name.contains(trimmedQuery, ignoreCase = true) }
+                    .toList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { filteredList -> users.value = filteredList }
+            }
+        }
     }
 
     override fun onCleared() {
