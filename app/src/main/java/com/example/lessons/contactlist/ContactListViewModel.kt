@@ -38,8 +38,8 @@ class ContactListViewModel(context: Context) : ViewModel() {
             Single.fromCallable { contactsRepository.getShortContactsDetails(context) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { progressBarState.value = false }
-                .doOnTerminate { progressBarState.value = true }
+                .doOnSubscribe { progressBarState.value = true }
+                .doOnTerminate { progressBarState.value = false }
                 .subscribe({ contacts -> users.value = contacts },
                     {
                         Toast.makeText(
@@ -57,8 +57,7 @@ class ContactListViewModel(context: Context) : ViewModel() {
         } else {
             val trimmedQuery = query.trim()
             users.value?.let { contactList ->
-                Observable.fromCallable { contactList }
-                    .flatMap { Observable.fromIterable(contactList) }
+                Observable.fromIterable(contactList)
                     .filter { contact -> contact.name.contains(trimmedQuery, ignoreCase = true) }
                     .toList()
                     .subscribeOn(Schedulers.io())

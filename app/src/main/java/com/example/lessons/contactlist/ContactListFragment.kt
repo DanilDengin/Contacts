@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,7 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ContactListAdapter { id -> changeFragment(id = id) }
     }
-    var progressBar: ProgressBar? = null
+    private var progressBar: ProgressBar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,8 +78,8 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun setLoadingIndicator(state: Boolean) {
-        progressBar?.isGone = state
+    private fun setLoadingIndicator(isVisible: Boolean) {
+        progressBar?.isVisible = isVisible
     }
 
     override fun onDestroy() {

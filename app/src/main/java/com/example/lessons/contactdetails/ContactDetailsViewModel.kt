@@ -37,8 +37,8 @@ class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
             Single.fromCallable { contactsRepository.getFullContactDetails(id, context) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { progressBarState.value = false }
-                .doOnTerminate { progressBarState.value = true }
+                .doOnSubscribe { progressBarState.value = true }
+                .doOnTerminate { progressBarState.value = false }
                 .subscribe({ contact -> user.value = contact },
                     {
                         Toast.makeText(

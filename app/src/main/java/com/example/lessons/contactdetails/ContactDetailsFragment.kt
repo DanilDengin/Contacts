@@ -15,6 +15,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lessons.Contact
@@ -195,9 +196,9 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         return true
     }
 
-    private fun setLoadingIndicator(state: Boolean) {
-        progressBar?.isGone = state
-        container?.isGone = state.not()
+    private fun setLoadingIndicator(isVisible: Boolean) {
+        progressBar?.isVisible = isVisible
+        container?.isVisible = isVisible.not()
     }
 
     override fun onDestroyView() {

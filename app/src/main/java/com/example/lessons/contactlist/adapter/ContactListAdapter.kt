@@ -23,9 +23,7 @@ class ContactListAdapter(private val navigateToContactDetailsById: (String) -> U
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.contact_item, parent, false)
-        return ContactListViewHolder(itemView) { id ->
-            navigateToContactDetailsById(id)
-        }
+        return ContactListViewHolder(itemView, navigateToContactDetailsById )
     }
 
     override fun onBindViewHolder(holder: ContactListViewHolder, position: Int) {
