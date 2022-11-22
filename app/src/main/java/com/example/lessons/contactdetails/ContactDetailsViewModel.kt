@@ -34,7 +34,7 @@ class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
 
     private fun loadUserDetail(id: String, context: Context) {
         compositeDisposable.add(
-            Single.fromCallable { contactsRepository.getFullContactDetails(id, context) }
+            Single.fromCallable { requireNotNull(contactsRepository.getFullContactDetails(id, context)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { progressBarState.value = true }

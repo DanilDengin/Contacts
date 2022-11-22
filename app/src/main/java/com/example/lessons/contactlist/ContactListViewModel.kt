@@ -60,7 +60,7 @@ class ContactListViewModel(context: Context) : ViewModel() {
                 Observable.fromIterable(contactList)
                     .filter { contact -> contact.name.contains(trimmedQuery, ignoreCase = true) }
                     .toList()
-                    .subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { filteredList -> users.value = filteredList }
             }
