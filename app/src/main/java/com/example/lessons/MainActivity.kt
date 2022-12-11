@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.lessons.contactdetails.DetailsFragment
+import com.example.lessons.contactdetails.ContactDetailsFragment
 import com.example.lessons.contactlist.ContactListFragment
 
 
@@ -40,15 +40,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null && readContactsGranted) {
-            showListFragment()
+            navigateToListFragment()
         }
 
         if (intent.getIntExtra("contactId", -1) != -1 && savedInstanceState == null) {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction
+            supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragmentContainer,
-                    DetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
+                    ContactDetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
                 )
                 .addToBackStack("toBirthdayDetails")
                 .commit()
@@ -78,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         if (readContactsGranted) {
-            showListFragment()
+            navigateToListFragment()
         } else {
             Toast.makeText(
                 this,
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showListFragment() {
+    private fun navigateToListFragment() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
             .add(R.id.fragmentContainer, ContactListFragment())

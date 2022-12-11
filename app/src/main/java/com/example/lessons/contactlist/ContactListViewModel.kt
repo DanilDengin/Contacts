@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.lessons.App
 import com.example.lessons.Contact
+import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.repositories.ContactsRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -13,15 +15,20 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
 class ContactListViewModel(context: Context) : ViewModel() {
-    private val contactsRepository = ContactsRepository()
+
+    @Inject
+    lateinit var contactsRepository: ContactsRepository
+
     private val users = MutableLiveData<List<Contact>?>()
     private val compositeDisposable = CompositeDisposable()
     private val progressBarState = MutableLiveData<Boolean>()
 
 
     init {
+        App.appComponent.inject(this)
         loadUsers(context)
     }
 

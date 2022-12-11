@@ -6,33 +6,45 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lessons.App
 import com.example.lessons.MainActivity
 import com.example.lessons.R
-import com.example.lessons.contactdetails.DetailsFragment
+import com.example.lessons.contactdetails.ContactDetailsFragment
 import com.example.lessons.contactlist.adapter.ContactListAdapter
+import com.example.lessons.di.ContactListModule
+import com.example.lessons.di.DaggerContactListComponent
+import javax.inject.Inject
 
 
 class ContactListFragment : Fragment(R.layout.fragment_list) {
 
+
+    @Inject
+    lateinit var contactListViewModelFactory: ContactListViewModelFactory
+
     private val viewModel: ContactListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             this,
-            ContactListViewModelFactory(requireActivity().applicationContext)
+            contactListViewModelFactory
         )[ContactListViewModel::class.java]
     }
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ContactListAdapter { id -> changeFragment(id = id) }
+        ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
     }
     private var progressBar: ProgressBar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val contactListComponent = DaggerContactListComponent.builder()
+            .appComponent(App.appComponent)
+            .contactListModule(ContactListModule())
+            .build()
+        contactListComponent.inject(this)
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
@@ -49,14 +61,14 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         progressBar = requireView().findViewById(R.id.progressBarList)
     }
 
-    private fun changeFragment(id: String?) {
+    private fun navigateToDetailsFragment(id: String?) {
         val transaction = parentFragmentManager.beginTransaction()
         transaction
             .replace(
                 R.id.fragmentContainer,
-                DetailsFragment.newInstance(requireNotNull(id).toInt())
+                ContactDetailsFragment.newInstance(requireNotNull(id).toInt())
             )
-            .addToBackStack("toDetails")
+            .addToBackStack("navigateToDetailsFragment")
             .commit()
     }
 
@@ -82,9 +94,9 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         progressBar?.isVisible = isVisible
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         progressBar = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
 }

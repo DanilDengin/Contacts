@@ -18,18 +18,24 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.lessons.App
 import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
+import com.example.lessons.di.ContactDetailsModule
+import com.example.lessons.di.ContactListModule
+import com.example.lessons.di.DaggerContactDetailsComponent
+import com.example.lessons.di.DaggerContactListComponent
 import com.example.lessons.receivers.BirthdayReceiver
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
 import java.util.GregorianCalendar
 import java.util.StringJoiner
+import javax.inject.Inject
 
 
-class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
+class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     private var contactId: Int = -1
     private var progressBar: ProgressBar? = null
@@ -61,19 +67,20 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             AppCompatActivity.ALARM_SERVICE
         ) as AlarmManager
     }
+
+    @Inject
+    lateinit var contactDetailsViewModelFactory: ContactDetailsViewModelFactory
+
     private val viewModel: ContactDetailsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(
             this,
-            ContactDetailsViewModelFactory(
-                requireArguments().getInt(ARG).toString(),
-                requireActivity().applicationContext
-            )
+            contactDetailsViewModelFactory
         )[ContactDetailsViewModel::class.java]
     }
 
     companion object {
         private const val ARG: String = "arg"
-        fun newInstance(id: Int) = DetailsFragment().apply {
+        fun newInstance(id: Int) = ContactDetailsFragment().apply {
             arguments = bundleOf(
                 ARG to id
             )
@@ -98,6 +105,12 @@ class DetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         birthdaySwitch = requireView().findViewById(R.id.birthdaySwitch)
         val args = requireArguments()
         contactId = args.getInt(ARG)
+        val contactDetailsComponent = DaggerContactDetailsComponent.builder()
+            .appComponent(App.appComponent)
+            .contactDetailsModule(ContactDetailsModule(contactId.toString()))
+            .build()
+        contactDetailsComponent.inject(this)
+
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
