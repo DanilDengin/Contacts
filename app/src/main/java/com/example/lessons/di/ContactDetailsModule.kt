@@ -10,5 +10,6 @@ class ContactDetailsModule(private val contactId: String) {
 
     @ContactDetailsScope
     @Provides
-    fun provideViewModelFactory(context: Context) = ContactDetailsViewModelFactory(contactId,context)
+    fun provideViewModelFactory(context: Context) =
+        ContactDetailsViewModelFactory(contactId, context)
 }

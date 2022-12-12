@@ -10,6 +10,6 @@ class ContactListModule {
 
     @ContactListScope
     @Provides
-    fun provideViewModel(context : Context) = ContactListViewModelFactory(context)
+    fun provideViewModel(context: Context) = ContactListViewModelFactory(context)
 
 }

@@ -23,9 +23,7 @@ import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.di.ContactDetailsModule
-import com.example.lessons.di.ContactListModule
 import com.example.lessons.di.DaggerContactDetailsComponent
-import com.example.lessons.di.DaggerContactListComponent
 import com.example.lessons.receivers.BirthdayReceiver
 import java.text.DecimalFormat
 import java.util.Calendar
