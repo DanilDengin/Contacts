@@ -7,15 +7,14 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/detailsFragment"
+        android:id="@+id/detailsFragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/design_default_color_on_primary"
-        android:clickable="true"
         tools:context="com.example.lessons.contactdetails.DetailsFragment">
 
         <ImageView
-            android:id="@+id/photoImage"
+            android:id="@+id/photoImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -34,8 +33,8 @@
             android:text="Name"
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/photoImage"
-            app:layout_constraintTop_toTopOf="@+id/photoImage" />
+            app:layout_constraintStart_toEndOf="@+id/photoImageView"
+            app:layout_constraintTop_toTopOf="@+id/photoImageView" />
 
         <TextView
             android:id="@+id/birthdayTextView"
@@ -55,15 +54,16 @@
             android:textColor="@color/grey"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/birthdayTextView"
-            app:layout_constraintTop_toBottomOf="@+id/birthdayTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/birthdayTextView"
+            android:clickable="false"/>
 
         <ImageView
-            android:id="@+id/number1Image"
+            android:id="@+id/number1ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="@+id/photoImage"
-            app:layout_constraintTop_toBottomOf="@+id/photoImage"
+            app:layout_constraintStart_toStartOf="@+id/photoImageView"
+            app:layout_constraintTop_toBottomOf="@+id/photoImageView"
             app:srcCompat="@drawable/ic_phone" />
 
         <TextView
@@ -75,15 +75,15 @@
             android:text="Number"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/number1Image"
-            app:layout_constraintStart_toEndOf="@+id/number1Image" />
+            app:layout_constraintBottom_toBottomOf="@+id/number1ImageView"
+            app:layout_constraintStart_toEndOf="@+id/number1ImageView" />
 
         <ImageView
-            android:id="@+id/number2Image"
+            android:id="@+id/number2ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="@+id/number1Image"
+            app:layout_constraintStart_toStartOf="@+id/number1ImageView"
             app:layout_constraintTop_toBottomOf="@+id/number1TextView"
             app:srcCompat="@drawable/ic_phone" />
 
@@ -96,16 +96,16 @@
             android:text="Number2"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/number2Image"
-            app:layout_constraintStart_toEndOf="@+id/number2Image" />
+            app:layout_constraintBottom_toBottomOf="@+id/number2ImageView"
+            app:layout_constraintStart_toEndOf="@+id/number2ImageView" />
 
         <ImageView
-            android:id="@+id/email1Image"
+            android:id="@+id/email1ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="@+id/number2Image"
-            app:layout_constraintTop_toBottomOf="@+id/number2Image"
+            app:layout_constraintStart_toStartOf="@+id/number2ImageView"
+            app:layout_constraintTop_toBottomOf="@+id/number2ImageView"
             app:srcCompat="@drawable/ic_email" />
 
         <TextView
@@ -117,16 +117,16 @@
             android:text="eMail"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/email1Image"
-            app:layout_constraintStart_toEndOf="@+id/email1Image" />
+            app:layout_constraintBottom_toBottomOf="@+id/email1ImageView"
+            app:layout_constraintStart_toEndOf="@+id/email1ImageView" />
 
         <ImageView
-            android:id="@+id/email2Image"
+            android:id="@+id/email2ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="@+id/email1Image"
-            app:layout_constraintTop_toBottomOf="@+id/email1Image"
+            app:layout_constraintStart_toStartOf="@+id/email1ImageView"
+            app:layout_constraintTop_toBottomOf="@+id/email1ImageView"
             app:srcCompat="@drawable/ic_email" />
 
         <TextView
@@ -138,8 +138,8 @@
             android:text="eMail2"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/email2Image"
-            app:layout_constraintStart_toEndOf="@+id/email2Image" />
+            app:layout_constraintBottom_toBottomOf="@+id/email2ImageView"
+            app:layout_constraintStart_toEndOf="@+id/email2ImageView" />
 
         <TextView
             android:id="@+id/descriptionTextView"
@@ -152,7 +152,7 @@
             android:text="Description"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/email2Image"
+            app:layout_constraintStart_toStartOf="@+id/email2ImageView"
             app:layout_constraintTop_toBottomOf="@+id/eMail2TextView" />
 
         <ProgressBar

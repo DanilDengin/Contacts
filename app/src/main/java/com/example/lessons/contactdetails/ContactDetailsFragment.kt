@@ -6,22 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
 import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
+import com.example.lessons.databinding.FragmentDetailsBinding
 import com.example.lessons.di.ContactDetailsModule
 import com.example.lessons.di.DaggerContactDetailsComponent
 import com.example.lessons.receivers.BirthdayReceiver
@@ -35,21 +32,8 @@ import javax.inject.Inject
 
 class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
+    private val binding by viewBinding(FragmentDetailsBinding::bind)
     private var contactId: Int = -1
-    private var progressBar: ProgressBar? = null
-    private var container: ConstraintLayout? = null
-    private var name: TextView? = null
-    private var number1: TextView? = null
-    private var number1Image: ImageView? = null
-    private var number2: TextView? = null
-    private var number2Image: ImageView? = null
-    private var email1: TextView? = null
-    private var email1Image: ImageView? = null
-    private var email2: TextView? = null
-    private var email2Image: ImageView? = null
-    private var description: TextView? = null
-    private var birthday: TextView? = null
-    private var birthdaySwitch: SwitchCompat? = null
     private var birthdayDate: GregorianCalendar? = null
     private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) { Intent("birthdayReceiver") }
     private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
@@ -87,20 +71,6 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressBar = requireView().findViewById(R.id.progressBarDetails)
-        container = requireView().findViewById(R.id.detailsFragment)
-        name = requireView().findViewById(R.id.nameTextView)
-        number1 = requireView().findViewById(R.id.number1TextView)
-        number1Image = requireView().findViewById(R.id.number1Image)
-        number2 = requireView().findViewById(R.id.number2TextView)
-        number2Image = requireView().findViewById(R.id.number2Image)
-        email1 = requireView().findViewById(R.id.eMail1TextView)
-        email1Image = requireView().findViewById(R.id.email1Image)
-        email2 = requireView().findViewById(R.id.eMail2TextView)
-        email2Image = requireView().findViewById(R.id.email2Image)
-        description = requireView().findViewById(R.id.descriptionTextView)
-        birthday = requireView().findViewById(R.id.birthdayTextView)
-        birthdaySwitch = requireView().findViewById(R.id.birthdaySwitch)
         val args = requireArguments()
         contactId = args.getInt(ARG)
         val contactDetailsComponent = DaggerContactDetailsComponent.builder()
@@ -113,10 +83,9 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewModel.getUserDetails().observe(viewLifecycleOwner, ::getDetails)
-        viewModel.getProgressBarState().observe(viewLifecycleOwner, ::setLoadingIndicator)
+        viewModel.user.observe(viewLifecycleOwner, ::getDetails)
+        viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
 
-        birthdaySwitch?.isClickable = false
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(
                 context,
@@ -125,9 +94,9 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
                 PendingIntent.FLAG_NO_CREATE
             ) != null
         ) {
-            birthdaySwitch?.isChecked = true
+            binding.birthdaySwitch.isChecked = true
         }
-        birthdaySwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.birthdaySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 Toast.makeText(
                     context,
@@ -146,31 +115,33 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     override fun getDetails(contactForDetails: Contact) {
+        with(binding) {
+            nameTextView.text = contactForDetails.name
+            number1TextView.text = contactForDetails.number1
+            number2TextView.text = contactForDetails.number2
+            eMail1TextView.text = contactForDetails.email1
+            eMail2TextView.text = contactForDetails.email2
+            number2TextView.isGone = contactForDetails.number2 == null
+            number2ImageView.isGone = contactForDetails.number2 == null
+            eMail1TextView.isGone = contactForDetails.email1 == null
+            email1ImageView.isGone = contactForDetails.email1 == null
+            eMail2TextView.isGone = contactForDetails.email2 == null
+            email2ImageView.isGone = contactForDetails.email2 == null
+            descriptionTextView.text = contactForDetails.description
+        }
         birthdayDate = contactForDetails.birthday
-        name?.text = contactForDetails.name
-        number1?.text = contactForDetails.number1
-        number2?.text = contactForDetails.number2
-        email1?.text = contactForDetails.email1
-        email2?.text = contactForDetails.email2
-        number2?.isGone = contactForDetails.number2 == null
-        number2Image?.isGone = contactForDetails.number2 == null
-        email1?.isGone = contactForDetails.email1 == null
-        email1Image?.isGone = contactForDetails.email1 == null
-        email2?.isGone = contactForDetails.email2 == null
-        email2Image?.isGone = contactForDetails.email2 == null
-        description?.text = contactForDetails.description
         if (birthdayDate != null) {
             val data = StringJoiner(".")
             val format = DecimalFormat("00")
             data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
                 .add(format.format(requireNotNull(birthdayDate).get(Calendar.MONTH) + 1))
                 .add(format.format(birthdayDate?.get(YEAR)))
-            birthday?.text = data.toString()
-            birthdaySwitch?.isClickable = true
+            binding.birthdayTextView.text = data.toString()
+            binding.birthdaySwitch.isClickable = true
             intentBirthday
                 .putExtra(
                     "nameOfContact",
-                    activity?.getString(R.string.notification_text) + name?.text
+                    activity?.getString(R.string.notification_text) + binding.nameTextView.text
                 )
                 .putExtra("contactId", contactId)
         }
@@ -208,25 +179,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     private fun setLoadingIndicator(isVisible: Boolean) {
-        progressBar?.isVisible = isVisible
-        container?.isVisible = isVisible.not()
-    }
-
-    override fun onDestroyView() {
-        progressBar = null
-        container = null
-        name = null
-        number1 = null
-        number1Image = null
-        number2 = null
-        number2Image = null
-        email1 = null
-        email1Image = null
-        email2 = null
-        email2Image = null
-        description = null
-        birthday = null
-        birthdaySwitch = null
-        super.onDestroyView()
+        binding.progressBarDetails.isVisible = isVisible
+        binding.detailsFragmentContainer.isVisible = isVisible.not()
     }
 }

@@ -16,30 +16,27 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
 
     private val contactsRepository = ContactsRepository()
-    private val user = MutableLiveData<Contact>()
+    val user: LiveData<Contact> get() = _user
+    private val _user = MutableLiveData<Contact>()
     private val compositeDisposable = CompositeDisposable()
-    private val progressBarState = MutableLiveData<Boolean>()
+    val progressBarState: LiveData<Boolean> get() = _progressBarState
+    private val _progressBarState = MutableLiveData<Boolean>()
 
     init {
         loadUserDetail(id, context)
     }
 
-    fun getUserDetails(): LiveData<Contact> {
-        return user
-    }
-
-    fun getProgressBarState(): LiveData<Boolean> {
-        return progressBarState
-    }
-
     private fun loadUserDetail(id: String, context: Context) {
         compositeDisposable.add(
-            Single.fromCallable { requireNotNull(contactsRepository.getFullContactDetails(id, context)) }
+            Single.fromCallable {
+                requireNotNull(contactsRepository.getFullContactDetails(id,
+                    context))
+            }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { progressBarState.value = true }
-                .doOnTerminate { progressBarState.value = false }
-                .subscribe({ contact -> user.value = contact },
+                .doOnSubscribe { _progressBarState.value = true }
+                .doOnTerminate { _progressBarState.value = false }
+                .subscribe({ contact -> _user.value = contact },
                     {
                         Toast.makeText(
                             context,

@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lessons.App
 import com.example.lessons.Contact
-import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.repositories.ContactsRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -22,32 +21,26 @@ class ContactListViewModel(context: Context) : ViewModel() {
     @Inject
     lateinit var contactsRepository: ContactsRepository
 
-    private val users = MutableLiveData<List<Contact>?>()
+    val users: LiveData<List<Contact>?> get() = _users
+    private val _users = MutableLiveData<List<Contact>?>()
     private val compositeDisposable = CompositeDisposable()
-    private val progressBarState = MutableLiveData<Boolean>()
-
+    val progressBarState: LiveData<Boolean> get() = _progressBarState
+    private val _progressBarState = MutableLiveData<Boolean>()
 
     init {
         App.appComponent.inject(this)
         loadUsers(context)
     }
 
-    fun getUsers(): LiveData<List<Contact>?> {
-        return users
-    }
-
-    fun getProgressBarState(): LiveData<Boolean> {
-        return progressBarState
-    }
 
     private fun loadUsers(context: Context) {
         compositeDisposable.add(
             Single.fromCallable { contactsRepository.getShortContactsDetails(context) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { progressBarState.value = true }
-                .doOnTerminate { progressBarState.value = false }
-                .subscribe({ contacts -> users.value = contacts },
+                .doOnSubscribe { _progressBarState.value = true }
+                .doOnTerminate { _progressBarState.value = false }
+                .subscribe({ contacts -> _users.value = contacts },
                     {
                         Toast.makeText(
                             context,
@@ -69,7 +62,7 @@ class ContactListViewModel(context: Context) : ViewModel() {
                     .toList()
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { filteredList -> users.value = filteredList }
+                    .subscribe { filteredList -> _users.value = filteredList }
             }
         }
     }

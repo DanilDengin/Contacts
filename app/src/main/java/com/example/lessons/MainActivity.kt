@@ -26,31 +26,13 @@ class MainActivity : AppCompatActivity() {
         createNotificationChannel()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-
-        val hasReadContactPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            readContactsGranted = true
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                requestCodeReadContacts
-            )
-        }
+        checkReadContactPermission()
 
         if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
         }
-
         if (intent.getIntExtra("contactId", -1) != -1 && savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragmentContainer,
-                    ContactDetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
-                )
-                .addToBackStack("toBirthdayDetails")
-                .commit()
+            navigateToBirthdayContact()
         }
     }
 
@@ -65,10 +47,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkReadContactPermission() {
+        val hasReadContactPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            readContactsGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                requestCodeReadContacts
+            )
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == requestCodeReadContacts) {
@@ -91,6 +87,16 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
             .add(R.id.fragmentContainer, ContactListFragment())
+            .commit()
+    }
+
+    private fun navigateToBirthdayContact() {
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                ContactDetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
+            )
+            .addToBackStack("toBirthdayDetails")
             .commit()
     }
 }
