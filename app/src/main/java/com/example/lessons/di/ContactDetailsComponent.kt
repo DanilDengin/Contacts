@@ -1,6 +1,7 @@
 package com.example.lessons.di
 
 import com.example.lessons.contactdetails.ContactDetailsFragment
+import dagger.BindsInstance
 import dagger.Component
 
 @ContactDetailsScope
@@ -10,4 +11,12 @@ import dagger.Component
 )
 interface ContactDetailsComponent {
     fun inject(contactDetailsFragment: ContactDetailsFragment)
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            @BindsInstance contactId: String,
+            appComponent: AppComponent
+        ): ContactDetailsComponent
+    }
 }

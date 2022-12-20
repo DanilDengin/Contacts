@@ -12,14 +12,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
 import com.example.lessons.Contact
 import com.example.lessons.MainActivity
 import com.example.lessons.R
 import com.example.lessons.databinding.FragmentDetailsBinding
-import com.example.lessons.di.ContactDetailsModule
 import com.example.lessons.di.DaggerContactDetailsComponent
 import com.example.lessons.receivers.BirthdayReceiver
 import java.text.DecimalFormat
@@ -53,12 +52,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     @Inject
     lateinit var contactDetailsViewModelFactory: ContactDetailsViewModelFactory
 
-    private val viewModel: ContactDetailsViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            this,
-            contactDetailsViewModelFactory
-        )[ContactDetailsViewModel::class.java]
-    }
+    private val viewModel: ContactDetailsViewModel by viewModels { contactDetailsViewModelFactory }
 
     companion object {
         private const val ARG: String = "arg"
@@ -73,12 +67,9 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         val args = requireArguments()
         contactId = args.getInt(ARG)
-        val contactDetailsComponent = DaggerContactDetailsComponent.builder()
-            .appComponent(App.appComponent)
-            .contactDetailsModule(ContactDetailsModule(contactId.toString()))
-            .build()
+        val contactDetailsComponent = DaggerContactDetailsComponent.factory()
+            .create(contactId.toString(), (requireContext().applicationContext as App).appComponent)
         contactDetailsComponent.inject(this)
-
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
@@ -96,7 +87,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         ) {
             binding.birthdaySwitch.isChecked = true
         }
-        binding.birthdaySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.birthdaySwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Toast.makeText(
                     context,

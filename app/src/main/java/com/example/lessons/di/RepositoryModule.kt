@@ -1,5 +1,6 @@
 package com.example.lessons.di
 
+import android.content.Context
 import com.example.lessons.repositories.ContactsRepository
 import dagger.Module
 import dagger.Provides
@@ -10,5 +11,5 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun providesContactRepository() = ContactsRepository()
+    fun providesContactRepository(context: Context) = ContactsRepository(context)
 }

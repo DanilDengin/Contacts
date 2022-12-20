@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToListFragment() {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction
+        supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainer, ContactListFragment())
             .commit()
     }
@@ -96,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.fragmentContainer,
                 ContactDetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
             )
-            .addToBackStack("toBirthdayDetails")
+            .addToBackStack("BirthdayDetailsFragment")
             .commit()
     }
 }

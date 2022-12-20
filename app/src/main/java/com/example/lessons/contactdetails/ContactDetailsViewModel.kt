@@ -13,9 +13,12 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
+class ContactDetailsViewModel(
+    id: String,
+    context: Context,
+    private val contactsRepository: ContactsRepository
+) : ViewModel() {
 
-    private val contactsRepository = ContactsRepository()
     val user: LiveData<Contact> get() = _user
     private val _user = MutableLiveData<Contact>()
     private val compositeDisposable = CompositeDisposable()
@@ -29,8 +32,7 @@ class ContactDetailsViewModel(id: String, context: Context) : ViewModel() {
     private fun loadUserDetail(id: String, context: Context) {
         compositeDisposable.add(
             Single.fromCallable {
-                requireNotNull(contactsRepository.getFullContactDetails(id,
-                    context))
+                requireNotNull(contactsRepository.getFullContactDetails(id))
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
