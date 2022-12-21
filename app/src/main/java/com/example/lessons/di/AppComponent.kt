@@ -8,10 +8,8 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [AppModule::class, RepositoryModule::class])
+@Component
 interface AppComponent {
-    fun inject(contactsRepository: ContactsRepository)
-
     fun getAppContext(): Context
     fun getContactRepository(): ContactsRepository
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +23,11 @@ import javax.inject.Inject
 
 class ContactListFragment : Fragment(R.layout.fragment_list) {
 
+    private companion object {
+        const val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
+        const val SEARCH_VIEW_HINT = "Search"
+    }
+
     @Inject
     lateinit var contactListViewModelFactory: ContactListViewModelFactory
 
@@ -38,7 +44,7 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val contactListComponent = DaggerContactListComponent.builder()
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
-        contactListComponent.inject(this)
+            .also { it.inject(this) }
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
@@ -48,6 +54,7 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val layoutManager = LinearLayoutManager(context)
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
+        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
@@ -60,22 +67,22 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
                 R.id.fragmentContainer,
                 ContactDetailsFragment.newInstance(requireNotNull(id).toInt())
             )
-            .addToBackStack("ContactDetailsFragment")
+            .addToBackStack(CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
             .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_menu, menu)
         val searchView: SearchView = menu.findItem(R.id.searchView).actionView as SearchView
-        searchView.queryHint = "Search"
+        searchView.queryHint = SEARCH_VIEW_HINT
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                viewModel.filterUsers(query = query, requireContext())
+                viewModel.filterUsers(query = query)
                 return false
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                viewModel.filterUsers(query = query, requireContext())
+                viewModel.filterUsers(query = query)
                 return false
             }
         })
@@ -84,5 +91,15 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     private fun setLoadingIndicator(isVisible: Boolean) {
         binding.progressBarList.isVisible = isVisible
+    }
+
+    private fun showExceptionToast(exceptionState: Boolean) {
+        if (!exceptionState) return
+        Toast.makeText(
+            context,
+            requireContext().getText(R.string.toast_exception),
+            Toast.LENGTH_LONG
+        ).show()
+
     }
 }

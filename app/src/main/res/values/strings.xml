@@ -7,8 +7,9 @@
     <string name="text_birthday">Set a birthday</string>
     <string name="toast_remind_birthday">You will be reminded about birthday</string>
     <string name="toast_cancel_remind">Birthday notification is off</string>
-    <string name="notification_title">Do not forget to congratulate</string>
+    <string name="toast_require_permission">Without permission the app can&#8217;t function properly</string>
+    <string name="notification_title">Don&#8217;t forget to congratulate</string>
     <string name="switch_text">Remind me about birthday</string>
     <string name="notification_text">Today is the birthday of &#160;</string>
-    <string name="exception">Oops, something went wrong! Try to restart the app.</string>
+    <string name="toast_exception">Oops, something went wrong! Try to restart the app.</string>
 </resources>

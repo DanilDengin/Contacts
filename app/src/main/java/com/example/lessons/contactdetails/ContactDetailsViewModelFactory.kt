@@ -1,19 +1,24 @@
 package com.example.lessons.contactdetails
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.lessons.repositories.ContactsRepository
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class ContactDetailsViewModelFactory @Inject constructor(
-    private val id: String,
-    private val context: Context,
+class ContactDetailsViewModelFactory @AssistedInject constructor(
+    @Assisted private val id: String,
     private val contactsRepository: ContactsRepository
 ) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ContactDetailsViewModel(id, context, contactsRepository) as T
+        return ContactDetailsViewModel(id, contactsRepository) as T
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(contactId: String): ContactDetailsViewModelFactory
     }
 }

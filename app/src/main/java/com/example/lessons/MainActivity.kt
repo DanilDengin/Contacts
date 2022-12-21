@@ -18,6 +18,12 @@ import com.example.lessons.contactlist.ContactListFragment
 
 class MainActivity : AppCompatActivity() {
 
+    private companion object {
+        const val BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
+        const val BIRTHDAY_INTENT_KEY = "contactId"
+        const val NOTIFICATION_CHANNEL_ID = "Birthday"
+    }
+
     private val requestCodeReadContacts = 1
     private var readContactsGranted = false
 
@@ -31,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
         }
-        if (intent.getIntExtra("contactId", -1) != -1 && savedInstanceState == null) {
+        if (intent.getIntExtra(BIRTHDAY_INTENT_KEY, -1) != -1 && savedInstanceState == null) {
             navigateToBirthdayContact()
         }
     }
@@ -40,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.notification_channel)
             val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("Birthday", name, importance)
+            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance)
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -64,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == requestCodeReadContacts) {
@@ -77,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(
                 this,
-                "Without permission the app can't function properly",
+                getString(R.string.toast_require_permission),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -93,9 +99,9 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                ContactDetailsFragment.newInstance(intent.getIntExtra("contactId", -1))
+                ContactDetailsFragment.newInstance(intent.getIntExtra(BIRTHDAY_INTENT_KEY, -1))
             )
-            .addToBackStack("BirthdayDetailsFragment")
+            .addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
             .commit()
     }
 }

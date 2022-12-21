@@ -5,10 +5,7 @@ import dagger.Component
 
 
 @ContactListScope
-@Component(
-    dependencies = [AppComponent::class],
-    modules = [ContactListModule::class]
-)
+@Component(dependencies = [AppComponent::class])
 interface ContactListComponent {
     fun inject(contactListFragment: ContactListFragment)
 }

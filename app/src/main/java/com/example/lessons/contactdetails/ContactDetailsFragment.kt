@@ -50,11 +50,17 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     @Inject
-    lateinit var contactDetailsViewModelFactory: ContactDetailsViewModelFactory
+    lateinit var contactDetailsViewModelFactory: ContactDetailsViewModelFactory.Factory
 
-    private val viewModel: ContactDetailsViewModel by viewModels { contactDetailsViewModelFactory }
+    private val viewModel: ContactDetailsViewModel by viewModels {
+        contactDetailsViewModelFactory.create(
+            contactId.toString()
+        )
+    }
 
     companion object {
+        private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
+        private const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
         private const val ARG: String = "arg"
         fun newInstance(id: Int) = ContactDetailsFragment().apply {
             arguments = bundleOf(
@@ -67,15 +73,17 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         val args = requireArguments()
         contactId = args.getInt(ARG)
-        val contactDetailsComponent = DaggerContactDetailsComponent.factory()
-            .create(contactId.toString(), (requireContext().applicationContext as App).appComponent)
-        contactDetailsComponent.inject(this)
+        val contactDetailsComponent = DaggerContactDetailsComponent.builder()
+            .appComponent((requireContext().applicationContext as App).appComponent)
+            .build()
+            .also { it.inject(this) }
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.user.observe(viewLifecycleOwner, ::getDetails)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
+        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
 
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(
@@ -131,10 +139,10 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             binding.birthdaySwitch.isClickable = true
             intentBirthday
                 .putExtra(
-                    "nameOfContact",
+                    BIRTHDAY_CONTACT_NAME_INTENT_KEY,
                     activity?.getString(R.string.notification_text) + binding.nameTextView.text
                 )
-                .putExtra("contactId", contactId)
+                .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
         }
     }
 
@@ -172,5 +180,14 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     private fun setLoadingIndicator(isVisible: Boolean) {
         binding.progressBarDetails.isVisible = isVisible
         binding.detailsFragmentContainer.isVisible = isVisible.not()
+    }
+
+    private fun showExceptionToast(exceptionState: Boolean) {
+        if (!exceptionState) return
+        Toast.makeText(
+            context,
+            requireContext().getText(R.string.toast_exception),
+            Toast.LENGTH_LONG
+        ).show()
     }
 }
