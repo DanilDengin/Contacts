@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lessons.Contact
+import com.example.lessons.SingleLiveEvent
 import com.example.lessons.repositories.ContactsRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -24,12 +25,13 @@ class ContactDetailsViewModel @AssistedInject constructor(
     private val compositeDisposable = CompositeDisposable()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _exceptionState = MutableLiveData<Unit>()
+    private val exceptionState = SingleLiveEvent<Unit>()
 
     init {
         loadUserDetail(id)
     }
+
+    fun getExceptionState() = exceptionState
 
     private fun loadUserDetail(id: String) {
         compositeDisposable.add(
@@ -41,7 +43,7 @@ class ContactDetailsViewModel @AssistedInject constructor(
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contact -> _user.value = contact },
-                    { _exceptionState.value = Unit })
+                    { exceptionState.value = Unit })
         )
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lessons.Contact
+import com.example.lessons.SingleLiveEvent
 import com.example.lessons.repositories.ContactsRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -21,12 +22,14 @@ class ContactListViewModel @Inject constructor(
     private val _users = MutableLiveData<List<Contact>?>()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _exceptionState = MutableLiveData<Unit>()
+    private val exceptionState = SingleLiveEvent<Unit>()
+
 
     init {
         loadUsers()
     }
+
+    fun getExceptionState() = exceptionState
 
     private fun loadUsers() {
         compositeDisposable.add(
@@ -36,7 +39,7 @@ class ContactListViewModel @Inject constructor(
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contacts -> _users.value = contacts },
-                    { _exceptionState.value = Unit })
+                    { exceptionState.value = Unit })
         )
     }
 

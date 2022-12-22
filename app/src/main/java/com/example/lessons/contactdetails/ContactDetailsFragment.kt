@@ -28,6 +28,7 @@ import java.util.Calendar.YEAR
 import java.util.GregorianCalendar
 import java.util.StringJoiner
 import javax.inject.Inject
+import javax.inject.Provider
 
 
 class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
@@ -51,11 +52,11 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     @Inject
-    lateinit var factory: ContactDetailsViewModel.Factory
+    lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
 
-    private val injectedViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
         this.viewModel {
-            factory.create(
+            viewModelFactoryProvider.get().create(
                 contactId.toString()
             )
         }
@@ -82,15 +83,16 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Provider<ContactDetailsViewModel>{viewModel}
         val args = requireArguments()
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        injectedViewModel.user.observe(viewLifecycleOwner, ::getDetails)
-        injectedViewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        injectedViewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
+        viewModel.user.observe(viewLifecycleOwner, ::getDetails)
+        viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
+        viewModel.getExceptionState().observe(viewLifecycleOwner) { showExceptionToast() }
 
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(

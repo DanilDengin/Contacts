@@ -21,6 +21,7 @@ import com.example.lessons.databinding.FragmentListBinding
 import com.example.lessons.di.DaggerContactListComponent
 import com.example.lessons.viewModel
 import javax.inject.Inject
+import javax.inject.Provider
 
 class ContactListFragment : Fragment(R.layout.fragment_list) {
 
@@ -32,12 +33,12 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val binding by viewBinding(FragmentListBinding::bind)
 
     @Inject
-    lateinit var viewModel: ContactListViewModel
+    lateinit var viewModelProvider: Provider<ContactListViewModel>
 
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
     }
-    private val injectedViewModel by lazy(LazyThreadSafetyMode.NONE) { this.viewModel { viewModel } }
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) { this.viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,9 +57,9 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val horizontalISpaceItemDecorator = ContactListItemDecorator()
         val layoutManager = LinearLayoutManager(context)
-        injectedViewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
-        injectedViewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        injectedViewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
+        viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
+        viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
+        viewModel.getExceptionState().observe(viewLifecycleOwner) { showExceptionToast() }
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
