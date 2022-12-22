@@ -2,6 +2,7 @@ package com.example.lessons.contactdetails
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -27,7 +28,6 @@ import java.util.Calendar.YEAR
 import java.util.GregorianCalendar
 import java.util.StringJoiner
 import javax.inject.Inject
-import javax.inject.Provider
 
 
 class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
@@ -53,6 +53,14 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     @Inject
     lateinit var factory: ContactDetailsViewModel.Factory
 
+    private val injectedViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        this.viewModel {
+            factory.create(
+                contactId.toString()
+            )
+        }
+    }
+
     companion object {
         private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
         private const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
@@ -64,22 +72,25 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val args = requireArguments()
-        contactId = args.getInt(ARG)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         val contactDetailsComponent = DaggerContactDetailsComponent.builder()
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
             .also { it.inject(this) }
-        val viewModel = this.viewModel { factory.create(contactId.toString()) }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val args = requireArguments()
+        contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewModel.user.observe(viewLifecycleOwner, ::getDetails)
-        viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
+        injectedViewModel.user.observe(viewLifecycleOwner, ::getDetails)
+        injectedViewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
+        injectedViewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
 
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(
@@ -178,7 +189,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         binding.detailsFragmentContainer.isVisible = isVisible.not()
     }
 
-    private fun showExceptionToast(unit: Unit) {
+    private fun showExceptionToast() {
         val contextNotNull = requireContext()
         Toast.makeText(
             contextNotNull,
