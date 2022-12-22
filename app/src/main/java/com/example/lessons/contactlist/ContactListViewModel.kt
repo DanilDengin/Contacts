@@ -4,27 +4,35 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lessons.Contact
+import com.example.lessons.Event
 import com.example.lessons.repositories.ContactsRepository
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class ContactListViewModel(private val contactsRepository: ContactsRepository) : ViewModel() {
+class ContactListViewModel @Inject constructor(private val contactsRepository: ContactsRepository) :
+    ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
     val users: LiveData<List<Contact>?> get() = _users
     private val _users = MutableLiveData<List<Contact>?>()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    val exceptionState: LiveData<Boolean> get() = _exceptionState
-    private val _exceptionState = MutableLiveData<Boolean>()
-
+    val exceptionState: LiveData<Event<Unit>> get() = _exceptionState
+    private val _exceptionState = MutableLiveData<Event<Unit>>()
+//    private val onCreateLiveData: MutableLiveData<Event<String>> = MutableLiveData()
+//
+//    fun observeOnCreateEvent(): LiveData<Event<String>> = onCreateLiveData
+//
+//    fun onCreateCollectionClick(message: String) {
+//        this.onCreateLiveData.value = Event(message)
+//    }
     init {
         loadUsers()
     }
-
 
     private fun loadUsers() {
         compositeDisposable.add(
@@ -34,7 +42,7 @@ class ContactListViewModel(private val contactsRepository: ContactsRepository) :
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contacts -> _users.value = contacts },
-                    { _exceptionState.value = true })
+                    { _exceptionState.value = Event(Unit) })
         )
     }
 

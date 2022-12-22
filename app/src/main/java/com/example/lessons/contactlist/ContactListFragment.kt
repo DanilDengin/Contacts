@@ -9,6 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -19,6 +20,8 @@ import com.example.lessons.contactdetails.ContactDetailsFragment
 import com.example.lessons.contactlist.adapter.ContactListAdapter
 import com.example.lessons.databinding.FragmentListBinding
 import com.example.lessons.di.DaggerContactListComponent
+import com.example.lessons.repositories.ContactsRepository
+import com.example.lessons.viewModel
 import javax.inject.Inject
 
 class ContactListFragment : Fragment(R.layout.fragment_list) {
@@ -28,12 +31,10 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         const val SEARCH_VIEW_HINT = "Search"
     }
 
-    @Inject
-    lateinit var contactListViewModelFactory: ContactListViewModelFactory
-
     private val binding by viewBinding(FragmentListBinding::bind)
 
-    private val viewModel: ContactListViewModel by viewModels { contactListViewModelFactory }
+    @Inject
+    lateinit var viewModel: ContactListViewModel
 
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
@@ -45,16 +46,21 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
             .also { it.inject(this) }
+        this.viewModel{viewModel}
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        val recyclerView: RecyclerView = requireView().findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val horizontalISpaceItemDecorator = ContactListItemDecorator()
         val layoutManager = LinearLayoutManager(context)
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
+        viewModel.exceptionState.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let { // Only proceed if the event has never been handled
+                showExceptionToast(it)
+            }
+        })
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
@@ -93,13 +99,12 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         binding.progressBarList.isVisible = isVisible
     }
 
-    private fun showExceptionToast(exceptionState: Boolean) {
-        if (!exceptionState) return
+    private fun showExceptionToast(unit: Unit) {
+        val contextNotNull = requireContext()
         Toast.makeText(
-            context,
-            requireContext().getText(R.string.toast_exception),
+            contextNotNull,
+            contextNotNull.getText(R.string.toast_exception),
             Toast.LENGTH_LONG
         ).show()
-
     }
 }

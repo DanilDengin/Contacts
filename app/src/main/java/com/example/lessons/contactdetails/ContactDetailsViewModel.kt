@@ -5,13 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.lessons.Contact
 import com.example.lessons.repositories.ContactsRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class ContactDetailsViewModel(
-    id: String,
+class ContactDetailsViewModel @AssistedInject constructor(
+    @Assisted id: String,
     private val contactsRepository: ContactsRepository
 ) : ViewModel() {
 
@@ -20,8 +24,8 @@ class ContactDetailsViewModel(
     private val compositeDisposable = CompositeDisposable()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    val exceptionState: LiveData<Boolean> get() = _exceptionState
-    private val _exceptionState = MutableLiveData<Boolean>()
+    val exceptionState: LiveData<Unit> get() = _exceptionState
+    private val _exceptionState = MutableLiveData<Unit>()
 
     init {
         loadUserDetail(id)
@@ -37,8 +41,13 @@ class ContactDetailsViewModel(
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contact -> _user.value = contact },
-                    { _exceptionState.value = true })
+                    { _exceptionState.value = Unit })
         )
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(@Assisted contactId: String): ContactDetailsViewModel
     }
 
     override fun onCleared() {

@@ -12,7 +12,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
 import com.example.lessons.Contact
@@ -21,12 +20,14 @@ import com.example.lessons.R
 import com.example.lessons.databinding.FragmentDetailsBinding
 import com.example.lessons.di.DaggerContactDetailsComponent
 import com.example.lessons.receivers.BirthdayReceiver
+import com.example.lessons.viewModel
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
 import java.util.GregorianCalendar
 import java.util.StringJoiner
 import javax.inject.Inject
+import javax.inject.Provider
 
 
 class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
@@ -50,13 +51,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     @Inject
-    lateinit var contactDetailsViewModelFactory: ContactDetailsViewModelFactory.Factory
-
-    private val viewModel: ContactDetailsViewModel by viewModels {
-        contactDetailsViewModelFactory.create(
-            contactId.toString()
-        )
-    }
+    lateinit var factory: ContactDetailsViewModel.Factory
 
     companion object {
         private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
@@ -77,6 +72,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
             .also { it.inject(this) }
+        val viewModel = this.viewModel { factory.create(contactId.toString()) }
         val mainActivity: MainActivity = activity as MainActivity
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
@@ -182,11 +178,11 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         binding.detailsFragmentContainer.isVisible = isVisible.not()
     }
 
-    private fun showExceptionToast(exceptionState: Boolean) {
-        if (!exceptionState) return
+    private fun showExceptionToast(unit: Unit) {
+        val contextNotNull = requireContext()
         Toast.makeText(
-            context,
-            requireContext().getText(R.string.toast_exception),
+            contextNotNull,
+            contextNotNull.getText(R.string.toast_exception),
             Toast.LENGTH_LONG
         ).show()
     }
