@@ -59,7 +59,7 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val layoutManager = LinearLayoutManager(context)
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        viewModel.getExceptionState().observe(viewLifecycleOwner) { showExceptionToast() }
+        viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
         recyclerView.adapter = contactsListAdapter
         layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager

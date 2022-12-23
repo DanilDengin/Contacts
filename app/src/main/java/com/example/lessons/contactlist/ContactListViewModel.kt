@@ -22,15 +22,12 @@ class ContactListViewModel @Inject constructor(
     private val _users = MutableLiveData<List<Contact>?>()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    private val exceptionState = SingleLiveEvent<Unit>()
+    val exceptionState : LiveData<Unit> get() = _exceptionState
+    private val _exceptionState = SingleLiveEvent<Unit>()
 
 
     init {
         loadUsers()
-    }
-
-    fun getExceptionState(): SingleLiveEvent<Unit> {
-        return exceptionState
     }
 
     private fun loadUsers() {
@@ -41,7 +38,7 @@ class ContactListViewModel @Inject constructor(
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contacts -> _users.value = contacts },
-                    { exceptionState.value = Unit })
+                    { _exceptionState.value = Unit })
         )
     }
 

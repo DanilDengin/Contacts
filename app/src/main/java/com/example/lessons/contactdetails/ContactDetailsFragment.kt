@@ -89,7 +89,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.user.observe(viewLifecycleOwner, ::getDetails)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        viewModel.getExceptionState().observe(viewLifecycleOwner) { showExceptionToast() }
+        viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
 
         intentBirthday.setClass(requireContext(), BirthdayReceiver::class.java)
         if (PendingIntent.getBroadcast(

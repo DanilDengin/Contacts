@@ -24,14 +24,11 @@ class ContactDetailsViewModel @AssistedInject constructor(
     private val compositeDisposable = CompositeDisposable()
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     private val _progressBarState = MutableLiveData<Boolean>()
-    private val exceptionState = SingleLiveEvent<Unit>()
+    val exceptionState : LiveData<Unit> get() = _exceptionState
+    private val _exceptionState = SingleLiveEvent<Unit>()
 
     init {
         loadUserDetail(id)
-    }
-
-    fun getExceptionState(): SingleLiveEvent<Unit> {
-        return exceptionState
     }
 
     private fun loadUserDetail(id: String) {
@@ -42,7 +39,7 @@ class ContactDetailsViewModel @AssistedInject constructor(
                 .doOnSubscribe { _progressBarState.value = true }
                 .doOnTerminate { _progressBarState.value = false }
                 .subscribe({ contact -> _user.value = contact },
-                    { exceptionState.value = Unit })
+                    { _exceptionState.value = Unit })
         )
     }
 
