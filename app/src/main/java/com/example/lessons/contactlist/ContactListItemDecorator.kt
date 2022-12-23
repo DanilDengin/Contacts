@@ -21,9 +21,9 @@ class ContactListItemDecorator : RecyclerView.ItemDecoration() {
     ) {
         val childAdapterPosition = parent.getChildAdapterPosition(view)
             .let { if (it == RecyclerView.NO_POSITION) return else it }
-        val parentAdapterCount = parent.adapter?.itemCount?.minus(1) ?: -1
+        val parentAdapterItemCount = parent.adapter?.itemCount?.minus(1) ?: -1
         outRect.bottom =
-            if (childAdapterPosition != parentAdapterCount) {
+            if (childAdapterPosition != parentAdapterItemCount) {
                 spaceDp
             } else {
                 0

@@ -55,10 +55,8 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        this.viewModel {
-            viewModelFactoryProvider.get().create(
-                contactId.toString()
-            )
+        viewModel {
+            viewModelFactoryProvider.get().create(contactId.toString())
         }
     }
 
@@ -75,7 +73,7 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val contactDetailsComponent = DaggerContactDetailsComponent.builder()
+        DaggerContactDetailsComponent.builder()
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
             .also { it.inject(this) }
@@ -83,7 +81,6 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Provider<ContactDetailsViewModel>{viewModel}
         val args = requireArguments()
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity

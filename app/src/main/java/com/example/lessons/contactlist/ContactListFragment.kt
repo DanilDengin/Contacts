@@ -38,11 +38,11 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
     }
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) { this.viewModel { viewModelProvider.get() } }
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val contactListComponent = DaggerContactListComponent.builder()
+        DaggerContactListComponent.builder()
             .appComponent((requireContext().applicationContext as App).appComponent)
             .build()
             .also { it.inject(this) }

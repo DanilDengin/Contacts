@@ -29,7 +29,9 @@ class ContactListViewModel @Inject constructor(
         loadUsers()
     }
 
-    fun getExceptionState() = exceptionState
+    fun getExceptionState(): SingleLiveEvent<Unit> {
+        return exceptionState
+    }
 
     private fun loadUsers() {
         compositeDisposable.add(

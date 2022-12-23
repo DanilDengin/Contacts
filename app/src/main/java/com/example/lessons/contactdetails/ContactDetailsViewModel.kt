@@ -13,7 +13,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import javax.inject.Inject
 
 class ContactDetailsViewModel @AssistedInject constructor(
     @Assisted id: String,
@@ -31,13 +30,13 @@ class ContactDetailsViewModel @AssistedInject constructor(
         loadUserDetail(id)
     }
 
-    fun getExceptionState() = exceptionState
+    fun getExceptionState(): SingleLiveEvent<Unit> {
+        return exceptionState
+    }
 
     private fun loadUserDetail(id: String) {
         compositeDisposable.add(
-            Single.fromCallable {
-                requireNotNull(contactsRepository.getFullContactDetails(id))
-            }
+            Single.fromCallable { requireNotNull(contactsRepository.getFullContactDetails(id)) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { _progressBarState.value = true }
