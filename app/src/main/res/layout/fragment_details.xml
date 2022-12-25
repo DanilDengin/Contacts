@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_on_primary"
-        tools:context="com.example.lessons.contactdetails.DetailsFragment">
+        tools:context=".presentation.contactdetailsfragment.DetailsFragment">
 
         <ImageView
             android:id="@+id/photoImageView"

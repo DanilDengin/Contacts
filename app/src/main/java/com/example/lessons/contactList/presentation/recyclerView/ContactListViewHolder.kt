@@ -1,9 +1,9 @@
-package com.example.lessons.contactlist
+package com.example.lessons.contactList.presentation.recyclerView
 
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lessons.Contact
+import com.example.lessons.domain.contacts.entity.Contact
 import com.example.lessons.R
 
 class ContactListViewHolder(itemView: View, navigateToContactDetailsById: (String) -> Unit) :

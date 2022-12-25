@@ -1,17 +1,19 @@
-package com.example.lessons.repositories
+package com.example.lessons.data.contacts.repository
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.example.lessons.Contact
+import com.example.lessons.domain.contacts.entity.Contact
+import com.example.lessons.domain.contacts.repository.ContactsRepository
 import java.sql.Date
 import java.util.GregorianCalendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ContactsRepository @Inject constructor(private val context: Context) {
+class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
+    ContactsRepository {
 
-    fun getShortContactsDetails(): List<Contact> {
+    override fun getShortContactsDetails(): List<Contact> {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
@@ -45,7 +47,7 @@ class ContactsRepository @Inject constructor(private val context: Context) {
         return contacts
     }
 
-    fun getFullContactDetails(id: String): Contact? {
+    override fun getFullContactDetails(id: String): Contact? {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME

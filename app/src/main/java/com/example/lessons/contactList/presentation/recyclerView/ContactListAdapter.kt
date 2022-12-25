@@ -1,12 +1,11 @@
-package com.example.lessons.contactlist.adapter
+package com.example.lessons.contactList.presentation.recyclerView
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.lessons.Contact
+import com.example.lessons.domain.contacts.entity.Contact
 import com.example.lessons.R
-import com.example.lessons.contactlist.ContactListViewHolder
 
 class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
     ListAdapter<Contact, ContactListViewHolder>(DiffCallback()) {

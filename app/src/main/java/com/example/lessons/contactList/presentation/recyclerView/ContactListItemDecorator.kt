@@ -1,4 +1,4 @@
-package com.example.lessons.contactlist
+package com.example.lessons.contactList.presentation.recyclerView
 
 import android.content.res.Resources
 import android.graphics.Rect

@@ -1,6 +1,7 @@
-package com.example.lessons.di
+package com.example.lessons.contactList.di
 
-import com.example.lessons.contactlist.ContactListFragment
+import com.example.lessons.contactList.presentation.ContactListFragment
+import com.example.lessons.di.AppComponent
 import dagger.Component
 
 

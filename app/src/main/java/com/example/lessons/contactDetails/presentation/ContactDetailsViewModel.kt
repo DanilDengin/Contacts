@@ -1,11 +1,11 @@
-package com.example.lessons.contactdetails
+package com.example.lessons.contactDetails.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.lessons.Contact
-import com.example.lessons.SingleLiveEvent
-import com.example.lessons.repositories.ContactsRepository
+import com.example.lessons.domain.contacts.entity.Contact
+import com.example.lessons.utils.liveData.SingleLiveEvent
+import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -16,7 +16,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 class ContactDetailsViewModel @AssistedInject constructor(
     @Assisted id: String,
-    private val contactsRepository: ContactsRepository
+    private val contactsRepository: ContactsRepositoryImpl
 ) : ViewModel() {
 
     val user: LiveData<Contact> get() = _user

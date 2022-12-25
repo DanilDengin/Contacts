@@ -1,4 +1,4 @@
-package com.example.lessons.receivers
+package com.example.lessons.contactDetails.presentation
 
 import android.app.AlarmManager
 import android.app.NotificationManager
@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import com.example.lessons.MainActivity
+import com.example.lessons.presentation.MainActivity
 import com.example.lessons.R
 import java.util.Calendar
 

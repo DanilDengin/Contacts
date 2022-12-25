@@ -1,6 +1,7 @@
-package com.example.lessons.di
+package com.example.lessons.contactDetails.di
 
-import com.example.lessons.contactdetails.ContactDetailsFragment
+import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
+import com.example.lessons.di.AppComponent
 import dagger.Component
 
 @ContactDetailsScope

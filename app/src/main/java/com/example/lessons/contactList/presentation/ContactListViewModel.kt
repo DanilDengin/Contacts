@@ -1,11 +1,11 @@
-package com.example.lessons.contactlist
+package com.example.lessons.contactList.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.lessons.Contact
-import com.example.lessons.SingleLiveEvent
-import com.example.lessons.repositories.ContactsRepository
+import com.example.lessons.domain.contacts.entity.Contact
+import com.example.lessons.utils.liveData.SingleLiveEvent
+import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class ContactListViewModel @Inject constructor(
-    private val contactsRepository: ContactsRepository
+    private val contactsRepository: ContactsRepositoryImpl
 ) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()

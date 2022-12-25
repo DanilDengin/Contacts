@@ -1,4 +1,4 @@
-package com.example.lessons
+package com.example.lessons.presentation
 
 
 import android.Manifest
@@ -12,8 +12,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.lessons.contactdetails.ContactDetailsFragment
-import com.example.lessons.contactlist.ContactListFragment
+import com.example.lessons.R
+import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
+import com.example.lessons.contactList.presentation.ContactListFragment
 
 
 class MainActivity : AppCompatActivity() {

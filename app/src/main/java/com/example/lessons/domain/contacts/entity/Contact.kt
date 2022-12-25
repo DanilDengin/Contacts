@@ -1,4 +1,4 @@
-package com.example.lessons
+package com.example.lessons.domain.contacts.entity
 
 import java.util.GregorianCalendar
 

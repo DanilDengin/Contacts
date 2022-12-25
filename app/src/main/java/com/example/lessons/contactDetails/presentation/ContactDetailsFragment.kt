@@ -1,4 +1,4 @@
-package com.example.lessons.contactdetails
+package com.example.lessons.contactDetails.presentation
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -15,13 +15,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
-import com.example.lessons.Contact
-import com.example.lessons.MainActivity
+import com.example.lessons.domain.contacts.entity.Contact
+import com.example.lessons.presentation.MainActivity
 import com.example.lessons.R
 import com.example.lessons.databinding.FragmentDetailsBinding
 import com.example.lessons.di.DaggerContactDetailsComponent
-import com.example.lessons.receivers.BirthdayReceiver
-import com.example.lessons.viewModel
+import com.example.lessons.utils.viewModel
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Calendar.YEAR
