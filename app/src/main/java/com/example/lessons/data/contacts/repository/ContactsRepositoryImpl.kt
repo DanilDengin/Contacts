@@ -8,12 +8,14 @@ import java.sql.Date
 import java.util.GregorianCalendar
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Singleton
 class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
     ContactsRepository {
 
-    override fun getShortContactsDetails(): List<Contact> {
+    override suspend fun getShortContactsDetails(): List<Contact> {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
@@ -22,24 +24,26 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
             contentUri, null,
             null, null, "$displayName ASC"
         )
-
-        cursor.use {
-            if (cursor != null) {
-                if (cursor.count > 0) {
-                    while (cursor.moveToNext()) {
-                        val id: String = cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
-                        val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
-                        val numbers: List<String> = getNumbers(id)
-                        if (numbers.isEmpty()) {
-                            continue
+        withContext(Dispatchers.IO) {
+            cursor.use {
+                if (cursor != null) {
+                    if (cursor.count > 0) {
+                        while (cursor.moveToNext()) {
+                            val id: String =
+                                cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
+                            val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
+                            val numbers: List<String> = getNumbers(id)
+                            if (numbers.isEmpty()) {
+                                continue
+                            }
+                            val contact =
+                                Contact(
+                                    name = name,
+                                    number1 = numbers[0],
+                                    id = id
+                                )
+                            contacts.add(contact)
                         }
-                        val contact =
-                            Contact(
-                                name = name,
-                                number1 = numbers[0],
-                                id = id
-                            )
-                        contacts.add(contact)
                     }
                 }
             }
@@ -47,7 +51,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         return contacts
     }
 
-    override fun getFullContactDetails(id: String): Contact? {
+    override suspend fun getFullContactDetails(id: String): Contact? {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
@@ -56,35 +60,36 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
             contentUri, null,
             "$idColumn = $id", null, null
         )
-
-        cursor.use {
-            if (cursor != null) {
-                cursor.moveToNext()
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
-                val numbers = getNumbers(id)
-                val email = getEmail(id)
-                val birthday = getBirthday(id)
-                when {
-                    numbers.size == 1 -> {
-                        contact = Contact(
-                            name = name,
-                            number1 = numbers[0],
-                            email1 = email[0],
-                            email2 = email[1],
-                            birthday = birthday,
-                            id = id
-                        )
-                    }
-                    numbers.size > 1 -> {
-                        contact = Contact(
-                            name = name,
-                            number1 = numbers[0],
-                            number2 = numbers[1],
-                            email1 = email[0],
-                            email2 = email[1],
-                            birthday = birthday,
-                            id = id
-                        )
+        withContext(Dispatchers.IO) {
+            cursor.use {
+                if (cursor != null) {
+                    cursor.moveToNext()
+                    val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
+                    val numbers = getNumbers(id)
+                    val email = getEmail(id)
+                    val birthday = getBirthday(id)
+                    when {
+                        numbers.size == 1 -> {
+                            contact = Contact(
+                                name = name,
+                                number1 = numbers[0],
+                                email1 = email[0],
+                                email2 = email[1],
+                                birthday = birthday,
+                                id = id
+                            )
+                        }
+                        numbers.size > 1 -> {
+                            contact = Contact(
+                                name = name,
+                                number1 = numbers[0],
+                                number2 = numbers[1],
+                                email1 = email[0],
+                                email2 = email[1],
+                                birthday = birthday,
+                                id = id
+                            )
+                        }
                     }
                 }
             }

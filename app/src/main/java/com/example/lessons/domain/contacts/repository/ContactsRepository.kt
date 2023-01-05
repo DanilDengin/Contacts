@@ -4,7 +4,7 @@ import com.example.lessons.domain.contacts.entity.Contact
 
 interface ContactsRepository {
 
-    fun getShortContactsDetails(): List<Contact>
+    suspend fun getShortContactsDetails(): List<Contact>
 
-    fun getFullContactDetails(id: String): Contact?
+    suspend fun getFullContactDetails(id: String): Contact?
 }

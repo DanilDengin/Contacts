@@ -13,13 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
-import com.example.lessons.presentation.MainActivity
 import com.example.lessons.R
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
+import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
 import com.example.lessons.databinding.FragmentListBinding
-import com.example.lessons.di.DaggerContactListComponent
+import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.viewModel
 import javax.inject.Inject
 import javax.inject.Provider

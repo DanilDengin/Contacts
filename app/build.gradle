@@ -37,6 +37,11 @@ android {
 dependencies {
     implementation "androidx.appcompat:appcompat:1.5.1"
 
+    //Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
     //RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.1.5"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'

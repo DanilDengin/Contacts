@@ -15,11 +15,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.App
+import com.example.lessons.R
+import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
+import com.example.lessons.databinding.FragmentDetailsBinding
 import com.example.lessons.domain.contacts.entity.Contact
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.R
-import com.example.lessons.databinding.FragmentDetailsBinding
-import com.example.lessons.di.DaggerContactDetailsComponent
 import com.example.lessons.utils.viewModel
 import java.text.DecimalFormat
 import java.util.Calendar
