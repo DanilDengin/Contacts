@@ -1,0 +1,3 @@
+package com.example.lessons.contactList.di
+
+interface ContactListComponentDependencies

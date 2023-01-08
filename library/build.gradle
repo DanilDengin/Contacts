@@ -1,24 +1,24 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
 
 android {
-    compileSdk 33
+    namespace 'com.example.library'
+    compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.lessons"
         minSdk 24
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -35,8 +35,8 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':library')
-    implementation "androidx.appcompat:appcompat:1.5.1"
+    implementation project(path: ':kotlin')
+//    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     //Dagger 2
     implementation 'com.google.dagger:dagger:2.44.2'
@@ -68,5 +68,4 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-
 }
