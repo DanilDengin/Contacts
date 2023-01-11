@@ -5,22 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
-import com.example.lessons.utils.liveData.SingleLiveEvent
+import com.example.lessons.contacts.domain.contactList.useCases.ContactListUseCase
 import com.example.lessons.contacts.domain.entity.Contact
+import com.example.lessons.utils.liveData.SingleLiveEvent
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class ContactListViewModel @Inject constructor(
-    private val contactsRepository: ContactsRepositoryImpl
+
+internal class ContactListViewModel @Inject constructor(
+    private val contactListUseCase: ContactListUseCase
 ) : ViewModel() {
-
-    private companion object {
-        val CONTACT_LIST_VIEW_MODEL_TAG: String = ContactListViewModel::class.java.simpleName
-    }
 
     val users: LiveData<List<Contact>?> get() = _users
     val progressBarState: LiveData<Boolean> get() = _progressBarState
@@ -41,27 +36,19 @@ class ContactListViewModel @Inject constructor(
     private fun loadUsers() {
         viewModelScope.launch(coroutineExceptionHandler) {
             _progressBarState.value = true
-            _users.value = contactsRepository.getShortContactsDetails()
+            _users.value = contactListUseCase.getContactList()
             _progressBarState.value = false
         }
     }
 
-    fun filterUsers(query: String?) {
-        if (query == null || query.isBlank()) {
-            loadUsers()
-        } else {
-            viewModelScope.launch {
-                val filteredList = ArrayList<Contact>()
-                withContext(Dispatchers.Default) {
-                    val trimmedQuery = query.trim()
-                    users.value?.forEach { user ->
-                        if (user.name.contains(trimmedQuery, ignoreCase = true)) {
-                            filteredList.add(user)
-                        }
-                    }
-                }
-                _users.value = filteredList
-            }
+    fun filterUsers(query: String) {
+        viewModelScope.launch {
+            _users.value = contactListUseCase.searchContactByQuery(query = query)
         }
+    }
+
+
+    private companion object {
+        val CONTACT_LIST_VIEW_MODEL_TAG: String = ContactListViewModel::class.java.simpleName
     }
 }

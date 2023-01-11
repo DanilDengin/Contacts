@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.library.R
 
-class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
+
+internal class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
     ListAdapter<Contact, ContactListViewHolder>(DiffCallback()) {
 
     private class DiffCallback : DiffUtil.ItemCallback<Contact>() {

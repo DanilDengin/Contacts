@@ -13,7 +13,7 @@ import com.example.library.R
 import java.util.Calendar
 
 
-class BirthdayReceiver : BroadcastReceiver() {
+internal class BirthdayReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val notificationIntent = Intent(context, MainActivity::class.java)

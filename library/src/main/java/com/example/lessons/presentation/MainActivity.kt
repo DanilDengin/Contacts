@@ -17,13 +17,7 @@ import com.example.lessons.contactList.presentation.ContactListFragment
 import com.example.library.R
 
 
-class MainActivity : AppCompatActivity() {
-
-    private companion object {
-        const val BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
-        const val BIRTHDAY_INTENT_KEY = "contactId"
-        const val NOTIFICATION_CHANNEL_ID = "Birthday"
-    }
+internal class MainActivity : AppCompatActivity() {
 
     private val requestCodeReadContacts = 1
     private var readContactsGranted = false
@@ -104,5 +98,11 @@ class MainActivity : AppCompatActivity() {
             )
             .addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
             .commit()
+    }
+
+    private companion object {
+        const val BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
+        const val BIRTHDAY_INTENT_KEY = "contactId"
+        const val NOTIFICATION_CHANNEL_ID = "Birthday"
     }
 }

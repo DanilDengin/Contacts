@@ -1,22 +1,17 @@
 package com.example.lessons.di
 
 import android.content.Context
-import com.example.lessons.contactDetails.di.ContactDetailsComponentDependencies
-import com.example.lessons.contactList.di.ContactListComponentDependencies
-import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
+import com.example.lessons.contacts.domain.repository.ContactsRepository
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
 
 @Singleton
-@Component
-interface AppComponent : ContactListComponentDependencies,
-    ContactDetailsComponentDependencies {
+@Component(modules = [AppModule::class])
+internal interface AppComponent : ContactComponentDependencies {
 
-    fun getAppContext(): Context
-
-    fun getContactRepository(): ContactsRepositoryImpl
+    override fun getContactsRepository(): ContactsRepository
 
     @Component.Factory
     interface Factory {

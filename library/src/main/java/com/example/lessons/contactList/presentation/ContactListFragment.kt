@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
+import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
+import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.viewModel
 import com.example.library.R
@@ -22,12 +24,8 @@ import com.example.library.databinding.FragmentListBinding
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ContactListFragment : Fragment(R.layout.fragment_list) {
 
-    private companion object {
-        const val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
-        const val SEARCH_VIEW_HINT = "Search"
-    }
+internal class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     private val binding by viewBinding(FragmentListBinding::bind)
 
@@ -42,13 +40,13 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        DaggerContactListComponent.builder()
-//            .appComponent(
-//                (requireContext().applicationContext as ContactListComponentDependenciesProvider)
-//                    .getContactListComponentDependencies()
-//            )
-//            .build()
-//            .also { it.inject(this) }
+        DaggerContactListComponent.builder()
+            .contactComponentDependencies(
+                (requireContext().applicationContext as ContactComponentDependenciesProvider)
+                    .getContactComponentDependencies()
+            )
+            .build()
+            .also { it.inject(this) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,12 +82,12 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
         val searchView: SearchView = menu.findItem(R.id.searchView).actionView as SearchView
         searchView.queryHint = SEARCH_VIEW_HINT
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
                 viewModel.filterUsers(query = query)
                 return false
             }
 
-            override fun onQueryTextChange(query: String?): Boolean {
+            override fun onQueryTextChange(query: String): Boolean {
                 viewModel.filterUsers(query = query)
                 return false
             }
@@ -108,5 +106,10 @@ class ContactListFragment : Fragment(R.layout.fragment_list) {
             contextNotNull.getText(R.string.toast_exception),
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    private companion object {
+        const val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
+        const val SEARCH_VIEW_HINT = "Search"
     }
 }

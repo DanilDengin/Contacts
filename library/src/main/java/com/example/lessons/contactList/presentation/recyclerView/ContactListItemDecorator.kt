@@ -6,7 +6,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.roundToInt
 
-class ContactListItemDecorator : RecyclerView.ItemDecoration() {
+
+internal class ContactListItemDecorator : RecyclerView.ItemDecoration() {
     private val spaceDp: Int = fromIntToDp(8)
 
     private fun fromIntToDp(spaceInt: Int): Int {

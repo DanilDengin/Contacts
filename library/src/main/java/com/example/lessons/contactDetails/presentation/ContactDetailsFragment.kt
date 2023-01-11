@@ -14,7 +14,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
 import com.example.lessons.contacts.domain.entity.Contact
+import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.viewModel
 import com.example.library.R
@@ -28,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
+internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
 
     private val binding by viewBinding(FragmentDetailsBinding::bind)
     private var contactId: Int = -1
@@ -57,26 +59,15 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
         }
     }
 
-    companion object {
-        private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
-        private const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
-        private const val ARG: String = "arg"
-        fun newInstance(id: Int) = ContactDetailsFragment().apply {
-            arguments = bundleOf(
-                ARG to id
-            )
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        DaggerContactDetailsComponent.builder()
-//            .appComponent(
-//                (requireContext().applicationContext as ContactDetailsComponentDependenciesProvider)
-//                    .getContactDetailsComponentDependencies()
-//            )
-//            .build()
-//            .also { it.inject(this) }
+        DaggerContactDetailsComponent.builder()
+            .contactComponentDependencies(
+                (requireContext().applicationContext as ContactComponentDependenciesProvider)
+                    .getContactComponentDependencies()
+            )
+            .build()
+            .also { it.inject(this) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -153,25 +144,9 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
     }
 
     private fun doAlarm() {
-        val birthdayDateNotNull = requireNotNull(birthdayDate)
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        if (calendar[Calendar.DAY_OF_YEAR] > birthdayDateNotNull.get(Calendar.DAY_OF_YEAR)) {
-            calendar.add(YEAR, 1)
-        }
-        if (birthdayDateNotNull.get(Calendar.MONTH) == Calendar.FEBRUARY && birthdayDateNotNull.get(
-                Calendar.DAY_OF_MONTH
-            ) == 29
-        ) {
-            birthdayDateNotNull.set(Calendar.DAY_OF_MONTH, 28)
-        }
-        calendar[Calendar.MINUTE] = 0
-        calendar[Calendar.HOUR_OF_DAY] = 0
-        calendar[Calendar.DAY_OF_MONTH] = birthdayDateNotNull.get(Calendar.DAY_OF_MONTH)
-        calendar[Calendar.MONTH] = birthdayDateNotNull.get(Calendar.MONTH)
         alarmBirthday.set(
             AlarmManager.RTC,
-            calendar.timeInMillis,
+            viewModel.getAlarmDate(),
             pendingIntentBirthday
         )
     }
@@ -195,5 +170,16 @@ class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
             contextNotNull.getText(R.string.toast_exception),
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    companion object {
+        private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
+        private const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
+        private const val ARG: String = "arg"
+        fun newInstance(id: Int) = ContactDetailsFragment().apply {
+            arguments = bundleOf(
+                ARG to id
+            )
+        }
     }
 }

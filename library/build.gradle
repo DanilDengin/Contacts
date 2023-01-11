@@ -36,7 +36,6 @@ android {
 
 dependencies {
     implementation project(path: ':kotlin')
-//    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     //Dagger 2
     implementation 'com.google.dagger:dagger:2.44.2'

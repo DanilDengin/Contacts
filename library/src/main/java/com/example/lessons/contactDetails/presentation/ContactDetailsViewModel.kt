@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
+import com.example.lessons.contacts.domain.contactDetails.useCases.ContactDetailsUseCase
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.utils.liveData.SingleLiveEvent
 import dagger.assisted.Assisted
@@ -14,14 +14,11 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class ContactDetailsViewModel @AssistedInject constructor(
-    @Assisted id: String,
-    private val contactsRepository: ContactsRepositoryImpl
-) : ViewModel() {
 
-    private companion object {
-        val CONTACT_DETAILS_VIEW_MODEL_TAG: String = ContactDetailsViewModel::class.java.simpleName
-    }
+internal class ContactDetailsViewModel @AssistedInject constructor(
+    @Assisted id: String,
+    private val contactDetailsUseCase: ContactDetailsUseCase
+) : ViewModel() {
 
     val user: LiveData<Contact> get() = _user
     val progressBarState: LiveData<Boolean> get() = _progressBarState
@@ -42,13 +39,21 @@ class ContactDetailsViewModel @AssistedInject constructor(
     private fun loadUserDetail(id: String) {
         viewModelScope.launch(coroutineExceptionHandler) {
             _progressBarState.value = true
-            _user.value = contactsRepository.getFullContactDetails(id)
+            _user.value = contactDetailsUseCase.getContactById(id)
             _progressBarState.value = false
         }
+    }
+
+    fun getAlarmDate(): Long {
+        return contactDetailsUseCase.getAlarmDate(requireNotNull(_user.value))
     }
 
     @AssistedFactory
     interface Factory {
         fun create(@Assisted contactId: String): ContactDetailsViewModel
+    }
+
+    private companion object {
+        val CONTACT_DETAILS_VIEW_MODEL_TAG: String = ContactDetailsViewModel::class.java.simpleName
     }
 }

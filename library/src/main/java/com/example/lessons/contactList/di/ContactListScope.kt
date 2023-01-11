@@ -2,6 +2,7 @@ package com.example.lessons.contactList.di
 
 import javax.inject.Scope
 
+
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ContactListScope
+internal annotation class ContactListScope

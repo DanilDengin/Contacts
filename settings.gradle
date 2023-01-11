@@ -15,7 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "lessons"
 include ':app'
 include ':library'
-include ':myLabrary'
-include ':myapplication'
-include ':mylibrary'
 include ':kotlin'

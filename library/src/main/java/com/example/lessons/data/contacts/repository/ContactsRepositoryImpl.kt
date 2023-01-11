@@ -6,20 +6,18 @@ import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.repository.ContactsRepository
 import java.sql.Date
 import java.util.GregorianCalendar
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Singleton
-class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
+class ContactsRepositoryImpl(private val context: Context) :
     ContactsRepository {
+
+    override val contacts = ArrayList<Contact>()
 
     override suspend fun getShortContactsDetails(): List<Contact> {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        val contacts = ArrayList<Contact>()
         val cursor = context.contentResolver.query(
             contentUri, null,
             null, null, "$displayName ASC"
@@ -51,35 +49,35 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         return contacts
     }
 
-    override suspend fun getFullContactDetails(id: String): Contact? {
+    override suspend fun getFullContactDetails(contactId: String): Contact? {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
         var contact: Contact? = null
         val cursor = context.contentResolver.query(
             contentUri, null,
-            "$idColumn = $id", null, null
+            "$idColumn = $contactId", null, null
         )
         withContext(Dispatchers.IO) {
             cursor.use {
                 if (cursor != null) {
                     cursor.moveToNext()
                     val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
-                    val numbers = getNumbers(id)
-                    val email = getEmail(id)
-                    val birthday = getBirthday(id)
+                    val numbers = getNumbers(contactId)
+                    val email = getEmail(contactId)
+                    val birthday = getBirthday(contactId)
                     when {
-                        numbers.size == 1 -> {
+                        numbers.size == NUMBER_ARRAY_LIST_SIZE_ONE_KEY -> {
                             contact = Contact(
                                 name = name,
                                 number1 = numbers[0],
                                 email1 = email[0],
                                 email2 = email[1],
                                 birthday = birthday,
-                                id = id
+                                id = contactId
                             )
                         }
-                        numbers.size > 1 -> {
+                        numbers.size > NUMBER_ARRAY_LIST_SIZE_ONE_KEY -> {
                             contact = Contact(
                                 name = name,
                                 number1 = numbers[0],
@@ -87,7 +85,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
                                 email1 = email[0],
                                 email2 = email[1],
                                 birthday = birthday,
-                                id = id
+                                id = contactId
                             )
                         }
                     }
@@ -97,14 +95,14 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         return contact
     }
 
-    private fun getNumbers(contact_id: String): List<String> {
+    private fun getNumbers(contactId: String): List<String> {
         val phoneContentUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val phoneContactId = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
         val numberColumn = ContactsContract.CommonDataKinds.Phone.NUMBER
         val numbers = ArrayList<String>()
         val phoneCursor = context.contentResolver.query(
             phoneContentUri, null,
-            "$phoneContactId = ?", arrayOf(contact_id), null
+            "$phoneContactId = ?", arrayOf(contactId), null
         )
 
         phoneCursor.use {
@@ -134,7 +132,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         return numbers
     }
 
-    private fun getEmail(contact_id: String): Array<String?> {
+    private fun getEmail(contactId: String): Array<String?> {
         val number = ContactsContract.CommonDataKinds.Phone.NUMBER
         val emailContentUri = ContactsContract.CommonDataKinds.Email.CONTENT_URI
         val emailContactId = ContactsContract.CommonDataKinds.Email.CONTACT_ID
@@ -142,7 +140,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         var count = 0
         val emailCursor = context.contentResolver.query(
             emailContentUri, null,
-            "$emailContactId = ?", arrayOf(contact_id), null
+            "$emailContactId = ?", arrayOf(contactId), null
         )
 
         emailCursor.use {
@@ -157,7 +155,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
         return emails
     }
 
-    private fun getBirthday(contact_id: String): GregorianCalendar? {
+    private fun getBirthday(contactId: String): GregorianCalendar? {
         val birthdayContentUri = ContactsContract.Data.CONTENT_URI
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
         val startDate = ContactsContract.CommonDataKinds.Event.START_DATE
@@ -171,7 +169,7 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
                 ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
                 " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" +
                 ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "' and " +
-                ContactsContract.Data.CONTACT_ID + " = " + contact_id
+                ContactsContract.Data.CONTACT_ID + " = " + contactId
         val birthdayCursor = context.contentResolver.query(
             birthdayContentUri, columns,
             where, null, displayName
@@ -189,5 +187,9 @@ class ContactsRepositoryImpl @Inject constructor(private val context: Context) :
             birthdayDate.time = Date.valueOf(birthday)
         }
         return birthdayDate
+    }
+
+    private companion object {
+        const val NUMBER_ARRAY_LIST_SIZE_ONE_KEY = 1
     }
 }
