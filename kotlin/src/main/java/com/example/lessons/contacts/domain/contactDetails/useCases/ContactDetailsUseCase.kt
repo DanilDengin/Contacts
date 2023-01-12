@@ -6,5 +6,5 @@ interface ContactDetailsUseCase {
 
     suspend fun getContactById(id: String): Contact?
 
-    fun getAlarmDate(contact: Contact): Long
+    suspend fun getAlarmDate(): Long
 }

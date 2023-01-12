@@ -18,33 +18,33 @@ import com.example.lessons.contactList.presentation.recyclerView.ContactListAdap
 import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
 import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.viewModel
+import com.example.lessons.utils.getComponentDependencies
+import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentListBinding
 import javax.inject.Inject
 import javax.inject.Provider
 
-
 internal class ContactListFragment : Fragment(R.layout.fragment_list) {
-
-    private val binding by viewBinding(FragmentListBinding::bind)
 
     @Inject
     lateinit var viewModelProvider: Provider<ContactListViewModel>
+
+    private val searchViewHint by lazy(LazyThreadSafetyMode.NONE) {
+        getString(R.string.search_view_hint)
+    }
+
+    private val binding by viewBinding(FragmentListBinding::bind)
 
     private val contactsListAdapter: ContactListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
     }
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) { viewModel { viewModelProvider.get() } }
 
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         DaggerContactListComponent.builder()
-            .contactComponentDependencies(
-                (requireContext().applicationContext as ContactComponentDependenciesProvider)
-                    .getContactComponentDependencies()
-            )
+            .contactComponentDependencies(requireContext().getComponentDependencies())
             .build()
             .also { it.inject(this) }
     }
@@ -67,20 +67,10 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 
-    private fun navigateToDetailsFragment(id: String?) {
-        parentFragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                ContactDetailsFragment.newInstance(requireNotNull(id).toInt())
-            )
-            .addToBackStack(CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
-            .commit()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_menu, menu)
         val searchView: SearchView = menu.findItem(R.id.searchView).actionView as SearchView
-        searchView.queryHint = SEARCH_VIEW_HINT
+        searchView.queryHint = searchViewHint
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 viewModel.filterUsers(query = query)
@@ -93,6 +83,16 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
             }
         })
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun navigateToDetailsFragment(id: String?) {
+        parentFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                ContactDetailsFragment.newInstance(requireNotNull(id).toInt())
+            )
+            .addToBackStack(CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
+            .commit()
     }
 
     private fun setLoadingIndicator(isVisible: Boolean) {
@@ -110,6 +110,5 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     private companion object {
         const val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
-        const val SEARCH_VIEW_HINT = "Search"
     }
 }

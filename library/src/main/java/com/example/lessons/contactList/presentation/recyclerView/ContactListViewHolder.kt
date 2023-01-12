@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.library.R
 
-
-internal class ContactListViewHolder(itemView: View, navigateToContactDetailsById: (String) -> Unit) :
-    RecyclerView.ViewHolder(itemView) {
+internal class ContactListViewHolder(
+    itemView: View, navigateToContactDetailsById: (String) -> Unit
+) : RecyclerView.ViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.nameListTextView)
     private val number: TextView = itemView.findViewById(R.id.numberListTextView)
     private var contactId: String? = null

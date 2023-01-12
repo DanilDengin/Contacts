@@ -9,24 +9,30 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.example.lessons.presentation.MainActivity
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
+import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
+import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_ID
 import com.example.library.R
 import java.util.Calendar
-
 
 internal class BirthdayReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val notificationIntent = Intent(context, MainActivity::class.java)
-        notificationIntent.putExtra("contactId", intent.getIntExtra("contactId", -1))
+        notificationIntent.putExtra(
+            BIRTHDAY_CONTACT_ID_INTENT_KEY,
+            intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1)
+        )
         val notificationPendingIntent = PendingIntent.getActivity(
-            context, intent.getIntExtra("contactId", -1),
+            context, intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
             notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val builder = NotificationCompat.Builder(context, "Birthday")
+        val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.notification_title))
-            .setContentText(intent.getStringExtra("nameOfContact"))
+            .setContentText(intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY))
             .setContentIntent(notificationPendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -34,10 +40,19 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         val notification = builder.build()
         val notificationManager =
             context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(intent.getIntExtra("contactId", -1), notification)
+        notificationManager.notify(
+            intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
+            notification
+        )
 
-        intent.getStringExtra("nameOfContact")
-            ?.let { repeatAlarm(context, intent.getIntExtra("contactId", -1), it) }
+        intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY)
+            ?.let {
+                repeatAlarm(
+                    context,
+                    intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
+                    it
+                )
+            }
     }
 
     private fun repeatAlarm(context: Context, id: Int, nameContact: String) {
@@ -46,11 +61,11 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.add(Calendar.YEAR, 1)
-        val intentBirthdayReceiver = Intent("birthdayReceiver")
+        val intentBirthdayReceiver = Intent(BIRTHDAY_RECEIVER_INTENT_ACTION)
         intentBirthdayReceiver
             .setClass(context, BirthdayReceiver::class.java)
-            .putExtra("nameOfContact", nameContact)
-            .putExtra("contactId", id)
+            .putExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY, nameContact)
+            .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, id)
         val pendingIntentBirthday = PendingIntent.getBroadcast(
             context,
             id,

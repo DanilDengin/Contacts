@@ -14,7 +14,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-
 internal class ContactDetailsViewModel @AssistedInject constructor(
     @Assisted id: String,
     private val contactDetailsUseCase: ContactDetailsUseCase
@@ -36,16 +35,20 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
         loadUserDetail(id)
     }
 
+    fun getAlarmDate(): Long {
+        var time = 0L
+        viewModelScope.launch(coroutineExceptionHandler) {
+            time = contactDetailsUseCase.getAlarmDate()
+        }
+        return time
+    }
+
     private fun loadUserDetail(id: String) {
         viewModelScope.launch(coroutineExceptionHandler) {
             _progressBarState.value = true
             _user.value = contactDetailsUseCase.getContactById(id)
             _progressBarState.value = false
         }
-    }
-
-    fun getAlarmDate(): Long {
-        return contactDetailsUseCase.getAlarmDate(requireNotNull(_user.value))
     }
 
     @AssistedFactory

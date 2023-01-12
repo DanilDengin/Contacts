@@ -16,9 +16,12 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
 import com.example.lessons.contacts.domain.entity.Contact
-import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.viewModel
+import com.example.lessons.utils.getComponentDependencies
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
+import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
+import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentDetailsBinding
 import java.text.DecimalFormat
@@ -29,13 +32,21 @@ import java.util.StringJoiner
 import javax.inject.Inject
 import javax.inject.Provider
 
+internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
 
-internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_details) {
+    @Inject
+    lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
 
     private val binding by viewBinding(FragmentDetailsBinding::bind)
+
     private var contactId: Int = -1
+
     private var birthdayDate: GregorianCalendar? = null
-    private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) { Intent("birthdayReceiver") }
+
+    private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) {
+        Intent(BIRTHDAY_RECEIVER_INTENT_ACTION)
+    }
+
     private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
         PendingIntent.getBroadcast(
             context,
@@ -44,14 +55,12 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
+
     private val alarmBirthday: AlarmManager by lazy(LazyThreadSafetyMode.NONE) {
         requireContext().getSystemService(
             AppCompatActivity.ALARM_SERVICE
         ) as AlarmManager
     }
-
-    @Inject
-    lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
         viewModel {
@@ -62,10 +71,7 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
     override fun onAttach(context: Context) {
         super.onAttach(context)
         DaggerContactDetailsComponent.builder()
-            .contactComponentDependencies(
-                (requireContext().applicationContext as ContactComponentDependenciesProvider)
-                    .getContactComponentDependencies()
-            )
+            .contactComponentDependencies(requireContext().getComponentDependencies())
             .build()
             .also { it.inject(this) }
     }
@@ -78,7 +84,7 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
         setHasOptionsMenu(true)
         mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewModel.user.observe(viewLifecycleOwner, ::getDetails)
+        viewModel.user.observe(viewLifecycleOwner, ::updateView)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
 
@@ -110,7 +116,14 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
         }
     }
 
-    override fun getDetails(contactForDetails: Contact) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            parentFragmentManager.popBackStack()
+        }
+        return true
+    }
+
+    private fun updateView(contactForDetails: Contact) {
         with(binding) {
             nameTextView.text = contactForDetails.name
             number1TextView.text = contactForDetails.number1
@@ -151,13 +164,6 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
         )
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            parentFragmentManager.popBackStack()
-        }
-        return true
-    }
-
     private fun setLoadingIndicator(isVisible: Boolean) {
         binding.progressBarDetails.isVisible = isVisible
         binding.detailsFragmentContainer.isVisible = isVisible.not()
@@ -173,8 +179,6 @@ internal class ContactDetailsFragment : GetDetails, Fragment(R.layout.fragment_d
     }
 
     companion object {
-        private const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "nameOfContact"
-        private const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
         private const val ARG: String = "arg"
         fun newInstance(id: Int) = ContactDetailsFragment().apply {
             arguments = bundleOf(

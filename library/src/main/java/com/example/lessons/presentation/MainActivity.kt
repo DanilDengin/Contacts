@@ -1,6 +1,5 @@
 package com.example.lessons.presentation
 
-
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -14,8 +13,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.presentation.ContactListFragment
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
+import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_ID
 import com.example.library.R
-
 
 internal class MainActivity : AppCompatActivity() {
 
@@ -32,7 +33,7 @@ internal class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
         }
-        if (intent.getIntExtra(BIRTHDAY_INTENT_KEY, -1) != -1 && savedInstanceState == null) {
+        if (intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1) != -1 && savedInstanceState == null) {
             navigateToBirthdayContact()
         }
     }
@@ -45,20 +46,6 @@ internal class MainActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private fun checkReadContactPermission() {
-        val hasReadContactPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
-            readContactsGranted = true
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                requestCodeReadContacts
-            )
         }
     }
 
@@ -84,6 +71,20 @@ internal class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkReadContactPermission() {
+        val hasReadContactPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+        if (hasReadContactPermission == PackageManager.PERMISSION_GRANTED) {
+            readContactsGranted = true
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                requestCodeReadContacts
+            )
+        }
+    }
+
     private fun navigateToListFragment() {
         supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainer, ContactListFragment())
@@ -94,7 +95,7 @@ internal class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(
                 R.id.fragmentContainer,
-                ContactDetailsFragment.newInstance(intent.getIntExtra(BIRTHDAY_INTENT_KEY, -1))
+                ContactDetailsFragment.newInstance(intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1))
             )
             .addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
             .commit()
@@ -102,7 +103,5 @@ internal class MainActivity : AppCompatActivity() {
 
     private companion object {
         const val BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
-        const val BIRTHDAY_INTENT_KEY = "contactId"
-        const val NOTIFICATION_CHANNEL_ID = "Birthday"
     }
 }

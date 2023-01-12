@@ -4,7 +4,6 @@ import com.example.lessons.contactList.presentation.ContactListFragment
 import com.example.lessons.di.ContactComponentDependencies
 import dagger.Component
 
-
 @ContactListScope
 @Component(
     dependencies = [ContactComponentDependencies::class],

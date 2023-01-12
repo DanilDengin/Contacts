@@ -1,4 +1,4 @@
-package com.example.lessons.utils
+package com.example.lessons.utils.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

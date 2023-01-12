@@ -12,7 +12,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-
 internal class ContactListViewModel @Inject constructor(
     private val contactListUseCase: ContactListUseCase
 ) : ViewModel() {
@@ -33,6 +32,12 @@ internal class ContactListViewModel @Inject constructor(
         loadUsers()
     }
 
+    fun filterUsers(query: String) {
+        viewModelScope.launch {
+            _users.value = contactListUseCase.searchContactByQuery(query = query)
+        }
+    }
+
     private fun loadUsers() {
         viewModelScope.launch(coroutineExceptionHandler) {
             _progressBarState.value = true
@@ -40,13 +45,6 @@ internal class ContactListViewModel @Inject constructor(
             _progressBarState.value = false
         }
     }
-
-    fun filterUsers(query: String) {
-        viewModelScope.launch {
-            _users.value = contactListUseCase.searchContactByQuery(query = query)
-        }
-    }
-
 
     private companion object {
         val CONTACT_LIST_VIEW_MODEL_TAG: String = ContactListViewModel::class.java.simpleName

@@ -9,9 +9,9 @@ import java.util.GregorianCalendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactsRepositoryImpl(private val context: Context) :
-    ContactsRepository {
+class ContactsRepositoryImpl(private val context: Context) : ContactsRepository {
 
+    override var contact: Contact? = null
     override val contacts = ArrayList<Contact>()
 
     override suspend fun getShortContactsDetails(): List<Contact> {
@@ -53,7 +53,6 @@ class ContactsRepositoryImpl(private val context: Context) :
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        var contact: Contact? = null
         val cursor = context.contentResolver.query(
             contentUri, null,
             "$idColumn = $contactId", null, null

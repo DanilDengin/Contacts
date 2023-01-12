@@ -12,4 +12,5 @@
     <string name="switch_text">Remind me about birthday</string>
     <string name="notification_text">Today is the birthday of &#160;</string>
     <string name="toast_exception">Oops, something went wrong! Try to restart the app.</string>
+    <string name="search_view_hint">Search</string>
 </resources>

@@ -4,7 +4,8 @@ import com.example.lessons.contacts.domain.entity.Contact
 
 interface ContactsRepository {
 
-    val contacts: ArrayList<Contact>
+    var contact : Contact?
+    val contacts: List<Contact>
 
     suspend fun getShortContactsDetails(): List<Contact>
 

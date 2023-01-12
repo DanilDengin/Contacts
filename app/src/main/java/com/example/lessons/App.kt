@@ -6,7 +6,6 @@ import com.example.lessons.di.ContactComponentDependencies
 import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.di.DaggerAppComponent
 
-
 internal class App : Application(), ContactComponentDependenciesProvider {
 
     private lateinit var appComponent: AppComponent

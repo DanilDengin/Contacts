@@ -4,8 +4,10 @@ import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.repository.ContactsRepository
 import java.util.Calendar
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class ContactDetailsUseCaseImpl @Inject constructor(
+class ContactDetailsUseCaseImpl (
     private val contactsRepository: ContactsRepository
 ) : ContactDetailsUseCase {
 
@@ -13,24 +15,27 @@ class ContactDetailsUseCaseImpl @Inject constructor(
         return contactsRepository.getFullContactDetails(id)
     }
 
-    override fun getAlarmDate(contact: Contact): Long {
+    override suspend fun getAlarmDate(): Long {
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        contact.birthday?.let { birthday ->
-            if (calendar[Calendar.DAY_OF_YEAR] > birthday.get(Calendar.DAY_OF_YEAR)) {
-                calendar.add(Calendar.YEAR, 1)
+        withContext(Dispatchers.Default) {
+            calendar.timeInMillis = System.currentTimeMillis()
+            contactsRepository.contact?.birthday?.also { birthday ->
+                if (calendar[Calendar.DAY_OF_YEAR] > birthday.get(Calendar.DAY_OF_YEAR)) {
+                    calendar.add(Calendar.YEAR, 1)
+                }
+                if (birthday.get(Calendar.MONTH) == Calendar.FEBRUARY &&
+                    birthday.get(Calendar.DAY_OF_MONTH) == TWENTY_NINE_MONTH_DAY
+                ) {
+                    birthday.set(Calendar.DAY_OF_MONTH, TWENTY_EIGHT_MONTH_DAY)
+                }
+                calendar[Calendar.MINUTE] = 0
+                calendar[Calendar.HOUR_OF_DAY] = 0
+                calendar[Calendar.DAY_OF_MONTH] = birthday.get(Calendar.DAY_OF_MONTH)
+                calendar[Calendar.MONTH] = birthday.get(Calendar.MONTH)
             }
-            if (birthday.get(Calendar.MONTH) == Calendar.FEBRUARY &&
-                birthday.get(Calendar.DAY_OF_MONTH) == TWENTY_NINE_MONTH_DAY
-            ) {
-                birthday.set(Calendar.DAY_OF_MONTH, TWENTY_EIGHT_MONTH_DAY)
-            }
-            calendar[Calendar.MINUTE] = 0
-            calendar[Calendar.HOUR_OF_DAY] = 0
-            calendar[Calendar.DAY_OF_MONTH] = birthday.get(Calendar.DAY_OF_MONTH)
-            calendar[Calendar.MONTH] = birthday.get(Calendar.MONTH)
         }
         return calendar.timeInMillis
+
     }
 
     private companion object {
