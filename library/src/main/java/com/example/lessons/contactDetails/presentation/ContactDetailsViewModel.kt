@@ -35,12 +35,8 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
         loadUserDetail(id)
     }
 
-    fun getAlarmDate(): Long {
-        var time = 0L
-        viewModelScope.launch(coroutineExceptionHandler) {
-            time = contactDetailsUseCase.getAlarmDate()
-        }
-        return time
+    suspend fun getAlarmDate(): Long {
+        return contactDetailsUseCase.getAlarmDate()
     }
 
     private fun loadUserDetail(id: String) {

@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-internal class ContactDetailsModule {
+internal object ContactDetailsModule {
 
     @ContactDetailsScope
     @Provides

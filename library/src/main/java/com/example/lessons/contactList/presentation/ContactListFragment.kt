@@ -16,9 +16,8 @@ import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
-import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.getComponentDependencies
+import com.example.lessons.utils.di.getComponentDependencies
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentListBinding

@@ -13,14 +13,15 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.getComponentDependencies
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
+import com.example.lessons.utils.di.getComponentDependencies
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentDetailsBinding
@@ -31,6 +32,7 @@ import java.util.GregorianCalendar
 import java.util.StringJoiner
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlinx.coroutines.launch
 
 internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
 
@@ -157,11 +159,13 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun doAlarm() {
-        alarmBirthday.set(
-            AlarmManager.RTC,
-            viewModel.getAlarmDate(),
-            pendingIntentBirthday
-        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            alarmBirthday.set(
+                AlarmManager.RTC,
+                viewModel.getAlarmDate(),
+                pendingIntentBirthday
+            )
+        }
     }
 
     private fun setLoadingIndicator(isVisible: Boolean) {
