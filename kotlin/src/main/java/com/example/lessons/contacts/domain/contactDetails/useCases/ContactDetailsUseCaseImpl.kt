@@ -10,7 +10,7 @@ class ContactDetailsUseCaseImpl(
     private val contactsRepository: ContactsRepository
 ) : ContactDetailsUseCase {
 
-    var contact: Contact? = null
+    private var contact: Contact? = null
 
     override suspend fun getContactById(id: String): Contact? {
         contact = contactsRepository.getFullContactDetails(id)

@@ -9,7 +9,7 @@ class ContactListUseCaseImpl(
     private val contactsRepository: ContactsRepository
 ) : ContactListUseCase {
 
-    var contacts = emptyList<Contact>()
+    private var contacts = emptyList<Contact>()
 
     override suspend fun getContactList(): List<Contact> {
         contacts = contactsRepository.getShortContactsDetails()
