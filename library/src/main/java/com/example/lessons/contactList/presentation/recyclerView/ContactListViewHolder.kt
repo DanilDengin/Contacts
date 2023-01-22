@@ -15,9 +15,8 @@ internal class ContactListViewHolder(
 
     init {
         itemView.setOnClickListener {
-            val adapterPosition = bindingAdapterPosition
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                contactId?.also { contactId -> navigateToContactDetailsById(contactId) }
+            if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                contactId?.also(navigateToContactDetailsById)
             }
         }
     }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_on_primary"
-        tools:context=".presentation.contactdetailsfragment.DetailsFragment">
+        tools:context="com.example.lessons.contactDetails.presentation.ContactDetailsFragment">
 
         <ImageView
             android:id="@+id/photoImageView"
@@ -30,17 +31,17 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:paddingBottom="4dp"
-            android:text="Name"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/photoImageView"
-            app:layout_constraintTop_toTopOf="@+id/photoImageView" />
+            app:layout_constraintTop_toTopOf="@+id/photoImageView"
+            tools:text="Name" />
 
         <TextView
             android:id="@+id/birthdayTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_birthday"
+            android:text="@string/set_birthday_text_view"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
@@ -50,12 +51,12 @@
             android:id="@+id/birthdaySwitch"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
-            android:text="@string/switch_text"
-            android:textColor="@color/grey"
+            android:clickable="false"
+            android:text="@string/birthday_switch_text"
+            android:textColor="@color/gray"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/birthdayTextView"
-            app:layout_constraintTop_toBottomOf="@+id/birthdayTextView"
-            android:clickable="false"/>
+            app:layout_constraintTop_toBottomOf="@+id/birthdayTextView" />
 
         <ImageView
             android:id="@+id/number1ImageView"
@@ -72,11 +73,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:text="Number"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/number1ImageView"
-            app:layout_constraintStart_toEndOf="@+id/number1ImageView" />
+            app:layout_constraintStart_toEndOf="@+id/number1ImageView"
+            tools:text="Number" />
 
         <ImageView
             android:id="@+id/number2ImageView"
@@ -93,11 +94,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:text="Number2"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/number2ImageView"
-            app:layout_constraintStart_toEndOf="@+id/number2ImageView" />
+            app:layout_constraintStart_toEndOf="@+id/number2ImageView"
+            tools:text="Number2" />
 
         <ImageView
             android:id="@+id/email1ImageView"
@@ -114,11 +115,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:text="eMail"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/email1ImageView"
-            app:layout_constraintStart_toEndOf="@+id/email1ImageView" />
+            app:layout_constraintStart_toEndOf="@+id/email1ImageView"
+            tools:text="eMail" />
 
         <ImageView
             android:id="@+id/email2ImageView"
@@ -135,25 +136,24 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:text="eMail2"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/email2ImageView"
-            app:layout_constraintStart_toEndOf="@+id/email2ImageView" />
+            app:layout_constraintStart_toEndOf="@+id/email2ImageView"
+            tools:text="eMail2" />
 
         <TextView
             android:id="@+id/descriptionTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="12dp"
             android:paddingLeft="12dp"
             android:paddingBottom="48dp"
-            android:text="Description"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/email2ImageView"
-            app:layout_constraintTop_toBottomOf="@+id/eMail2TextView" />
+            app:layout_constraintTop_toBottomOf="@+id/mapButton"
+            tools:text="Description" />
 
         <ProgressBar
             android:id="@+id/progressBarDetails"
@@ -164,6 +164,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/mapButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/set_residence_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/eMail2TextView"
+            app:layout_constraintStart_toStartOf="@+id/email2ImageView"
+            app:layout_constraintTop_toBottomOf="@+id/eMail2TextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

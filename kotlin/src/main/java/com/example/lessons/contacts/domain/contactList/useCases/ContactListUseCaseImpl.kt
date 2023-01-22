@@ -1,7 +1,7 @@
 package com.example.lessons.contacts.domain.contactList.useCases
 
 import com.example.lessons.contacts.domain.entity.Contact
-import com.example.lessons.contacts.domain.repository.ContactsRepository
+import com.example.lessons.contacts.domain.repository.local.ContactsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

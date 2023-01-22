@@ -2,7 +2,7 @@ package com.example.lessons.contactDetails.di
 
 import com.example.lessons.contacts.domain.contactDetails.useCases.ContactDetailsUseCase
 import com.example.lessons.contacts.domain.contactDetails.useCases.ContactDetailsUseCaseImpl
-import com.example.lessons.contacts.domain.repository.ContactsRepository
+import com.example.lessons.contacts.domain.repository.local.ContactsRepository
 import dagger.Module
 import dagger.Provides
 

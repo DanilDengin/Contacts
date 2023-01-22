@@ -31,7 +31,7 @@ internal class BirthdayReceiver : BroadcastReceiver() {
 
         val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentTitle(context.getString(R.string.birthday_notification_title))
             .setContentText(intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY))
             .setContentIntent(notificationPendingIntent)
             .setAutoCancel(true)
@@ -75,6 +75,5 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntentBirthday)
     }
-
 }
 

@@ -5,6 +5,8 @@ import com.example.lessons.di.AppComponent
 import com.example.lessons.di.ContactComponentDependencies
 import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.di.DaggerAppComponent
+import com.example.lessons.utils.constans.MAPKIT_API_KEY
+import com.yandex.mapkit.MapKitFactory
 
 internal class App : Application(), ContactComponentDependenciesProvider {
 
@@ -12,6 +14,7 @@ internal class App : Application(), ContactComponentDependenciesProvider {
 
     override fun onCreate() {
         super.onCreate()
+        MapKitFactory.setApiKey(MAPKIT_API_KEY)
         appComponent = DaggerAppComponent.factory()
             .create(this)
     }

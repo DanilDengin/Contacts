@@ -1,4 +1,4 @@
-package com.example.lessons.contacts.domain.repository
+package com.example.lessons.contacts.domain.repository.local
 
 import com.example.lessons.contacts.domain.entity.Contact
 

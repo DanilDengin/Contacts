@@ -5,17 +5,22 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
+import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
@@ -34,7 +39,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlinx.coroutines.launch
 
-internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
+internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), MenuProvider {
 
     @Inject
     lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
@@ -55,6 +60,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             contactId,
             intentBirthday,
             PendingIntent.FLAG_UPDATE_CURRENT
+//            PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -83,8 +89,8 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         val args = requireArguments()
         contactId = args.getInt(ARG)
         val mainActivity: MainActivity = activity as MainActivity
-        setHasOptionsMenu(true)
-        mainActivity.supportActionBar?.setTitle(R.string.toolbar_details)
+        mainActivity.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
+        mainActivity.supportActionBar?.setTitle(R.string.contact_details_toolbar)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.user.observe(viewLifecycleOwner, ::updateView)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
@@ -95,6 +101,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
                 context,
                 contactId,
                 intentBirthday,
+//                PendingIntent.FLAG_IMMUTABLE
                 PendingIntent.FLAG_NO_CREATE
             ) != null
         ) {
@@ -104,25 +111,43 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             if (isChecked) {
                 Toast.makeText(
                     context,
-                    getString(R.string.toast_remind_birthday),
+                    getString(R.string.remind_birthday_toast),
                     Toast.LENGTH_LONG
                 )
                     .show()
                 doAlarm()
             } else {
-                Toast.makeText(context, getString(R.string.toast_cancel_remind), Toast.LENGTH_LONG)
+                Toast.makeText(
+                    context,
+                    getString(R.string.toast_cancel_birthday_remind_toast),
+                    Toast.LENGTH_LONG
+                )
                     .show()
                 pendingIntentBirthday.cancel()
                 alarmBirthday.cancel(pendingIntentBirthday)
             }
         }
+
+        binding.mapButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, ContactMapFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            parentFragmentManager.popBackStack()
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.backstack_menu, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            android.R.id.home -> {
+                parentFragmentManager.popBackStack()
+                true
+            }
+            else -> false
         }
-        return true
     }
 
     private fun updateView(contactForDetails: Contact) {
@@ -132,13 +157,14 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             number2TextView.text = contactForDetails.number2
             eMail1TextView.text = contactForDetails.email1
             eMail2TextView.text = contactForDetails.email2
+            descriptionTextView.text = contactForDetails.description
             number2TextView.isGone = contactForDetails.number2 == null
             number2ImageView.isGone = contactForDetails.number2 == null
             eMail1TextView.isGone = contactForDetails.email1 == null
             email1ImageView.isGone = contactForDetails.email1 == null
             eMail2TextView.isGone = contactForDetails.email2 == null
             email2ImageView.isGone = contactForDetails.email2 == null
-            descriptionTextView.text = contactForDetails.description
+            descriptionTextView.isGone = contactForDetails.description == null
         }
         birthdayDate = contactForDetails.birthday
         if (birthdayDate != null) {
@@ -152,7 +178,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             intentBirthday
                 .putExtra(
                     BIRTHDAY_CONTACT_NAME_INTENT_KEY,
-                    activity?.getString(R.string.notification_text) + binding.nameTextView.text
+                    activity?.getString(R.string.birthday_notification_text) + binding.nameTextView.text
                 )
                 .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
         }
@@ -177,7 +203,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         val contextNotNull = requireContext()
         Toast.makeText(
             contextNotNull,
-            contextNotNull.getText(R.string.toast_exception),
+            contextNotNull.getText(R.string.exception_toast),
             Toast.LENGTH_LONG
         ).show()
     }

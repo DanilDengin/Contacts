@@ -1,9 +1,9 @@
-package com.example.lessons.data.contacts.repository
+package com.example.lessons.data.contacts.repository.local
 
 import android.content.Context
 import android.provider.ContactsContract
 import com.example.lessons.contacts.domain.entity.Contact
-import com.example.lessons.contacts.domain.repository.ContactsRepository
+import com.example.lessons.contacts.domain.repository.local.ContactsRepository
 import java.sql.Date
 import java.util.GregorianCalendar
 import kotlinx.coroutines.Dispatchers
@@ -22,24 +22,22 @@ class ContactsRepositoryImpl(private val context: Context) : ContactsRepository 
         )
         withContext(Dispatchers.IO) {
             cursor.use {
-                if (cursor != null) {
-                    if (cursor.count > 0) {
-                        while (cursor.moveToNext()) {
-                            val id: String =
-                                cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
-                            val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
-                            val numbers: List<String> = getNumbers(id)
-                            if (numbers.isEmpty()) {
-                                continue
-                            }
-                            val contact =
-                                Contact(
-                                    name = name,
-                                    number1 = numbers[0],
-                                    id = id
-                                )
-                            contacts.add(contact)
+                if (cursor != null && cursor.count > 0) {
+                    while (cursor.moveToNext()) {
+                        val id: String =
+                            cursor.getString(cursor.getColumnIndexOrThrow(idColumn))
+                        val name = cursor.getString(cursor.getColumnIndexOrThrow(displayName))
+                        val numbers: List<String> = getNumbers(id)
+                        if (numbers.isEmpty()) {
+                            continue
                         }
+                        val contact =
+                            Contact(
+                                name = name,
+                                number1 = numbers[0],
+                                id = id
+                            )
+                        contacts.add(contact)
                     }
                 }
             }

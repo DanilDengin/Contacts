@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -17,6 +20,7 @@ import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
 import com.example.lessons.presentation.MainActivity
+import com.example.lessons.themePicker.presentation.ThemePickerFragment
 import com.example.lessons.utils.di.getComponentDependencies
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
@@ -24,13 +28,13 @@ import com.example.library.databinding.FragmentListBinding
 import javax.inject.Inject
 import javax.inject.Provider
 
-internal class ContactListFragment : Fragment(R.layout.fragment_list) {
+internal class ContactListFragment : Fragment(R.layout.fragment_list), MenuProvider {
 
     @Inject
     lateinit var viewModelProvider: Provider<ContactListViewModel>
 
     private val searchViewHint by lazy(LazyThreadSafetyMode.NONE) {
-        getString(R.string.search_view_hint)
+        getString(R.string.hint_search_view)
     }
 
     private val binding by viewBinding(FragmentListBinding::bind)
@@ -51,8 +55,8 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mainActivity: MainActivity = activity as MainActivity
-        setHasOptionsMenu(true)
-        mainActivity.supportActionBar?.setTitle(R.string.toolbar_list)
+        mainActivity.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
+        mainActivity.supportActionBar?.setTitle(R.string.contact_list_toolbar)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val horizontalISpaceItemDecorator = ContactListItemDecorator()
@@ -61,13 +65,12 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
         recyclerView.adapter = contactsListAdapter
-        layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_menu, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.contact_list_menu, menu)
         val searchView: SearchView = menu.findItem(R.id.searchView).actionView as SearchView
         searchView.queryHint = searchViewHint
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -81,7 +84,19 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
                 return false
             }
         })
-        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            R.id.themePicker -> {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, ThemePickerFragment())
+                    .addToBackStack(THEME_PICKER_FRAGMENT_BACK_STACK_KEY)
+                    .commit()
+                true
+            }
+            else -> false
+        }
     }
 
     private fun navigateToDetailsFragment(id: String?) {
@@ -102,12 +117,15 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
         val contextNotNull = requireContext()
         Toast.makeText(
             contextNotNull,
-            contextNotNull.getText(R.string.toast_exception),
+            contextNotNull.getText(R.string.exception_toast),
             Toast.LENGTH_LONG
         ).show()
     }
 
     private companion object {
-        const val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY = "BirthdayDetailsFragment"
+        val CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY: String =
+            ContactDetailsFragment::class.java.simpleName
+        val THEME_PICKER_FRAGMENT_BACK_STACK_KEY: String =
+            ThemePickerFragment::class.java.simpleName
     }
 }

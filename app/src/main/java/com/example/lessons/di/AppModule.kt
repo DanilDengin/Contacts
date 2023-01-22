@@ -1,8 +1,8 @@
 package com.example.lessons.di
 
 import android.content.Context
-import com.example.lessons.contacts.domain.repository.ContactsRepository
-import com.example.lessons.data.contacts.repository.ContactsRepositoryImpl
+import com.example.lessons.contacts.domain.repository.local.ContactsRepository
+import com.example.lessons.data.contacts.repository.local.ContactsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
