@@ -6,10 +6,13 @@ import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.repository.local.ContactsRepository
 import java.sql.Date
 import java.util.GregorianCalendar
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactsRepositoryImpl(private val context: Context) : ContactsRepository {
+class ContactsRepositoryImpl @Inject constructor(
+    private val context: Context
+) : ContactsRepository {
 
     override suspend fun getShortContactsDetails(): List<Contact> {
         val contentUri = ContactsContract.Contacts.CONTENT_URI

@@ -1,41 +1,33 @@
 package com.example.lessons.contactMap.di
 
 import com.example.lessons.contactMap.data.address.remote.api.AddressService
-import com.example.lessons.utils.response.ApiResponseCallAdapterFactory
-import com.example.library.BuildConfig
+import com.example.lessons.contactMap.data.address.remote.repository.AddressRepositoryImpl
+import com.example.lessons.contacts.domain.repository.remote.AddressRepository
+import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
+import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCaseImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 internal object ContactMapModule {
 
     @ContactMapScope
     @Provides
-    fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = if (BuildConfig.DEBUG) {
-                    HttpLoggingInterceptor.Level.BODY
-                } else {
-                    HttpLoggingInterceptor.Level.NONE
-                }
-            })
-            .build()
+    fun provideRetrofit(retrofit: Retrofit): AddressService {
+        return retrofit.create(AddressService::class.java)
     }
 
     @ContactMapScope
     @Provides
-    fun provideAddressService(okHttpClient: OkHttpClient): AddressService {
-        return Retrofit.Builder()
-            .baseUrl("https://geocode-maps.yandex.ru/1.x/")
-            .client(okHttpClient)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AddressService::class.java)
+    fun provideContactMapUseCase(addressRepository: AddressRepository): ContactMapUseCase {
+        return ContactMapUseCaseImpl(addressRepository = addressRepository)
+    }
+
+    @ContactMapScope
+    @Provides
+    fun provideAddressRepository(addressService: AddressService): AddressRepository {
+        return AddressRepositoryImpl(addressService)
     }
 }

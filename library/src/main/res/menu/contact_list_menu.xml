@@ -16,4 +16,11 @@
         android:orderInCategory="2"
         android:title="Mode"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/mapView"
+        android:icon="@drawable/ic_maps_home"
+        android:orderInCategory="3"
+        android:title="Map"
+        app:showAsAction="ifRoom" />
 </menu>

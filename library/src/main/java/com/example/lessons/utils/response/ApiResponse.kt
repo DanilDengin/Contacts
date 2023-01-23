@@ -4,7 +4,7 @@ import java.io.IOException
 
 internal sealed interface ApiResponse<out T> {
 
-    class Success<T>(val data: T) : ApiResponse<T>
+    class Success<T>(var data: T) : ApiResponse<T>
 
     sealed interface Failure : ApiResponse<Nothing> {
 

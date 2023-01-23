@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 
-internal class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
+class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
 
     override fun get(
         returnType: Type,

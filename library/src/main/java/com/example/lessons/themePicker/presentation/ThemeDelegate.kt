@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.lessons.utils.delegate.unsafeLazy
 
 internal class ThemeDelegate(private val context: Context) {
     private companion object {
@@ -14,7 +15,7 @@ internal class ThemeDelegate(private val context: Context) {
         private const val CURRENT_THEME_KEY = "CURRENT_THEME_KEY"
     }
 
-    private val sharedPreferences: SharedPreferences by lazy(LazyThreadSafetyMode.NONE) {
+    private val sharedPreferences: SharedPreferences by unsafeLazy {
         context.getSharedPreferences(CURRENT_THEME_KEY, AppCompatActivity.MODE_PRIVATE)
     }
 
@@ -34,18 +35,10 @@ internal class ThemeDelegate(private val context: Context) {
 
     fun setTheme() {
         val themeMode = when (getCurrentTheme()) {
-            LIGHT_MODE -> {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-            NIGHT_MODE -> {
-                AppCompatDelegate.MODE_NIGHT_YES
-            }
-            SYSTEM_MODE -> {
-                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
-            else -> {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
+            LIGHT_MODE -> AppCompatDelegate.MODE_NIGHT_NO
+            NIGHT_MODE -> AppCompatDelegate.MODE_NIGHT_YES
+            SYSTEM_MODE -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            else -> AppCompatDelegate.MODE_NIGHT_NO
         }
         AppCompatDelegate.setDefaultNightMode(themeMode)
     }

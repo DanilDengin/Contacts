@@ -13,50 +13,53 @@ import com.example.lessons.presentation.MainActivity
 import com.example.library.R
 import com.example.library.databinding.FragmentThemePickerBinding
 
-internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker), MenuProvider {
+internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
 
     private val binding by viewBinding(FragmentThemePickerBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mainActivity: MainActivity = activity as MainActivity
-        mainActivity.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
-        mainActivity.supportActionBar?.setTitle(R.string.theme_picker_toolbar)
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val radioButtonSystemThemeId = R.id.radioButtonPhoneTheme
-        val radioButtonLightThemeId = R.id.radioButtonLightTheme
-        val radioButtonNightThemeId = R.id.radioButtonNightTheme
-        val themeDelegate = mainActivity.themeDelegate
+        val mainActivity: MainActivity? = activity as? MainActivity
+        initializeActionBar(mainActivity)
+        val themeDelegate = mainActivity?.themeDelegate
         setSelectedButton(themeDelegate)
-
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                radioButtonSystemThemeId -> themeDelegate.setSystemMode()
-                radioButtonLightThemeId -> themeDelegate.setLightMode()
-                radioButtonNightThemeId -> themeDelegate.setNightMode()
+                R.id.radioButtonSystemTheme -> themeDelegate?.setSystemMode()
+                R.id.radioButtonLightTheme -> themeDelegate?.setLightMode()
+                R.id.radioButtonNightTheme -> themeDelegate?.setNightMode()
             }
         }
     }
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.backstack_menu, menu)
-    }
+    private fun initializeActionBar(mainActivity: MainActivity?) {
+        mainActivity?.also { activity ->
+            activity.addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.backstack_menu, menu)
+                }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when (menuItem.itemId) {
-            android.R.id.home -> {
-                parentFragmentManager.popBackStack()
-                true
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return if (menuItem.itemId ==android.R.id.home) {
+                        parentFragmentManager.popBackStack()
+                        true
+                    } else {
+                        false
+                    }
+                }
+            })
+            activity.supportActionBar?.also { actionBar ->
+                actionBar.setTitle(R.string.theme_picker_toolbar)
+                actionBar.setDisplayHomeAsUpEnabled(true)
             }
-            else -> false
         }
     }
 
-    private fun setSelectedButton(themeDelegate: ThemeDelegate) {
-        themeDelegate.setSelectedButton(
+    private fun setSelectedButton(themeDelegate: ThemeDelegate?) {
+        themeDelegate?.setSelectedButton(
             { binding.radioButtonLightTheme.isChecked = true },
             { binding.radioButtonNightTheme.isChecked = true },
-            { binding.radioButtonPhoneTheme.isChecked = true }
+            { binding.radioButtonSystemTheme.isChecked = true }
         )
     }
 }

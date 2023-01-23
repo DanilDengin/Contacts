@@ -2,7 +2,7 @@
     <string name="app_name">Contacts</string>
     <string name="contact_details_toolbar">Details</string>
     <string name="contact_list_toolbar">Contacts</string>
-    <string name="theme_picker_toolbar">Color of app</string>
+    <string name="theme_picker_toolbar">Color of the app</string>
     <string name="contact_map_toolbar">Contact&#8217;s location</string>
     <string name="set_birthday_text_view">Set a birthday</string>
     <string name="remind_birthday_toast">You will be reminded about birthday</string>
@@ -11,14 +11,12 @@
     <string name="birthday_notification_title">Don&#8217;t forget to congratulate</string>
     <string name="birthday_switch_text">Remind me about birthday</string>
     <string name="birthday_notification_text">Today is the birthday of &#160;</string>
-    <string name="exception_toast">Oops, something went wrong! Try to restart the app.</string>
+    <string name="exception_toast">Oops, something went wrong! Try to restart the app</string>
+    <string name="server_exception_toast">Server is temporarily unavailable. Please try again later </string>
     <string name="network_exception_toast">No internet connection</string>
     <string name="hint_search_view">Search</string>
     <string name="system_theme">Theme as in the system</string>
     <string name="night_theme">Night theme</string>
     <string name="light_theme">Light theme</string>
-    <string name="network_error_message">Network error</string>
-    <string name="remote_error_message">Remote server error</string>
-    <string name="unknown_error_message">Unknown error</string>
     <string name="set_residence_text_view">Set the contact&#8217;s place of residence on the map</string>
 </resources>

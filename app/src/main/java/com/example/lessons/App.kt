@@ -1,6 +1,8 @@
 package com.example.lessons
 
 import android.app.Application
+import com.example.lessons.contactMap.di.MapComponentDependencies
+import com.example.lessons.contactMap.di.MapComponentDependenciesProvider
 import com.example.lessons.di.AppComponent
 import com.example.lessons.di.ContactComponentDependencies
 import com.example.lessons.di.ContactComponentDependenciesProvider
@@ -8,7 +10,8 @@ import com.example.lessons.di.DaggerAppComponent
 import com.example.lessons.utils.constans.MAPKIT_API_KEY
 import com.yandex.mapkit.MapKitFactory
 
-internal class App : Application(), ContactComponentDependenciesProvider {
+internal class App : Application(), ContactComponentDependenciesProvider,
+    MapComponentDependenciesProvider {
 
     private lateinit var appComponent: AppComponent
 
@@ -20,6 +23,10 @@ internal class App : Application(), ContactComponentDependenciesProvider {
     }
 
     override fun getContactComponentDependencies(): ContactComponentDependencies {
+        return appComponent
+    }
+
+    override fun getMapComponentDependencies(): MapComponentDependencies {
         return appComponent
     }
 }

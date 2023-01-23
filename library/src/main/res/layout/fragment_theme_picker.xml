@@ -10,7 +10,7 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/radioButtonPhoneTheme"
+            android:id="@+id/radioButtonSystemTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/system_theme" />

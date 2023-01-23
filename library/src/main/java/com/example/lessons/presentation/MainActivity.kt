@@ -14,18 +14,24 @@ import androidx.core.content.ContextCompat
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.presentation.ContactListFragment
 import com.example.lessons.themePicker.presentation.ThemeDelegate
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_ID
 import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_NAME
+import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.library.R
 
 
 internal class MainActivity : AppCompatActivity() {
 
+    val themeDelegate: ThemeDelegate by unsafeLazy { ThemeDelegate(this) }
+
     private val requestCodeReadContacts = 1
+
     private var readContactsGranted = false
-    val themeDelegate: ThemeDelegate by lazy(LazyThreadSafetyMode.NONE) {
-        ThemeDelegate(this)
+
+    private val contactId: Int by unsafeLazy {
+        intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +45,7 @@ internal class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
         }
-        if (intent.getIntExtra(
-                BIRTHDAY_CONTACT_ID_INTENT_KEY,
-                -1
-            ) != -1 && savedInstanceState == null
-        ) {
+        if (contactId != -1 && savedInstanceState == null) {
             navigateToBirthdayContact()
         }
     }
@@ -106,15 +108,7 @@ internal class MainActivity : AppCompatActivity() {
 
     private fun navigateToBirthdayContact() {
         supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.fragmentContainer,
-                ContactDetailsFragment.newInstance(
-                    intent.getIntExtra(
-                        BIRTHDAY_CONTACT_ID_INTENT_KEY,
-                        -1
-                    )
-                )
-            )
+            .replace(R.id.fragmentContainer, ContactDetailsFragment.newInstance(contactId))
             .addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
             .commit()
     }

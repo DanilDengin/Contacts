@@ -2,10 +2,11 @@ package com.example.lessons.contacts.domain.contactList.useCases
 
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.repository.local.ContactsRepository
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactListUseCaseImpl(
+class ContactListUseCaseImpl @Inject constructor(
     private val contactsRepository: ContactsRepository
 ) : ContactListUseCase {
 

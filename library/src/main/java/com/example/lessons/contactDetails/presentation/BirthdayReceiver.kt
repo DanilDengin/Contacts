@@ -9,6 +9,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.example.lessons.presentation.MainActivity
+import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
@@ -19,14 +20,15 @@ import java.util.Calendar
 internal class BirthdayReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val contactId =
+            intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID)
         val notificationIntent = Intent(context, MainActivity::class.java)
-        notificationIntent.putExtra(
-            BIRTHDAY_CONTACT_ID_INTENT_KEY,
-            intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1)
-        )
+        notificationIntent.putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
         val notificationPendingIntent = PendingIntent.getActivity(
-            context, intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
-            notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            context,
+            contactId,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -37,25 +39,16 @@ internal class BirthdayReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-        val notification = builder.build()
-        val notificationManager =
-            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(
-            intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
-            notification
-        )
 
-        intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY)
-            ?.let {
-                repeatAlarm(
-                    context,
-                    intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, -1),
-                    it
-                )
-            }
+        (context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(contactId, builder.build())
+
+        intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY)?.let { contactName ->
+            repeatAlarm(context, contactId, contactName)
+        }
     }
 
-    private fun repeatAlarm(context: Context, id: Int, nameContact: String) {
+    private fun repeatAlarm(context: Context, contactId: Int, contactName: String) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(Calendar.MINUTE, 0)
@@ -64,16 +57,19 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         val intentBirthdayReceiver = Intent(BIRTHDAY_RECEIVER_INTENT_ACTION)
         intentBirthdayReceiver
             .setClass(context, BirthdayReceiver::class.java)
-            .putExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY, nameContact)
-            .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, id)
+            .putExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY, contactName)
+            .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
         val pendingIntentBirthday = PendingIntent.getBroadcast(
             context,
-            id,
+            contactId,
             intentBirthdayReceiver,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.set(AlarmManager.RTC, calendar.timeInMillis, pendingIntentBirthday)
+        (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(
+            AlarmManager.RTC,
+            calendar.timeInMillis,
+            pendingIntentBirthday
+        )
     }
 }
 

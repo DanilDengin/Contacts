@@ -26,6 +26,7 @@ import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
+import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getComponentDependencies
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
@@ -39,7 +40,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlinx.coroutines.launch
 
-internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), MenuProvider {
+internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
 
     @Inject
     lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>
@@ -50,27 +51,26 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), Men
 
     private var birthdayDate: GregorianCalendar? = null
 
-    private val intentBirthday: Intent by lazy(LazyThreadSafetyMode.NONE) {
+    private val intentBirthday: Intent by unsafeLazy {
         Intent(BIRTHDAY_RECEIVER_INTENT_ACTION)
     }
 
-    private val pendingIntentBirthday: PendingIntent by lazy(LazyThreadSafetyMode.NONE) {
+    private val pendingIntentBirthday: PendingIntent by unsafeLazy {
         PendingIntent.getBroadcast(
             context,
             contactId,
             intentBirthday,
             PendingIntent.FLAG_UPDATE_CURRENT
-//            PendingIntent.FLAG_IMMUTABLE
         )
     }
 
-    private val alarmBirthday: AlarmManager by lazy(LazyThreadSafetyMode.NONE) {
+    private val alarmBirthday: AlarmManager by unsafeLazy {
         requireContext().getSystemService(
             AppCompatActivity.ALARM_SERVICE
         ) as AlarmManager
     }
 
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel by unsafeLazy {
         viewModel {
             viewModelFactoryProvider.get().create(contactId.toString())
         }
@@ -88,10 +88,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), Men
         super.onViewCreated(view, savedInstanceState)
         val args = requireArguments()
         contactId = args.getInt(ARG)
-        val mainActivity: MainActivity = activity as MainActivity
-        mainActivity.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
-        mainActivity.supportActionBar?.setTitle(R.string.contact_details_toolbar)
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initializeActionBar()
         viewModel.user.observe(viewLifecycleOwner, ::updateView)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
@@ -101,7 +98,6 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), Men
                 context,
                 contactId,
                 intentBirthday,
-//                PendingIntent.FLAG_IMMUTABLE
                 PendingIntent.FLAG_NO_CREATE
             ) != null
         ) {
@@ -131,22 +127,31 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), Men
         binding.mapButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, ContactMapFragment())
-                .addToBackStack(null)
+                .addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
                 .commit()
         }
     }
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.backstack_menu, menu)
-    }
+    private fun initializeActionBar() {
+        (activity as? MainActivity)?.also { activity ->
+            activity.addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.backstack_menu, menu)
+                }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when (menuItem.itemId) {
-            android.R.id.home -> {
-                parentFragmentManager.popBackStack()
-                true
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return if (menuItem.itemId == android.R.id.home) {
+                        parentFragmentManager.popBackStack()
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }, viewLifecycleOwner, Lifecycle.State.STARTED)
+            activity.supportActionBar?.also { actionBar ->
+                actionBar.setTitle(R.string.contact_details_toolbar)
+                actionBar.setDisplayHomeAsUpEnabled(true)
             }
-            else -> false
         }
     }
 
@@ -209,6 +214,8 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details), Men
     }
 
     companion object {
+        val CONTACT_MAP_FRAGMENT_BACK_STACK_KEY: String =
+            ContactMapFragment::class.java.simpleName
         private const val ARG: String = "arg"
         fun newInstance(id: Int) = ContactDetailsFragment().apply {
             arguments = bundleOf(

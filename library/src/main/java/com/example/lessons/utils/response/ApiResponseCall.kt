@@ -1,8 +1,10 @@
 package com.example.lessons.utils.response
 
 import android.util.Log
+import com.example.lessons.utils.response.ApiResponse.Failure.HttpFailure
 import com.example.lessons.utils.response.ApiResponse.Failure.NetworkFailure
 import com.example.lessons.utils.response.ApiResponse.Failure.UnknownFailure
+import com.example.lessons.utils.response.ApiResponse.Success
 import java.io.IOException
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +22,7 @@ internal class ApiResponseCall(private val call: Call<ApiResponse<*>>) :
                 if (response.isSuccessful) {
                     callback.onResponse(
                         call,
-                        Response.success(ApiResponse.Success(checkNotNull(response.body())))
+                        Response.success(Success(data = checkNotNull(response.body())))
                     )
                 } else {
                     Log.w(
@@ -30,7 +32,7 @@ internal class ApiResponseCall(private val call: Call<ApiResponse<*>>) :
                     callback.onResponse(
                         call,
                         Response.success(
-                            ApiResponse.Failure.HttpFailure(
+                            HttpFailure(
                                 code = response.code(),
                                 message = response.message()
                             )

@@ -4,30 +4,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lessons.contactMap.data.address.remote.model.AddressItem
-import com.example.lessons.contactMap.data.address.remote.repository.AddressRepository
+import com.example.lessons.contacts.domain.contactMap.QueryState
+import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCaseImpl
+import com.example.lessons.contacts.domain.entity.Address
 import com.example.lessons.utils.liveData.SingleLiveEvent
-import com.example.lessons.utils.response.ApiResponse
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 internal class ContactMapViewModel @Inject constructor(
-    private val addressRepository: AddressRepository
+//    private val addressRepository: AddressRepositoryImpl
+private val contactMapUseCaseImpl: ContactMapUseCaseImpl
 ) : ViewModel() {
 
-    val addressItem: LiveData<AddressItem?> get() = _addressItem
+    val contactAddress: LiveData<Address?> get() = _contactAddress
     val fatalExceptionState: LiveData<Unit> get() = _fatalExceptionState
     val networkExceptionState: LiveData<Unit> get() = _networkExceptionState
-    private val _addressItem = MutableLiveData<AddressItem?>()
+    val serverExceptionState: LiveData<Unit> get() = _serverExceptionState
+    private val _contactAddress = MutableLiveData<Address?>()
     private val _networkExceptionState = SingleLiveEvent<Unit>()
     private val _fatalExceptionState = SingleLiveEvent<Unit>()
+    private val _serverExceptionState = SingleLiveEvent<Unit>()
 
     fun fetchAddress(latitude: String, longitude: String) {
         viewModelScope.launch {
-            when (val response = addressRepository.getAddress(geocode = "$longitude,$latitude")) {
-                is ApiResponse.Success -> _addressItem.value = response.data
-                is ApiResponse.Failure.NetworkFailure -> _networkExceptionState.value = Unit
-                else -> _fatalExceptionState.value = Unit
+            QueryState.SUCCESS
+            when (contactMapUseCaseImpl.getQueryState(geocode = "$longitude,$latitude")) {
+                QueryState.SUCCESS -> {
+                    _contactAddress.value = contactMapUseCaseImpl.getData(geocode = "$longitude,$latitude")
+                }
+                QueryState.NETWORK_ERROR -> _networkExceptionState.value = Unit
+                QueryState.SERVICE_ERROR -> _serverExceptionState.value = Unit
+                QueryState.UNKNOWN_ERROR -> _fatalExceptionState.value = Unit
             }
         }
     }
