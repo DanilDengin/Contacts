@@ -2,10 +2,9 @@ package com.example.lessons.contactMap.di
 
 import com.example.lessons.contactMap.data.address.remote.api.AddressService
 import com.example.lessons.contactMap.data.address.remote.repository.AddressRepositoryImpl
-import com.example.lessons.contacts.domain.repository.remote.AddressRepository
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCaseImpl
-import dagger.Binds
+import com.example.lessons.contacts.domain.repository.remote.AddressRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -21,13 +20,14 @@ internal object ContactMapModule {
 
     @ContactMapScope
     @Provides
-    fun provideContactMapUseCase(addressRepository: AddressRepository): ContactMapUseCase {
-        return ContactMapUseCaseImpl(addressRepository = addressRepository)
+    fun provideAddressRepository(addressService: AddressService): AddressRepository {
+        return AddressRepositoryImpl(addressService = addressService)
     }
 
     @ContactMapScope
     @Provides
-    fun provideAddressRepository(addressService: AddressService): AddressRepository {
-        return AddressRepositoryImpl(addressService)
+    fun provideContactMapUseCase(addressRepository: AddressRepository): ContactMapUseCase {
+        return ContactMapUseCaseImpl(addressRepository = addressRepository)
     }
+
 }

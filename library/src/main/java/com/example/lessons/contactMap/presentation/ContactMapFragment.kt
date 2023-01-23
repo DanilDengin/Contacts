@@ -12,7 +12,6 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lessons.contactMap.data.address.remote.model.AddressDto
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
 import com.example.lessons.contactMap.di.MapComponentDependenciesProvider
 import com.example.lessons.contacts.domain.entity.Address
@@ -83,9 +82,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         listenerInitialization()
         viewModel.contactAddress.observe(viewLifecycleOwner, ::makeToast)
         viewModel.networkExceptionState.observe(viewLifecycleOwner) { showNetworkExceptionToast() }
-        viewModel.serverExceptionState.observe(viewLifecycleOwner) { showServerExceptionToast() }
-        viewModel.fatalExceptionState.observe(viewLifecycleOwner) { showFatalExceptionToast() }
-        binding.mapView.map.addInputListener(object :InputListener {
+        binding.mapView.map.addInputListener(object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
                 binding.mapView.map.mapObjects.addPlacemark(point)
                 viewModel.fetchAddress(point.latitude.toString(), point.longitude.toString())
@@ -192,23 +189,6 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         Toast.makeText(
             contextNotNull,
             contextNotNull.getText(R.string.network_exception_toast),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showFatalExceptionToast() {
-        val contextNotNull = requireContext()
-        Toast.makeText(
-            contextNotNull,
-            contextNotNull.getText(R.string.exception_toast),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-    private fun showServerExceptionToast() {
-        val contextNotNull = requireContext()
-        Toast.makeText(
-            contextNotNull,
-            contextNotNull.getText(R.string.server_exception_toast),
             Toast.LENGTH_LONG
         ).show()
     }

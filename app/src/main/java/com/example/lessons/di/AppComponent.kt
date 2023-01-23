@@ -6,7 +6,6 @@ import com.example.lessons.contacts.domain.repository.local.ContactsRepository
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @Singleton
