@@ -7,6 +7,6 @@ interface AddressRepository {
 
     suspend fun queryState(geocode: String): QueryState
 
-    suspend fun getAddress(geocode: String): Address?
+    suspend fun getAddress(): Address?
 
 }

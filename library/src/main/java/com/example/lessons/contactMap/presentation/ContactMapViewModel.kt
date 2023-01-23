@@ -30,7 +30,7 @@ private val contactMapUseCaseImpl: ContactMapUseCaseImpl
             QueryState.SUCCESS
             when (contactMapUseCaseImpl.getQueryState(geocode = "$longitude,$latitude")) {
                 QueryState.SUCCESS -> {
-                    _contactAddress.value = contactMapUseCaseImpl.getData(geocode = "$longitude,$latitude")
+                    _contactAddress.value = contactMapUseCaseImpl.getData()
                 }
                 QueryState.NETWORK_ERROR -> _networkExceptionState.value = Unit
                 QueryState.SERVICE_ERROR -> _serverExceptionState.value = Unit

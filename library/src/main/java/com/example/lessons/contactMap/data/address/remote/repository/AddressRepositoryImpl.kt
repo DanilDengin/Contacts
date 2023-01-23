@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 internal class AddressRepositoryImpl (private val addressService: AddressService) :
     AddressRepository {
 
-    private var state: QueryState? = null
+    private var address : Address? = null
 
     override suspend fun queryState(geocode: String): QueryState {
         val response = withContext(Dispatchers.IO) {
@@ -22,7 +22,7 @@ internal class AddressRepositoryImpl (private val addressService: AddressService
         }
         return when (response) {
             is ApiResponse.Success -> {
-                state = QueryState.SUCCESS
+                address = response.data.toAddress()
                 return QueryState.SUCCESS
             }
             is ApiResponse.Failure.NetworkFailure -> QueryState.NETWORK_ERROR
@@ -31,11 +31,7 @@ internal class AddressRepositoryImpl (private val addressService: AddressService
         }
     }
 
-    override suspend fun getAddress(geocode: String): Address? {
-        var address : Address? = null
-        if (state == QueryState.SUCCESS) {
-            address =  (addressService.getAddress(geocode) as ApiResponse.Success).data.toAddress()
-        }
+    override suspend fun getAddress(): Address? {
         return address
     }
 }

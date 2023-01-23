@@ -9,11 +9,11 @@ class ContactMapUseCaseImpl @Inject constructor(
     private val addressRepository: AddressRepository
 ) : ContactMapUseCase {
 
-    override suspend fun getQueryState(geocode : String): QueryState {
+    override suspend fun getQueryState(geocode: String): QueryState {
         return addressRepository.queryState(geocode)
     }
 
-    override suspend fun getData(geocode : String): Address? {
-        return addressRepository.getAddress(geocode)
+    override suspend fun getData(): Address? {
+        return addressRepository.getAddress()
     }
 }

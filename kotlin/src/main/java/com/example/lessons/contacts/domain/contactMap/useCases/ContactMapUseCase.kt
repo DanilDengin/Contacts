@@ -7,6 +7,6 @@ interface ContactMapUseCase {
 
     suspend fun getQueryState(geocode : String): QueryState
 
-    suspend fun getData(geocode : String): Address?
+    suspend fun getData(): Address?
 
 }
