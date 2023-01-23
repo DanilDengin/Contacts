@@ -78,8 +78,8 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        actionBarInitialization()
-        listenerInitialization()
+        initActionBar()
+        initListener()
         viewModel.contactAddress.observe(viewLifecycleOwner, ::makeToast)
         viewModel.networkExceptionState.observe(viewLifecycleOwner) { showNetworkExceptionToast() }
         binding.mapView.map.addInputListener(object : InputListener {
@@ -93,7 +93,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
 
     }
 
-    private fun listenerInitialization() {
+    private fun initListener() {
         binding.searchEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 submitQuery(binding.searchEdit.text.toString())
@@ -107,7 +107,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         }
     }
 
-    private fun actionBarInitialization() {
+    private fun initActionBar() {
         (activity as? MainActivity)?.also { activity ->
             activity.addMenuProvider(object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

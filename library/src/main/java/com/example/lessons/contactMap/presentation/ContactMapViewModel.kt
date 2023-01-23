@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCaseImpl
+import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
 import com.example.lessons.contacts.domain.entity.Address
 import com.example.lessons.utils.liveData.SingleLiveEvent
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 internal class ContactMapViewModel @Inject constructor(
-    private val contactMapUseCaseImpl: ContactMapUseCaseImpl
+    private val contactMapUseCase: ContactMapUseCase
 ) : ViewModel() {
 
     val contactAddress: LiveData<Address?> get() = _contactAddress
@@ -21,7 +21,7 @@ internal class ContactMapViewModel @Inject constructor(
 
     fun fetchAddress(latitude: String, longitude: String) {
         viewModelScope.launch {
-            val result = contactMapUseCaseImpl.getAddress(geocode = "$longitude,$latitude")
+            val result = contactMapUseCase.getAddress(geocode = "$longitude,$latitude")
             if (result.isSuccess) {
                 _contactAddress.value = result.getOrNull()
             } else {

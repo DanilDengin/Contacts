@@ -88,7 +88,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         super.onViewCreated(view, savedInstanceState)
         val args = requireArguments()
         contactId = args.getInt(ARG)
-        initializeActionBar()
+        initActionBar()
         viewModel.user.observe(viewLifecycleOwner, ::updateView)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
@@ -132,7 +132,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
-    private fun initializeActionBar() {
+    private fun initActionBar() {
         (activity as? MainActivity)?.also { activity ->
             activity.addMenuProvider(object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

@@ -56,7 +56,7 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeActionBar()
+        initActionBar()
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val horizontalISpaceItemDecorator = ContactListItemDecorator()
         val layoutManager = LinearLayoutManager(context)
@@ -68,7 +68,7 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 
-    private fun initializeActionBar() {
+    private fun initActionBar() {
         (activity as? MainActivity)?.also { activity ->
             activity.addMenuProvider(object : MenuProvider {
                 override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
