@@ -81,6 +81,8 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         initListener()
         viewModel.contactAddress.observe(viewLifecycleOwner, ::makeToast)
         viewModel.networkExceptionState.observe(viewLifecycleOwner) { showNetworkExceptionToast() }
+        viewModel.serverExceptionState.observe(viewLifecycleOwner) { showServerExceptionToast() }
+        viewModel.fatalExceptionState.observe(viewLifecycleOwner) { showFatalExceptionToast() }
         binding.mapView.map.addInputListener(object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
                 binding.mapView.map.mapObjects.addPlacemark(point)
@@ -188,6 +190,24 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         Toast.makeText(
             contextNotNull,
             contextNotNull.getText(R.string.network_exception_toast),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun showFatalExceptionToast() {
+        val contextNotNull = requireContext()
+        Toast.makeText(
+            contextNotNull,
+            contextNotNull.getText(R.string.exception_toast),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun showServerExceptionToast() {
+        val contextNotNull = requireContext()
+        Toast.makeText(
+            contextNotNull,
+            contextNotNull.getText(R.string.server_exception_toast),
             Toast.LENGTH_LONG
         ).show()
     }

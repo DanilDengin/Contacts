@@ -13,7 +13,7 @@
     <string name="birthday_notification_text">Today is the birthday of &#160;</string>
     <string name="exception_toast">Oops, something went wrong! Try to restart the app</string>
     <string name="server_exception_toast">Server is temporarily unavailable. Please try again later </string>
-    <string name="network_exception_toast">Network problems</string>
+    <string name="network_exception_toast">Network connection is lost</string>
     <string name="hint_search_view">Search</string>
     <string name="system_theme">Theme as in the system</string>
     <string name="night_theme">Night theme</string>

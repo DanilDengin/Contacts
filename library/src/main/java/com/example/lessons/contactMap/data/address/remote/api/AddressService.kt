@@ -1,8 +1,8 @@
 package com.example.lessons.contactMap.data.address.remote.api
 
 import com.example.lessons.contactMap.data.address.remote.model.AddressDto
+import com.example.lessons.contacts.domain.api.response.ApiResponse
 import com.example.lessons.utils.constans.HTTP_GEOCODING_API_KEY
-import com.example.lessons.utils.response.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
