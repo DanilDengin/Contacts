@@ -2,7 +2,7 @@ package com.example.lessons.contactMap.data.address.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-internal data class AddressDto(
+data class AddressDto(
     @SerializedName("response")
     val response: Response
 ) {

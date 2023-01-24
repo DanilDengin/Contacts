@@ -6,7 +6,7 @@ import com.example.lessons.utils.response.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-internal interface AddressService {
+interface AddressService {
 
     @GET("?apikey=$HTTP_GEOCODING_API_KEY&format=json")
     suspend fun getAddress(

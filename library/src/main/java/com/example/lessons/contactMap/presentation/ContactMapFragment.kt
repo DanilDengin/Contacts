@@ -41,7 +41,6 @@ import javax.inject.Provider
 
 internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListener {
 
-
     @Inject
     lateinit var viewModelProvider: Provider<ContactMapViewModel>
 

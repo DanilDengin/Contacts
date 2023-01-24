@@ -2,7 +2,7 @@ package com.example.lessons.utils.response
 
 import java.io.IOException
 
-internal sealed interface ApiResponse<out T> {
+sealed interface ApiResponse<out T> {
 
     class Success<T>(val data: T) : ApiResponse<T>
 

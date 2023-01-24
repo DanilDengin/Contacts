@@ -5,29 +5,28 @@ import com.example.lessons.contactMap.data.address.remote.repository.AddressRepo
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCaseImpl
 import com.example.lessons.contacts.domain.repository.remote.AddressRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 
 @Module
-internal object ContactMapModule {
+internal abstract class ContactMapModule {
 
     @ContactMapScope
-    @Provides
-    fun provideRetrofit(retrofit: Retrofit): AddressService {
-        return retrofit.create(AddressService::class.java)
-    }
+    @Binds
+    abstract fun bindAddressRepository(addressRepositoryImpl: AddressRepositoryImpl): AddressRepository
 
     @ContactMapScope
-    @Provides
-    fun provideAddressRepository(addressService: AddressService): AddressRepository {
-        return AddressRepositoryImpl(addressService = addressService)
-    }
+    @Binds
+    abstract fun bindContactMapUseCase(contactMapUseCaseImpl: ContactMapUseCaseImpl): ContactMapUseCase
 
-    @ContactMapScope
-    @Provides
-    fun provideContactMapUseCase(addressRepository: AddressRepository): ContactMapUseCase {
-        return ContactMapUseCaseImpl(addressRepository = addressRepository)
+    companion object {
+        @ContactMapScope
+        @Provides
+        fun provideRetrofit(retrofit: Retrofit): AddressService {
+            return retrofit.create(AddressService::class.java)
+        }
     }
 
 }
