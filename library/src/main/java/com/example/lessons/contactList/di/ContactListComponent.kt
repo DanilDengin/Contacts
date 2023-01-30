@@ -1,7 +1,7 @@
 package com.example.lessons.contactList.di
 
 import com.example.lessons.contactList.presentation.ContactListFragment
-import com.example.lessons.di.ContactComponentDependencies
+import com.example.lessons.di.contactListDetails.ContactComponentDependencies
 import dagger.Component
 
 @ContactListScope

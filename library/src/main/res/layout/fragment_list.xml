@@ -9,7 +9,7 @@
     tools:context="com.example.lessons.contactList.presentation.ContactListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/contactListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+        app:layout_constraintStart_toStartOf="@+id/contactListRecyclerView"
+        app:layout_constraintTop_toTopOf="@+id/contactListRecyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

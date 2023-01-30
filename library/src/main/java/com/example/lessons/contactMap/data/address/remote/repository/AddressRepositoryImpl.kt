@@ -1,7 +1,7 @@
 package com.example.lessons.contactMap.data.address.remote.repository
 
 import com.example.lessons.contactMap.data.address.remote.api.AddressService
-import com.example.lessons.contactMap.data.address.remote.mappint.toAddress
+import com.example.lessons.contactMap.data.address.remote.model.toAddress
 import com.example.lessons.contacts.domain.api.response.ApiResponse
 import com.example.lessons.contacts.domain.entity.Address
 import com.example.lessons.contacts.domain.repository.remote.AddressRepository
@@ -9,7 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AddressRepositoryImpl @Inject constructor(
+internal class AddressRepositoryImpl @Inject constructor(
     private val addressService: AddressService
 ) : AddressRepository {
 

@@ -1,21 +1,28 @@
 <resources>
-<!-- Base application theme. -->
-<style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-    <!-- Primary brand color. -->
-    <item name="colorPrimary">@color/purple_200</item>
-    <item name="colorPrimaryVariant">@color/purple_200</item>
-    <item name="colorOnPrimary">@color/white</item>
-    <!-- Secondary brand color. -->
-    <item name="colorSecondary">@color/teal_200</item>
-    <item name="colorSecondaryVariant">@color/teal_700</item>
-    <item name="colorOnSecondary">@color/black</item>
-    <!-- Status bar color. -->
-    <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-    <!-- Customize your theme here. -->
-    <item name="android:navigationBarColor">@color/transparent</item>
-    <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
-</style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor">@color/transparent</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
+        <item name="textAppearanceHeadline">@style/Widget.MyApplication.HeaderTextView</item>
+        <item name="textAppearanceBodyLarge">@style/Widget.MyApplication.BodyLargeTextView</item>
+        <item name="textAppearanceBodyMedium">@style/Widget.MyApplication.BodyMediumTextView</item>
+        <item name="textAppearanceSwitchCompat">
+            @style/Widget.MyApplication.TextAppearanceSwitchCompat
+        </item>
+        <item name="textColorToolbar">@color/white</item>
+    </style>
 
-<style name="Theme.Lessons" parent="Base.Theme.MyApplication" />
+    <style name="Theme.Lessons" parent="Base.Theme.MyApplication" />
 
 </resources>

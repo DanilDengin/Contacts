@@ -1,11 +1,11 @@
-package com.example.lessons.contactList.presentation.recyclerView
+package com.example.lessons.presentation.recyclerView
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons.utils.decoration.fromPxToDp
 
-internal class ContactListItemDecorator : RecyclerView.ItemDecoration() {
+internal class ContactItemDecorator : RecyclerView.ItemDecoration() {
 
     private val spaceDp: Int = 8.fromPxToDp()
 

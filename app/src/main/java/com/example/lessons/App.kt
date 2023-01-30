@@ -1,17 +1,14 @@
 package com.example.lessons
 
 import android.app.Application
-import com.example.lessons.contactMap.di.MapComponentDependencies
-import com.example.lessons.contactMap.di.MapComponentDependenciesProvider
 import com.example.lessons.di.AppComponent
-import com.example.lessons.di.ContactComponentDependencies
-import com.example.lessons.di.ContactComponentDependenciesProvider
 import com.example.lessons.di.DaggerAppComponent
+import com.example.lessons.di.provider.DiDependencies
+import com.example.lessons.di.provider.DiDependenciesProvider
 import com.example.lessons.utils.constans.MAPKIT_API_KEY
 import com.yandex.mapkit.MapKitFactory
 
-internal class App : Application(), ContactComponentDependenciesProvider,
-    MapComponentDependenciesProvider {
+internal class App : Application(), DiDependenciesProvider {
 
     private lateinit var appComponent: AppComponent
 
@@ -22,11 +19,7 @@ internal class App : Application(), ContactComponentDependenciesProvider,
             .create(this)
     }
 
-    override fun getContactComponentDependencies(): ContactComponentDependencies {
-        return appComponent
-    }
-
-    override fun getMapComponentDependencies(): MapComponentDependencies {
+    override fun getDependencies(): DiDependencies {
         return appComponent
     }
 }

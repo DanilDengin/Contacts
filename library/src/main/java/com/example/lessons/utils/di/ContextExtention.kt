@@ -1,8 +1,7 @@
 package com.example.lessons.utils.di
 
 import android.content.Context
-import com.example.lessons.di.ContactComponentDependenciesProvider
+import com.example.lessons.di.provider.DiDependenciesProvider
 
-internal fun Context.getComponentDependencies() =
-    (applicationContext as ContactComponentDependenciesProvider)
-        .getContactComponentDependencies()
+fun <T> Context.getDependenciesProvider() where T : DiDependenciesProvider =
+    (applicationContext as T).getDependencies()

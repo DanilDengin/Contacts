@@ -1,27 +1,22 @@
 package com.example.lessons.themePicker.presentation
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.lessons.utils.delegate.unsafeLazy
 
-internal class ThemeDelegate(private val context: Context) {
-    private companion object {
-        const val LIGHT_MODE = "lightMode"
-        const val NIGHT_MODE = "nightMode"
-        const val SYSTEM_MODE = "systemMode"
-        const val CURRENT_NIGHT_MODE = "currentNightMode"
-        private const val CURRENT_THEME_KEY = "CURRENT_THEME_KEY"
+internal class ThemeDelegate(val context: Context) {
+
+    private val sharedPreferences by unsafeLazy {
+        context.getSharedPreferences(
+            CURRENT_THEME_KEY,
+            AppCompatActivity.MODE_PRIVATE
+        )
     }
 
-    private val sharedPreferences: SharedPreferences by unsafeLazy {
-        context.getSharedPreferences(CURRENT_THEME_KEY, AppCompatActivity.MODE_PRIVATE)
-    }
+    private fun getCurrentTheme() = sharedPreferences.getString(CURRENT_MODE, LIGHT_MODE)
 
-    private fun getCurrentTheme() = sharedPreferences.getString(CURRENT_NIGHT_MODE, LIGHT_MODE)
-
-    fun setSelectedButton(
+    fun setThemeButton(
         setLightModeButton: () -> Unit,
         setNightModeButton: () -> Unit,
         setSystemModeButton: () -> Unit,
@@ -57,9 +52,17 @@ internal class ThemeDelegate(private val context: Context) {
 
     private fun updateTheme(mode: String) {
         sharedPreferences.edit().apply {
-            putString(CURRENT_NIGHT_MODE, mode)
+            putString(CURRENT_MODE, mode)
             apply()
         }
         setTheme()
+    }
+
+    private companion object {
+        const val LIGHT_MODE = "lightMode"
+        const val NIGHT_MODE = "nightMode"
+        const val SYSTEM_MODE = "systemMode"
+        const val CURRENT_MODE = "currentMode"
+        private const val CURRENT_THEME_KEY = "currentThemeKey"
     }
 }

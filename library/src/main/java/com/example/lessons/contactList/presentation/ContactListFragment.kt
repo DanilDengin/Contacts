@@ -18,12 +18,14 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
-import com.example.lessons.contactList.presentation.recyclerView.ContactListItemDecorator
 import com.example.lessons.contactMap.presentation.ContactMapFragment
+import com.example.lessons.di.contactListDetails.ContactComponentDependencies
+import com.example.lessons.di.contactListDetails.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.themePicker.presentation.ThemePickerFragment
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getComponentDependencies
+import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentListBinding
@@ -47,18 +49,21 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         DaggerContactListComponent.builder()
-            .contactComponentDependencies(requireContext().getComponentDependencies())
+            .contactComponentDependencies(
+                requireContext()
+                    .getDependenciesProvider<ContactComponentDependenciesProvider>() as? ContactComponentDependencies
+            )
             .build()
             .also { it.inject(this) }
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        val horizontalISpaceItemDecorator = ContactListItemDecorator()
+        val recyclerView: RecyclerView = binding.contactListRecyclerView
+        val horizontalISpaceItemDecorator = ContactItemDecorator()
         val layoutManager = LinearLayoutManager(context)
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)

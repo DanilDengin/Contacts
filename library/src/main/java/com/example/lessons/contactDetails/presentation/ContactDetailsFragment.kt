@@ -20,14 +20,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
+import com.example.lessons.contactMap.data.model.toArguments
 import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.contacts.domain.entity.Contact
+import com.example.lessons.di.contactListDetails.ContactComponentDependencies
+import com.example.lessons.di.contactListDetails.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
 import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getComponentDependencies
+import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentDetailsBinding
@@ -70,6 +73,10 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         ) as AlarmManager
     }
 
+    private val birthdayNotificationText: String by lazy(LazyThreadSafetyMode.NONE) {
+        resources.getString(R.string.birthday_notification_text)
+    }
+
     private val viewModel by unsafeLazy {
         viewModel {
             viewModelFactoryProvider.get().create(contactId.toString())
@@ -77,17 +84,19 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         DaggerContactDetailsComponent.builder()
-            .contactComponentDependencies(requireContext().getComponentDependencies())
+            .contactComponentDependencies(
+                requireContext()
+                    .getDependenciesProvider<ContactComponentDependenciesProvider>() as? ContactComponentDependencies
+            )
             .build()
             .also { it.inject(this) }
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args = requireArguments()
-        contactId = args.getInt(ARG)
+        contactId = requireArguments().getInt(ARG)
         initActionBar()
         viewModel.user.observe(viewLifecycleOwner, ::updateView)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
@@ -125,11 +134,18 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         }
 
         binding.mapButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, ContactMapFragment())
-                .addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
-                .commit()
+            navigateToContactMapFragment()
         }
+    }
+
+    private fun navigateToContactMapFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                ContactMapFragment.newInstance(viewModel.user.value?.toArguments())
+            )
+            .addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
+            .commit()
     }
 
     private fun initActionBar() {
@@ -183,7 +199,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             intentBirthday
                 .putExtra(
                     BIRTHDAY_CONTACT_NAME_INTENT_KEY,
-                    activity?.getString(R.string.birthday_notification_text) + binding.nameTextView.text
+                    String.format(birthdayNotificationText, " ${binding.nameTextView.text}")
                 )
                 .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
         }

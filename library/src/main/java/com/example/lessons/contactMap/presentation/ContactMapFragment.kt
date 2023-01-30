@@ -1,111 +1,213 @@
 package com.example.lessons.contactMap.presentation
 
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.lessons.contactMap.data.model.Arguments
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
-import com.example.lessons.contactMap.di.MapComponentDependenciesProvider
+import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment
 import com.example.lessons.contacts.domain.entity.Address
+import com.example.lessons.contacts.domain.entity.ContactMap
+import com.example.lessons.di.contactMap.MapComponentDependencies
+import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
+import com.example.lessons.utils.constans.BUS_BUNDLE_PAIR
+import com.example.lessons.utils.constans.CAR_BUNDLE_PAIR
+import com.example.lessons.utils.constans.FIRST_CONTACT_BUNDLE_KEY
+import com.example.lessons.utils.constans.FOOT_BUNDLE_PAIR
+import com.example.lessons.utils.constans.MIXED_FORMAT_BUNDLE_PAIR
+import com.example.lessons.utils.constans.ROUTE_MAP_BUNDLE_KEY
+import com.example.lessons.utils.constans.ROUTE_MAP_KEY
+import com.example.lessons.utils.constans.SECOND_CONTACT_BUNDLE_KEY
+import com.example.lessons.utils.constans.UNDERGROUND_BUNDLE_PAIR
 import com.example.lessons.utils.delegate.unsafeLazy
+import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentMapBinding
+import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.RequestPoint
+import com.yandex.mapkit.RequestPointType
+import com.yandex.mapkit.directions.DirectionsFactory
+import com.yandex.mapkit.directions.driving.DrivingOptions
+import com.yandex.mapkit.directions.driving.DrivingRoute
+import com.yandex.mapkit.directions.driving.DrivingSession.DrivingRouteListener
+import com.yandex.mapkit.directions.driving.VehicleOptions
+import com.yandex.mapkit.geometry.BoundingBox
+import com.yandex.mapkit.geometry.BoundingBoxHelper
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.geometry.Polyline
+import com.yandex.mapkit.geometry.SubpolylineHelper
+import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
-import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.VisibleRegionUtils
-import com.yandex.mapkit.search.Response
-import com.yandex.mapkit.search.SearchFactory
-import com.yandex.mapkit.search.SearchManager
-import com.yandex.mapkit.search.SearchManagerType
-import com.yandex.mapkit.search.SearchOptions
-import com.yandex.mapkit.search.Session.SearchListener
+import com.yandex.mapkit.transport.TransportFactory
+import com.yandex.mapkit.transport.masstransit.FilterVehicleTypes
+import com.yandex.mapkit.transport.masstransit.Route
+import com.yandex.mapkit.transport.masstransit.SectionMetadata.SectionData
+import com.yandex.mapkit.transport.masstransit.Session.RouteListener
+import com.yandex.mapkit.transport.masstransit.TimeOptions
+import com.yandex.mapkit.transport.masstransit.TransitOptions
+import com.yandex.mapkit.transport.masstransit.Transport
 import com.yandex.runtime.Error
 import com.yandex.runtime.image.ImageProvider
-import com.yandex.runtime.network.NetworkError
-import com.yandex.runtime.network.RemoteError
+import com.yandex.runtime.ui_view.ViewProvider
 import javax.inject.Inject
 import javax.inject.Provider
+import kotlin.math.pow
+import kotlin.math.sqrt
+import kotlinx.coroutines.launch
 
-internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListener {
+
+internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRouteListener,
+    RouteListener {
 
     @Inject
     lateinit var viewModelProvider: Provider<ContactMapViewModel>
 
-    private val foundedPlacesImage by unsafeLazy {
+    private val contactMapImage by unsafeLazy {
         ImageProvider.fromResource(
             requireContext(),
-            R.drawable.founded_place
+            R.drawable.ic_person_pin
         )
     }
 
     private val binding by viewBinding(FragmentMapBinding::bind)
 
-    private var searchManager: SearchManager? = null
-
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
+    private val mapObjects by unsafeLazy { binding.mapView.map.mapObjects }
+
+    private var contactArgument: Arguments? = null
+
+    private var chosenPoint = Point()
+
+    private val networkErrorMessage by unsafeLazy { getString(R.string.network_exception_toast) }
+
+    private val roadNotFountMessage by unsafeLazy { getString(R.string.road_not_found_toast) }
+
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         DaggerContactMapComponent.builder()
             .mapComponentDependencies(
-                (requireContext().applicationContext as MapComponentDependenciesProvider)
-                    .getMapComponentDependencies()
+                requireContext()
+                    .getDependenciesProvider<MapComponentDependenciesProvider>() as? MapComponentDependencies
             )
             .build()
             .also { it.inject(this) }
+        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MapKitFactory.initialize(requireContext())
-        SearchFactory.initialize(requireContext())
-        searchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.COMBINED)
+        val contextNotNull = requireContext()
+        TransportFactory.initialize(contextNotNull)
+        DirectionsFactory.initialize(contextNotNull)
+        MapKitFactory.initialize(contextNotNull)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+        binding.mapView.onStart()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        initListener()
-        viewModel.contactAddress.observe(viewLifecycleOwner, ::makeToast)
+        contactArgument = if (Build.VERSION.SDK_INT >= 33) {
+            arguments?.getParcelable(ARG, Arguments::class.java)
+        } else {
+            arguments?.getParcelable(ARG)
+        }
         viewModel.networkExceptionState.observe(viewLifecycleOwner) { showNetworkExceptionToast() }
         viewModel.serverExceptionState.observe(viewLifecycleOwner) { showServerExceptionToast() }
         viewModel.fatalExceptionState.observe(viewLifecycleOwner) { showFatalExceptionToast() }
-        binding.mapView.map.addInputListener(object : InputListener {
-            override fun onMapTap(map: Map, point: Point) {
-                binding.mapView.map.mapObjects.addPlacemark(point)
-                viewModel.fetchAddress(point.latitude.toString(), point.longitude.toString())
-            }
-
-            override fun onMapLongTap(map: Map, p1: Point) = Unit
-        })
-
+        if (contactArgument != null) {
+            doActionForSingleContact()
+        } else {
+            doActionForContacts()
+        }
     }
 
-    private fun initListener() {
-        binding.searchEdit.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                submitQuery(binding.searchEdit.text.toString())
-            }
-            return@setOnEditorActionListener false
+    override fun onStop() {
+        binding.mapView.onStop()
+        MapKitFactory.getInstance().onStop()
+        super.onStop()
+    }
+
+    override fun onDrivingRoutes(routes: List<DrivingRoute>) {
+        if (routes.isNotEmpty()) {
+            val route = routes.first()
+            mapObjects.addPolyline(route.geometry)
+            val boundingBox = BoundingBoxHelper.getBounds(route.geometry)
+            var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
+            cameraPosition = CameraPosition(
+                cameraPosition.target,
+                cameraPosition.zoom - ROUTE_SMALL_ZOOM,
+                cameraPosition.azimuth,
+                cameraPosition.tilt
+            )
+            binding.mapView.map.move(
+                cameraPosition,
+                Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+                null
+            )
+        } else {
+            Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT).show()
         }
-        binding.mapView.map.addCameraListener { _, _, _, finished ->
-            if (finished) {
-                submitQuery(binding.searchEdit.text.toString())
+    }
+
+    override fun onDrivingRoutesError(error: Error) {
+        Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMasstransitRoutes(routesList: MutableList<Route>) {
+        if (routesList.size > 0) {
+            val boundingBox = BoundingBoxHelper.getBounds(routesList.firstOrNull()?.geometry)
+            var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
+            cameraPosition = CameraPosition(
+                cameraPosition.target,
+                cameraPosition.zoom - ROUTE_SMALL_ZOOM,
+                cameraPosition.azimuth,
+                cameraPosition.tilt
+            )
+            binding.mapView.map.move(
+                cameraPosition,
+                Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+                null
+            )
+            routesList.firstOrNull()?.sections?.let { sectionList ->
+                for (section in sectionList) {
+                    drawSection(
+                        section.metadata.data,
+                        SubpolylineHelper.subpolyline(
+                            routesList.firstOrNull()?.geometry, section.geometry
+                        )
+                    )
+                }
             }
+        } else {
+            Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onMasstransitRoutesError(error: Error) {
+        Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
     }
 
     private fun initActionBar() {
@@ -131,58 +233,238 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
         }
     }
 
-    private fun makeToast(address: Address?) {
-        Toast.makeText(
-            requireContext(),
-            address?.address,
-            Toast.LENGTH_SHORT
-        ).show()
+    private fun doActionForSingleContact() {
+        binding.deleteContactMapImageView.visibility = View.VISIBLE
+        binding.deleteContactMapImageView.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                contactArgument?.id?.let { contactId -> viewModel.deleteContactMap(contactId) }
+                mapObjects.clear()
+            }
+        }
+        viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
+        viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getContactMapById(requireNotNull(contactArgument?.id))
+            binding.mapView.map.addInputListener(object : InputListener {
+                override fun onMapTap(map: Map, point: Point) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        mapObjects.clear()
+                        chosenPoint = point
+                        viewModel.fetchAddress(
+                            point.latitude.toString(),
+                            point.longitude.toString()
+                        )
+                    }
+                }
+
+                override fun onMapLongTap(map: Map, p1: Point) = Unit
+            })
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        MapKitFactory.getInstance().onStart()
-        binding.mapView.onStart()
+    private fun doActionForContacts() {
+        binding.routeImageView.visibility = View.VISIBLE
+        binding.routeImageView.setOnClickListener {
+            navigateToMapPickerFragment()
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getAllContactMaps()
+            paintAllContactsMap()
+        }
+        getFragmentResult()
     }
 
-    override fun onStop() {
-        binding.mapView.onStop()
-        MapKitFactory.getInstance().onStop()
-        super.onStop()
+    private fun getFragmentResult() {
+        parentFragmentManager.setFragmentResultListener(
+            ROUTE_MAP_KEY,
+            viewLifecycleOwner
+        ) { _, bundle ->
+            val firstContact = viewModel.contactMapList.value?.find { contactMap ->
+                contactMap.id == bundle.getString(FIRST_CONTACT_BUNDLE_KEY)
+            }
+            val secondContact = viewModel.contactMapList.value?.find { contactMap ->
+                contactMap.id == bundle.getString(SECOND_CONTACT_BUNDLE_KEY)
+            }
+            if (firstContact != null && secondContact != null) {
+                val pointFirstContact = Point(firstContact.latitude, firstContact.longitude)
+                val pointSecondContact = Point(secondContact.latitude, secondContact.longitude)
+                when (bundle.getString(ROUTE_MAP_BUNDLE_KEY)) {
+                    BUS_BUNDLE_PAIR -> {
+                        plotRoute(
+                            TransitOptions(FilterVehicleTypes.TROLLEYBUS.value, TimeOptions()),
+                            pointFirstContact,
+                            pointSecondContact
+                        )
+                    }
+                    CAR_BUNDLE_PAIR -> {
+                        plotRouteByCar(
+                            pointFirstContact,
+                            pointSecondContact
+                        )
+                    }
+                    FOOT_BUNDLE_PAIR -> {
+                        plotRouteByFoot(
+                            pointFirstContact,
+                            pointSecondContact
+                        )
+                    }
+                    UNDERGROUND_BUNDLE_PAIR -> {
+                        plotRoute(
+                            TransitOptions(FilterVehicleTypes.RAILWAY.value, TimeOptions()),
+                            pointFirstContact,
+                            pointSecondContact
+                        )
+                    }
+                    MIXED_FORMAT_BUNDLE_PAIR -> {
+                        plotRoute(
+                            TransitOptions(FilterVehicleTypes.NONE.value, TimeOptions()),
+                            pointFirstContact,
+                            pointSecondContact
+                        )
+                    }
+                }
+            }
+        }
     }
 
-    override fun onSearchResponse(response: Response) {
-        val mapObjects: MapObjectCollection = binding.mapView.map.mapObjects
-        mapObjects.clear()
-        for (searchResult in response.collection.children) {
-            val resultLocation = searchResult.obj?.geometry?.firstOrNull()?.point
-            if (resultLocation != null) {
-                mapObjects.addPlacemark(
-                    resultLocation,
-                    foundedPlacesImage
+    private fun updateContactMap(address: Address?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (address != null) {
+                showAddressToast(address = address)
+                val contactMap = ContactMap(
+                    name = contactArgument?.name.orEmpty(),
+                    address = address.address,
+                    latitude = chosenPoint.latitude,
+                    longitude = chosenPoint.longitude,
+                    id = contactArgument?.id.orEmpty()
+                )
+                viewModel.updateContactMap(contactMap)
+            }
+        }
+    }
+
+    private fun navigateToMapPickerFragment() {
+        parentFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainer, ContactMapPickerFragment())
+            .hide(this)
+            .addToBackStack(CONTACT_MAP_PICKER_FRAGMENT_BACK_STACK_KEY)
+            .commit()
+    }
+
+    private suspend fun paintAllContactsMap() {
+        viewModel.contactMapList.collect { contactMapList ->
+            var pointSouthWest =
+                viewModel.contactMapList.value?.firstOrNull()?.let { point ->
+                    Point(point.latitude, point.longitude)
+                }
+            var distanceSouthWest = pointSouthWest?.let { point ->
+                sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+            }
+
+            var pointNorthEast =
+                viewModel.contactMapList.value?.firstOrNull()?.let { point ->
+                    Point(point.latitude, point.longitude)
+                }
+            var distanceNorthEast = pointNorthEast?.let { point ->
+                sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+            }
+            contactMapList?.forEach { contactMap ->
+                drawPoint(contactMap)
+                val distance = contactMap.let { point ->
+                    sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+                }
+                distanceSouthWest?.let { distanceSouthWestComparable ->
+                    distanceNorthEast?.let { distanceNorthEastComparable ->
+                        if (distance < distanceSouthWestComparable) {
+                            pointSouthWest = Point(
+                                contactMap.latitude,
+                                contactMap.longitude
+                            )
+                            distanceSouthWest = distance
+                        }
+                        if (distance > distanceNorthEastComparable) {
+                            pointNorthEast = Point(
+                                contactMap.latitude,
+                                contactMap.longitude
+                            )
+                            distanceNorthEast = distance
+                        }
+                    }
+                }
+            }
+            if (pointSouthWest != null && pointNorthEast != null) {
+                moveCameraToContactMapList(
+                    requireNotNull(pointSouthWest),
+                    requireNotNull(pointNorthEast)
                 )
             }
         }
     }
 
-    override fun onSearchError(error: Error) {
-        var errorMessage = getString(R.string.exception_toast)
-        when (error) {
-            is RemoteError -> errorMessage = getString(R.string.server_exception_toast)
-            is NetworkError -> errorMessage = getString(R.string.network_exception_toast)
-        }
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+    private fun moveCameraToContactMapList(pointSouthWest: Point, pointNorthEast: Point) {
+        val boundingBox = BoundingBox(pointSouthWest, pointNorthEast)
+        var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
+        cameraPosition = CameraPosition(
+            cameraPosition.target,
+            cameraPosition.zoom - ROUTE_STRONG_ZOOM,
+            cameraPosition.azimuth,
+            cameraPosition.tilt
+        )
+        binding.mapView.map.move(
+            cameraPosition,
+            Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+            null
+        )
     }
 
-    private fun submitQuery(query: String) {
-        if (query.isNotBlank()) {
-            searchManager?.submit(
-                query,
-                VisibleRegionUtils.toPolygon(binding.mapView.map.visibleRegion),
-                SearchOptions(),
-                this
+    private fun updateMap(contactMap: ContactMap?) {
+        if (contactMap != null) {
+            drawPoint(contactMap = contactMap)
+            val point = Point(
+                contactMap.latitude,
+                contactMap.longitude
+            )
+            binding.mapView.map.move(
+                CameraPosition(point, ZOOM, AZIMUTH, TILT),
+                Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+                null
             )
         }
+    }
+
+    private fun drawPoint(contactMap: ContactMap) {
+        val point = Point(
+            contactMap.latitude,
+            contactMap.longitude
+        )
+        mapObjects.addCollection().addPlacemark(point, contactMapImage)
+        val description = "${contactMap.name} [${contactMap.address}]"
+        showContactAddress(point, description)
+    }
+
+    private fun showContactAddress(point: Point, description: String) {
+        val textView = TextView(requireContext())
+        val params: ViewGroup.LayoutParams =
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        textView.apply {
+            layoutParams = params
+            setTextColor(Color.BLACK)
+            textSize = 8f
+            text = description
+        }
+        val viewProvider = ViewProvider(textView)
+        mapObjects.addCollection().addPlacemark(point, viewProvider)
+    }
+
+    private fun showAddressToast(address: Address) {
+        Toast.makeText(
+            requireContext(),
+            address.address,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun showNetworkExceptionToast() {
@@ -210,5 +492,105 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), SearchListe
             contextNotNull.getText(R.string.server_exception_toast),
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    private fun drawSection(
+        data: SectionData,
+        geometry: Polyline
+    ) {
+        val polylineMapObject = mapObjects.addPolyline(geometry)
+        if (data.transports != null) {
+            for (transport in requireNotNull(data.transports)) {
+                if (transport.line.style != null) {
+                    requireNotNull(transport.line.style).color?.let {
+                        polylineMapObject.setStrokeColor(
+                            it.or(Color.BLACK)
+                        )
+                    }
+                    return
+                }
+            }
+            val knownVehicleTypes: HashSet<String> = HashSet()
+            knownVehicleTypes.add(VEHICLE_TYPE_BUS)
+            knownVehicleTypes.add(VEHICLE_TYPE_TRAMWAY)
+            for (transport in requireNotNull(data.transports)) {
+                val sectionVehicleType: String =
+                    getVehicleType(transport, knownVehicleTypes).orEmpty()
+                if (sectionVehicleType == VEHICLE_TYPE_BUS) {
+                    polylineMapObject.setStrokeColor(Color.GREEN)
+                    return
+                } else if (sectionVehicleType == VEHICLE_TYPE_TRAMWAY) {
+                    polylineMapObject.setStrokeColor(Color.RED)
+                    return
+                }
+            }
+            polylineMapObject.setStrokeColor(Color.BLUE)
+        } else {
+            polylineMapObject.setStrokeColor(Color.BLACK)
+        }
+    }
+
+    private fun getVehicleType(transport: Transport, knownVehicleTypes: HashSet<String>): String? {
+        for (type in transport.line.vehicleTypes) {
+            if (knownVehicleTypes.contains(type)) {
+                return type
+            }
+        }
+        return null
+    }
+
+    private fun plotRoute(transitOptions: TransitOptions, startPoint: Point, endPoint: Point) {
+        val points: MutableList<RequestPoint> = ArrayList()
+        points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
+        points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
+        val mtRouter = TransportFactory.getInstance().createMasstransitRouter()
+        mtRouter.requestRoutes(points, transitOptions, this)
+    }
+
+    private fun plotRouteByCar(startPoint: Point, endPoint: Point) {
+        val requestPoints: ArrayList<RequestPoint> = ArrayList()
+        val drivingRouter = DirectionsFactory.getInstance().createDrivingRouter()
+        requestPoints.add(
+            RequestPoint(
+                startPoint,
+                RequestPointType.WAYPOINT,
+                null
+            )
+        )
+        requestPoints.add(
+            RequestPoint(
+                endPoint,
+                RequestPointType.WAYPOINT,
+                null
+            )
+        )
+        drivingRouter.requestRoutes(requestPoints, DrivingOptions(), VehicleOptions(), this)
+    }
+
+    private fun plotRouteByFoot(startPoint: Point, endPoint: Point) {
+        val points: MutableList<RequestPoint> = ArrayList()
+        points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
+        points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
+        val mtRouter = TransportFactory.getInstance().createPedestrianRouter()
+        mtRouter.requestRoutes(points, TimeOptions(), this)
+    }
+
+    companion object {
+        val CONTACT_MAP_PICKER_FRAGMENT_BACK_STACK_KEY: String =
+            ContactMapPickerFragment::class.java.simpleName
+        private const val ROUTE_SMALL_ZOOM = 0.4f
+        private const val ROUTE_STRONG_ZOOM = 0.8f
+        private const val ZOOM_DURATION = 1f
+        private const val VEHICLE_TYPE_BUS = "bus"
+        private const val VEHICLE_TYPE_TRAMWAY = "tramway"
+        private const val ZOOM = 17.4f
+        private const val TILT = 0.0f
+        private const val AZIMUTH = 0.0f
+        private const val ARG: String = "arg"
+        fun newInstance(contactMapDto: Arguments?) = ContactMapFragment().apply {
+            arguments = bundleOf(
+                ARG to contactMapDto
+            )
+        }
     }
 }

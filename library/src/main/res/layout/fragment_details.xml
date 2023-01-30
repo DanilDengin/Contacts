@@ -11,7 +11,6 @@
         android:id="@+id/detailsFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_on_primary"
         tools:context="com.example.lessons.contactDetails.presentation.ContactDetailsFragment">
 
         <ImageView
@@ -31,8 +30,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
             android:paddingBottom="4dp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textAppearance="?attr/textAppearanceHeadline"
             app:layout_constraintStart_toEndOf="@+id/photoImageView"
             app:layout_constraintTop_toTopOf="@+id/photoImageView"
             tools:text="Name" />
@@ -42,8 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/set_birthday_text_view"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
             app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
 
@@ -53,8 +50,7 @@
             android:layout_height="28dp"
             android:clickable="false"
             android:text="@string/birthday_switch_text"
-            android:textColor="@color/gray"
-            android:textSize="12sp"
+            android:textAppearance="?attr/textAppearanceSwitchCompat"
             app:layout_constraintStart_toStartOf="@+id/birthdayTextView"
             app:layout_constraintTop_toBottomOf="@+id/birthdayTextView" />
 
@@ -73,8 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintBottom_toBottomOf="@+id/number1ImageView"
             app:layout_constraintStart_toEndOf="@+id/number1ImageView"
             tools:text="Number" />
@@ -94,8 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintBottom_toBottomOf="@+id/number2ImageView"
             app:layout_constraintStart_toEndOf="@+id/number2ImageView"
             tools:text="Number2" />
@@ -115,8 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintBottom_toBottomOf="@+id/email1ImageView"
             app:layout_constraintStart_toEndOf="@+id/email1ImageView"
             tools:text="eMail" />
@@ -136,8 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="36dp"
             android:paddingLeft="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintBottom_toBottomOf="@+id/email2ImageView"
             app:layout_constraintStart_toEndOf="@+id/email2ImageView"
             tools:text="eMail2" />
@@ -149,8 +141,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingLeft="12dp"
             android:paddingBottom="48dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintStart_toStartOf="@+id/email2ImageView"
             app:layout_constraintTop_toBottomOf="@+id/mapButton"
             tools:text="Description" />
@@ -171,7 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="12dp"
-            android:text="@string/set_residence_text_view"
+            android:text="@string/set_residence_button"
             app:layout_constraintEnd_toEndOf="@+id/eMail2TextView"
             app:layout_constraintStart_toStartOf="@+id/email2ImageView"
             app:layout_constraintTop_toBottomOf="@+id/eMail2TextView" />

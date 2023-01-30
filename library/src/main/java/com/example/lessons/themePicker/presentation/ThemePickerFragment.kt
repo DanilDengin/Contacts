@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.presentation.MainActivity
 import com.example.library.R
@@ -22,7 +23,7 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
             initActionBar(mainActivity)
             val themeDelegate = mainActivity.themeDelegate
             setSelectedButton(themeDelegate)
-            binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            binding.radioGroupThemePicker.setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {
                     R.id.radioButtonSystemTheme -> themeDelegate.setSystemMode()
                     R.id.radioButtonLightTheme -> themeDelegate.setLightMode()
@@ -33,7 +34,6 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
     }
 
     private fun initActionBar(mainActivity: MainActivity) {
-
         mainActivity.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.backstack_menu, menu)
@@ -47,7 +47,7 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
                     false
                 }
             }
-        })
+        }, viewLifecycleOwner, Lifecycle.State.STARTED)
         mainActivity.supportActionBar?.also { actionBar ->
             actionBar.setTitle(R.string.theme_picker_toolbar)
             actionBar.setDisplayHomeAsUpEnabled(true)
@@ -55,7 +55,7 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
     }
 
     private fun setSelectedButton(themeDelegate: ThemeDelegate?) {
-        themeDelegate?.setSelectedButton(
+        themeDelegate?.setThemeButton(
             { binding.radioButtonLightTheme.isChecked = true },
             { binding.radioButtonNightTheme.isChecked = true },
             { binding.radioButtonSystemTheme.isChecked = true }
