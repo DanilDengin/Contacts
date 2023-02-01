@@ -15,19 +15,19 @@ import dagger.Provides
 import retrofit2.Retrofit
 
 @Module
-internal abstract class ContactMapModule {
+internal interface ContactMapModule {
 
     @ContactMapScope
     @Binds
-    abstract fun bindAddressRepository(addressRepositoryImpl: AddressRepositoryImpl): AddressRepository
+    fun bindAddressRepository(addressRepositoryImpl: AddressRepositoryImpl): AddressRepository
 
     @ContactMapScope
     @Binds
-    abstract fun bindContactMapRepository(contactMapRepositoryImpl: ContactMapRepositoryImpl): ContactMapRepository
+    fun bindContactMapRepository(contactMapRepositoryImpl: ContactMapRepositoryImpl): ContactMapRepository
 
     @ContactMapScope
     @Binds
-    abstract fun bindContactMapUseCase(contactMapUseCaseImpl: ContactMapUseCaseImpl): ContactMapUseCase
+    fun bindContactMapUseCase(contactMapUseCaseImpl: ContactMapUseCaseImpl): ContactMapUseCase
 
     companion object {
         @ContactMapScope

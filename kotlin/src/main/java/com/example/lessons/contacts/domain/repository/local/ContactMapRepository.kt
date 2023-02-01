@@ -7,7 +7,7 @@ interface ContactMapRepository {
 
     suspend fun createContactMap(contactMap: ContactMap)
 
-    suspend fun getAllContactMaps(): Flow<List<ContactMap>>
+    fun getAllContactMaps(): Flow<List<ContactMap>>
 
     suspend fun getContactMapById(id: String): ContactMap?
 

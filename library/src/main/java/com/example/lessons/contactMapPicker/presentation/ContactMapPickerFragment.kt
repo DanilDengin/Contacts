@@ -6,12 +6,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
@@ -20,15 +20,10 @@ import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
-import com.example.lessons.utils.constans.BUS_BUNDLE_PAIR
-import com.example.lessons.utils.constans.CAR_BUNDLE_PAIR
 import com.example.lessons.utils.constans.FIRST_CONTACT_BUNDLE_KEY
-import com.example.lessons.utils.constans.FOOT_BUNDLE_PAIR
-import com.example.lessons.utils.constans.MIXED_FORMAT_BUNDLE_PAIR
 import com.example.lessons.utils.constans.ROUTE_MAP_BUNDLE_KEY
 import com.example.lessons.utils.constans.ROUTE_MAP_KEY
 import com.example.lessons.utils.constans.SECOND_CONTACT_BUNDLE_KEY
-import com.example.lessons.utils.constans.UNDERGROUND_BUNDLE_PAIR
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
@@ -47,9 +42,11 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
 
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
-    private var filledRadio: Boolean = false
-
     private var selectedType: String? = null
+
+    private val contactMapPickerAdapter: ContactMapPickerAdapter by unsafeLazy {
+        ContactMapPickerAdapter(::changeContactMap, ::sendData, ::initRadioGroupListener)
+    }
 
     override fun onAttach(context: Context) {
         DaggerContactMapComponent.builder()
@@ -65,49 +62,29 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        initRadioGroupListener()
-        binding.plotRouteButton.setOnClickListener {
-            parentFragmentManager.setFragmentResult(
-                ROUTE_MAP_KEY,
-                bundleOf(
-                    ROUTE_MAP_BUNDLE_KEY to selectedType,
-                    FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedList[0],
-                    SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedList[1]
-                )
-            )
-            parentFragmentManager.popBackStack()
-        }
         val recyclerView: RecyclerView = binding.contactMapRecyclerView
         val horizontalISpaceItemDecorator = ContactItemDecorator()
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager = layoutManager
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
+        recyclerView.adapter = contactMapPickerAdapter
+        viewModel.getAllContactMaps()
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getAllContactMaps()
-            viewModel.contactMapPickerList.collect { contactMapPickerList ->
-                if (contactMapPickerList != null) {
-                    recyclerView.adapter =
-                        ContactMapPickerAdapter(contactMapPickerList) { contactMapPickerId, selected ->
-                            changeContactMap(contactMapPickerId, selected)
-                        }
-                }
-            }
+            viewModel.contactMapPickerList.collect(contactMapPickerAdapter::submitList)
         }
-        viewModel.dataValidation.observe(viewLifecycleOwner) {
-            checkDataValidation()
+        viewModel.listSize.observe(viewLifecycleOwner) { size ->
+            if (size >= SELECT_LIST_ALLOWED_SIZE)
+                viewModel.approvalData()
         }
     }
 
-    private fun checkDataValidation() {
-        if (viewModel.selectedList.size >= 2 && filledRadio) {
-            binding.plotRouteButton.isEnabled = true
+
+    private fun checkDataValidation(plotRouteButton: Button): Unit {
+        if (viewModel.selectedList.size >= SELECT_LIST_ALLOWED_SIZE && selectedType != null) {
+            plotRouteButton.isEnabled = true
         }
     }
 
     private fun changeContactMap(contactMapPickerId: String, selected: Boolean) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.changeItem(contactMapPickerId, selected)
-        }
+        viewModel.changeItem(contactMapPickerId, selected)
     }
 
     private fun initActionBar() {
@@ -133,17 +110,23 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
         }
     }
 
-    private fun initRadioGroupListener() {
-        binding.radioGroupMapPicker.setOnCheckedChangeListener { _, checkedId ->
-            filledRadio = true
-            checkDataValidation()
-            when (checkedId) {
-                R.id.radioButtonBus ->selectedType = BUS_BUNDLE_PAIR
-                R.id.radioButtonCar -> selectedType = CAR_BUNDLE_PAIR
-                R.id.radioButtonFoot -> selectedType = FOOT_BUNDLE_PAIR
-                R.id.radioButtonUnderground -> selectedType = UNDERGROUND_BUNDLE_PAIR
-                R.id.radioButtonMixedFormat -> selectedType = MIXED_FORMAT_BUNDLE_PAIR
-            }
-        }
+    private fun initRadioGroupListener(selectedRadioButton: String) {
+        selectedType = selectedRadioButton
+    }
+
+    private fun sendData(unit: Unit) {
+        parentFragmentManager.setFragmentResult(
+            ROUTE_MAP_KEY,
+            bundleOf(
+                ROUTE_MAP_BUNDLE_KEY to selectedType,
+                FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedList[0],
+                SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedList[1]
+            )
+        )
+        parentFragmentManager.popBackStack()
+    }
+
+    private companion object {
+        const val SELECT_LIST_ALLOWED_SIZE = 2
     }
 }

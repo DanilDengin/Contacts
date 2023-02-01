@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/titleRadioGroupMapPickerTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/reach_by_text_view"
+        android:textAppearance="@style/Widget.MyApplication.BodyLargeTextView" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupMapPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioButtonCar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reach_by_car_text_view" />
+
+        <RadioButton
+            android:id="@+id/radioButtonBus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reach_by_bus_text_view" />
+
+        <RadioButton
+            android:id="@+id/radioButtonFoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reach_by_foot_text_view" />
+
+        <RadioButton
+            android:id="@+id/radioButtonUnderground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reach_by_underground_text_view" />
+
+        <RadioButton
+            android:id="@+id/radioButtonMixedFormat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/reach_by_mixed_format_text_view" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/plotRouteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
+        android:enabled="true"
+        android:text="@string/plot_route_button" />
+</LinearLayout>

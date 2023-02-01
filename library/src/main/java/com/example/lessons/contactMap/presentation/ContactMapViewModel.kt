@@ -40,7 +40,7 @@ internal class ContactMapViewModel @Inject constructor(
         Log.e(CONTACT_MAP_VIEW_MODEL_TAG, throwable.toString())
     }
 
-    suspend fun fetchAddress(latitude: String, longitude: String) {
+    fun fetchAddress(latitude: String, longitude: String) {
         viewModelScope.launch {
             when (val result = contactMapUseCase.getAddress(geocode = "$longitude,$latitude")) {
                 is ApiResponse.Failure.HttpFailure -> _serverExceptionState.value = Unit
@@ -51,30 +51,30 @@ internal class ContactMapViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateContactMap(contactMap: ContactMap) {
+    fun updateContactMap(contactMap: ContactMap) {
         _contactMap.value = contactMap
         saveContactMap(contactMap)
     }
 
-    suspend fun getAllContactMaps() {
+    fun getAllContactMaps() {
         contactMapUseCase.getAllContactMaps()
             .onEach(_contactMapList::emit)
             .launchIn(viewModelScope + coroutineExceptionHandler)
     }
 
-    suspend fun getContactMapById(id: String) {
+    fun getContactMapById(id: String) {
         viewModelScope.launch {
             _contactMap.value = contactMapUseCase.getContactMapById(id)
         }
     }
 
-    suspend fun deleteContactMap(id: String) {
+    fun deleteContactMap(id: String) {
         viewModelScope.launch {
             contactMapUseCase.deleteContactMap(id)
         }
     }
 
-    private suspend fun saveContactMap(contactMap: ContactMap) {
+    private fun saveContactMap(contactMap: ContactMap) {
         viewModelScope.launch {
             contactMapUseCase.createContactMap(contactMap)
         }

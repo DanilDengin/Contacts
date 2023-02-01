@@ -12,7 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:navigationBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@color/transparent_grey</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.Primary</item>
         <item name="textAppearanceHeadline">@style/Widget.MyApplication.HeaderTextView</item>
         <item name="textAppearanceBodyLarge">@style/Widget.MyApplication.BodyLargeTextView</item>

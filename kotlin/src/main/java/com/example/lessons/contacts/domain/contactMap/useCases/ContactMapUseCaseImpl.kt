@@ -7,13 +7,16 @@ import com.example.lessons.contacts.domain.repository.local.ContactMapRepository
 import com.example.lessons.contacts.domain.repository.remote.AddressRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 class ContactMapUseCaseImpl @Inject constructor(
     private val addressRepository: AddressRepository,
     private val contactMapRepository: ContactMapRepository
 ) : ContactMapUseCase {
-
-    private var contactMapsFlow: Flow<List<ContactMap>>? = null
 
     override suspend fun getAddress(geocode: String): ApiResponse<Address?> {
         return addressRepository.getAddress(geocode)
@@ -23,8 +26,8 @@ class ContactMapUseCaseImpl @Inject constructor(
         contactMapRepository.createContactMap(contactMap)
     }
 
-    override suspend fun getAllContactMaps(): Flow<List<ContactMap>> {
-        return saveContactMapsFlow()
+    override fun getAllContactMaps(): Flow<List<ContactMap>> {
+        return contactMapRepository.getAllContactMaps()
     }
 
     override suspend fun getContactMapById(id: String): ContactMap? {
@@ -33,14 +36,5 @@ class ContactMapUseCaseImpl @Inject constructor(
 
     override suspend fun deleteContactMap(id: String) {
         contactMapRepository.deleteContactMap(id)
-    }
-
-    private suspend fun saveContactMapsFlow(): Flow<List<ContactMap>> {
-        return if (contactMapsFlow != null) {
-            requireNotNull(contactMapsFlow)
-        } else {
-            contactMapsFlow = contactMapRepository.getAllContactMaps()
-            requireNotNull(contactMapsFlow)
-        }
     }
 }

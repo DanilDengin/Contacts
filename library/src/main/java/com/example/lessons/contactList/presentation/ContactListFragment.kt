@@ -46,6 +46,7 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val contactsListAdapter: ContactListAdapter by unsafeLazy {
         ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
     }
+
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
@@ -64,12 +65,10 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
         initActionBar()
         val recyclerView: RecyclerView = binding.contactListRecyclerView
         val horizontalISpaceItemDecorator = ContactItemDecorator()
-        val layoutManager = LinearLayoutManager(context)
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
         recyclerView.adapter = contactsListAdapter
-        recyclerView.layoutManager = layoutManager
         recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 

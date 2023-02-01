@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal class Arguments(val name: String, val id: String) : Parcelable
+internal class ContactMapArguments(val name: String, val id: String) : Parcelable

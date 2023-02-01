@@ -73,7 +73,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
         ) as AlarmManager
     }
 
-    private val birthdayNotificationText: String by lazy(LazyThreadSafetyMode.NONE) {
+    private val birthdayNotificationText: String by unsafeLazy {
         resources.getString(R.string.birthday_notification_text)
     }
 

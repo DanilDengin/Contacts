@@ -10,20 +10,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 internal class ContactMapRepositoryImpl @Inject constructor(
     private val contactMapDao: ContactMapDao
 ) : ContactMapRepository {
 
     override suspend fun createContactMap(contactMap: ContactMap) {
-        withContext(Dispatchers.IO) {
-            val entity = contactMap.toContactMapDbEntity()
-            contactMapDao.createContactAddress(entity)
-        }
+        val entity = contactMap.toContactMapDbEntity()
+        return contactMapDao.createContactAddress(entity)
     }
 
-    override suspend fun getAllContactMaps(): Flow<List<ContactMap>> {
+    override fun getAllContactMaps(): Flow<List<ContactMap>> {
         return contactMapDao.getAllAddresses()
             .map { list ->
                 list
@@ -35,14 +32,10 @@ internal class ContactMapRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getContactMapById(id: String): ContactMap? {
-        return withContext(Dispatchers.IO) {
-            contactMapDao.getAddressById(id)?.toContactMap()
-        }
+        return contactMapDao.getAddressById(id)?.toContactMap()
     }
 
     override suspend fun deleteContactMap(id: String) {
-        withContext(Dispatchers.IO) {
-            contactMapDao.deleteContactAddress(id)
-        }
+        contactMapDao.deleteContactAddress(id)
     }
 }

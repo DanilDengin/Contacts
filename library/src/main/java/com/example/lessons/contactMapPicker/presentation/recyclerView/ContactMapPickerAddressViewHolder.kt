@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons.contactMapPicker.presentation.model.ContactMapPicker
 import com.example.library.R
 
-internal class ContactMapPickerViewHolder(
+internal class ContactMapPickerAddressViewHolder(
     itemView: View, chooseElement: (String, Boolean) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -31,7 +31,7 @@ internal class ContactMapPickerViewHolder(
         contactMapIsSelected = contactMapPicker.isSelected
         itemView.background = getDrawable(
             itemView.context,
-            if (contactMapIsSelected) R.color.gray_light else return
+            if (contactMapIsSelected) R.color.gray_light else R.color.transparent
         )
     }
 }

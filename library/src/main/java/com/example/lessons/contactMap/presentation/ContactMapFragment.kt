@@ -3,6 +3,7 @@ package com.example.lessons.contactMap.presentation
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,11 +17,13 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lessons.contactMap.data.model.Arguments
+import com.example.lessons.contactMap.data.model.ContactMapArguments
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment
 import com.example.lessons.contacts.domain.entity.Address
+import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.entity.ContactMap
 import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
@@ -93,7 +96,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
 
     private val mapObjects by unsafeLazy { binding.mapView.map.mapObjects }
 
-    private var contactArgument: Arguments? = null
+    private var contactArgument: ContactMapArguments? = null
 
     private var chosenPoint = Point()
 
@@ -129,8 +132,8 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        contactArgument = if (Build.VERSION.SDK_INT >= 33) {
-            arguments?.getParcelable(ARG, Arguments::class.java)
+        contactArgument = if (Build.VERSION.SDK_INT >= TIRAMISU) {
+           arguments?.getParcelable(ARG, ContactMapArguments::class.java)
         } else {
             arguments?.getParcelable(ARG)
         }
@@ -191,7 +194,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
                 Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
                 null
             )
-            routesList.firstOrNull()?.sections?.let { sectionList ->
+            routesList.firstOrNull()?.sections?.also { sectionList ->
                 for (section in sectionList) {
                     drawSection(
                         section.metadata.data,
@@ -236,30 +239,24 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     private fun doActionForSingleContact() {
         binding.deleteContactMapImageView.visibility = View.VISIBLE
         binding.deleteContactMapImageView.setOnClickListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                contactArgument?.id?.let { contactId -> viewModel.deleteContactMap(contactId) }
-                mapObjects.clear()
-            }
+            contactArgument?.id?.also(viewModel::deleteContactMap)
+            mapObjects.clear()
         }
         viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
         viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getContactMapById(requireNotNull(contactArgument?.id))
-            binding.mapView.map.addInputListener(object : InputListener {
-                override fun onMapTap(map: Map, point: Point) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        mapObjects.clear()
-                        chosenPoint = point
-                        viewModel.fetchAddress(
-                            point.latitude.toString(),
-                            point.longitude.toString()
-                        )
-                    }
-                }
+        contactArgument?.id?.also (viewModel::getContactMapById)
+        binding.mapView.map.addInputListener(object : InputListener {
+            override fun onMapTap(map: Map, point: Point) {
+                mapObjects.clear()
+                chosenPoint = point
+                viewModel.fetchAddress(
+                    point.latitude.toString(),
+                    point.longitude.toString()
+                )
+            }
 
-                override fun onMapLongTap(map: Map, p1: Point) = Unit
-            })
-        }
+            override fun onMapLongTap(map: Map, p1: Point) = Unit
+        })
     }
 
     private fun doActionForContacts() {
@@ -267,10 +264,8 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         binding.routeImageView.setOnClickListener {
             navigateToMapPickerFragment()
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getAllContactMaps()
-            paintAllContactsMap()
-        }
+        viewModel.getAllContactMaps()
+        paintAllContactsMap()
         getFragmentResult()
     }
 
@@ -328,18 +323,16 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     }
 
     private fun updateContactMap(address: Address?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            if (address != null) {
-                showAddressToast(address = address)
-                val contactMap = ContactMap(
-                    name = contactArgument?.name.orEmpty(),
-                    address = address.address,
-                    latitude = chosenPoint.latitude,
-                    longitude = chosenPoint.longitude,
-                    id = contactArgument?.id.orEmpty()
-                )
-                viewModel.updateContactMap(contactMap)
-            }
+        if (address != null) {
+            showAddressToast(address = address)
+            val contactMap = ContactMap(
+                name = contactArgument?.name.orEmpty(),
+                address = address.address,
+                latitude = chosenPoint.latitude,
+                longitude = chosenPoint.longitude,
+                id = contactArgument?.id.orEmpty()
+            )
+            viewModel.updateContactMap(contactMap)
         }
     }
 
@@ -351,52 +344,56 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
             .commit()
     }
 
-    private suspend fun paintAllContactsMap() {
-        viewModel.contactMapList.collect { contactMapList ->
-            var pointSouthWest =
-                viewModel.contactMapList.value?.firstOrNull()?.let { point ->
-                    Point(point.latitude, point.longitude)
-                }
-            var distanceSouthWest = pointSouthWest?.let { point ->
-                sqrt(point.latitude.pow(2) + point.longitude.pow(2))
-            }
-
-            var pointNorthEast =
-                viewModel.contactMapList.value?.firstOrNull()?.let { point ->
-                    Point(point.latitude, point.longitude)
-                }
-            var distanceNorthEast = pointNorthEast?.let { point ->
-                sqrt(point.latitude.pow(2) + point.longitude.pow(2))
-            }
-            contactMapList?.forEach { contactMap ->
-                drawPoint(contactMap)
-                val distance = contactMap.let { point ->
-                    sqrt(point.latitude.pow(2) + point.longitude.pow(2))
-                }
-                distanceSouthWest?.let { distanceSouthWestComparable ->
-                    distanceNorthEast?.let { distanceNorthEastComparable ->
-                        if (distance < distanceSouthWestComparable) {
-                            pointSouthWest = Point(
-                                contactMap.latitude,
-                                contactMap.longitude
-                            )
-                            distanceSouthWest = distance
+    private fun paintAllContactsMap() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.contactMapList.collect { contactMapList ->
+                    var pointSouthWest =
+                        viewModel.contactMapList.value?.firstOrNull()?.let { point ->
+                            Point(point.latitude, point.longitude)
                         }
-                        if (distance > distanceNorthEastComparable) {
-                            pointNorthEast = Point(
-                                contactMap.latitude,
-                                contactMap.longitude
-                            )
-                            distanceNorthEast = distance
+                    var distanceSouthWest = pointSouthWest?.let { point ->
+                        sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+                    }
+
+                    var pointNorthEast =
+                        viewModel.contactMapList.value?.firstOrNull()?.let { point ->
+                            Point(point.latitude, point.longitude)
+                        }
+                    var distanceNorthEast = pointNorthEast?.let { point ->
+                        sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+                    }
+                    contactMapList?.forEach { contactMap ->
+                        drawPoint(contactMap)
+                        val distance = contactMap.let { point ->
+                            sqrt(point.latitude.pow(2) + point.longitude.pow(2))
+                        }
+                        distanceSouthWest?.also { distanceSouthWestComparable ->
+                            distanceNorthEast?.also { distanceNorthEastComparable ->
+                                if (distance < distanceSouthWestComparable) {
+                                    pointSouthWest = Point(
+                                        contactMap.latitude,
+                                        contactMap.longitude
+                                    )
+                                    distanceSouthWest = distance
+                                }
+                                if (distance > distanceNorthEastComparable) {
+                                    pointNorthEast = Point(
+                                        contactMap.latitude,
+                                        contactMap.longitude
+                                    )
+                                    distanceNorthEast = distance
+                                }
+                            }
                         }
                     }
+                    if (pointSouthWest != null && pointNorthEast != null) {
+                        moveCameraToContactMapList(
+                            requireNotNull(pointSouthWest),
+                            requireNotNull(pointNorthEast)
+                        )
+                    }
                 }
-            }
-            if (pointSouthWest != null && pointNorthEast != null) {
-                moveCameraToContactMapList(
-                    requireNotNull(pointSouthWest),
-                    requireNotNull(pointNorthEast)
-                )
             }
         }
     }
@@ -499,17 +496,19 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         geometry: Polyline
     ) {
         val polylineMapObject = mapObjects.addPolyline(geometry)
-        if (data.transports != null) {
-            for (transport in requireNotNull(data.transports)) {
+        val dataTransport = data.transports
+        if (dataTransport != null) {
+            for (transport in dataTransport) {
                 if (transport.line.style != null) {
-                    requireNotNull(transport.line.style).color?.let {
+                    transport.line.style?.color?.let { color ->
                         polylineMapObject.setStrokeColor(
-                            it.or(Color.BLACK)
+                            color.or(Color.BLACK)
                         )
                     }
                     return
                 }
             }
+
             val knownVehicleTypes: HashSet<String> = HashSet()
             knownVehicleTypes.add(VEHICLE_TYPE_BUS)
             knownVehicleTypes.add(VEHICLE_TYPE_TRAMWAY)
@@ -587,7 +586,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         private const val TILT = 0.0f
         private const val AZIMUTH = 0.0f
         private const val ARG: String = "arg"
-        fun newInstance(contactMapDto: Arguments?) = ContactMapFragment().apply {
+        fun newInstance(contactMapDto: ContactMapArguments?) = ContactMapFragment().apply {
             arguments = bundleOf(
                 ARG to contactMapDto
             )
