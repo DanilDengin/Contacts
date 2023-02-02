@@ -5,19 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lessons.contactMapPicker.presentation.model.ContactMapPicker
+import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
+import com.example.lessons.contactMapPicker.presentation.PlotRouteButtonState
 import com.example.library.R
 
 internal class ContactMapPickerAdapter(
-    private val chooseElement: (String, Boolean) -> Unit,
+    private val chooseElement: (ContactMapPicker, Boolean) -> Unit,
     private val sendData: (Unit) -> Unit,
     private val initRadioGroupListener: (String) -> Unit
 ) : ListAdapter<ContactMapPicker, RecyclerView.ViewHolder>(DiffCallback()) {
 
-    companion object {
-        const val CONTACT_MAP_VIEW_TYPE = 0
-        const val ENDING_VIEW_TYPE = 1
-    }
+    var state =PlotRouteButtonState.NO_VALID_DATA
 
     private class DiffCallback : DiffUtil.ItemCallback<ContactMapPicker>() {
 
@@ -49,9 +47,14 @@ internal class ContactMapPickerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ContactMapPickerAddressViewHolder -> holder.bind(contactMapPicker = currentList[position])
+            is ContactMapPickerRadioButtonViewHolder -> holder.bind(state = state)
         }
     }
 
     override fun getItemCount(): Int = currentList.size
 
+    companion object {
+        const val CONTACT_MAP_VIEW_TYPE = 0
+        const val ENDING_VIEW_TYPE = 1
+    }
 }

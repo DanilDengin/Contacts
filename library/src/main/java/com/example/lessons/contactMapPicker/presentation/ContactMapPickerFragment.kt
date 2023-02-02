@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
+import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
 import com.example.lessons.contactMapPicker.presentation.recyclerView.ContactMapPickerAdapter
 import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
@@ -68,23 +69,28 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
         recyclerView.adapter = contactMapPickerAdapter
         viewModel.getAllContactMaps()
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.contactMapPickerList.collect(contactMapPickerAdapter::submitList)
+            viewModel.contactMapPickerList.collect { contactList ->
+                contactMapPickerAdapter.submitList(contactList)
+            }
         }
-        viewModel.listSize.observe(viewLifecycleOwner) { size ->
-            if (size >= SELECT_LIST_ALLOWED_SIZE)
-                viewModel.approvalData()
+        viewModel.selectedContactListLiveData.observe(viewLifecycleOwner) {
+            if (it?.size!! >=2 && selectedType !=null){
+                contactMapPickerAdapter.state = PlotRouteButtonState.VALID_DATA
+            }
         }
     }
 
 
     private fun checkDataValidation(plotRouteButton: Button): Unit {
-        if (viewModel.selectedList.size >= SELECT_LIST_ALLOWED_SIZE && selectedType != null) {
-            plotRouteButton.isEnabled = true
+        viewModel.selectedContactListLiveData.value?.let {
+            if (it.size >= SELECT_LIST_ALLOWED_SIZE && selectedType != null) {
+                plotRouteButton.isEnabled = true
+            }
         }
     }
 
-    private fun changeContactMap(contactMapPickerId: String, selected: Boolean) {
-        viewModel.changeItem(contactMapPickerId, selected)
+    private fun changeContactMap(contactMapPicker: ContactMapPicker, selected: Boolean) {
+        viewModel.changeItem(contactMapPicker, selected)
     }
 
     private fun initActionBar() {
@@ -119,8 +125,8 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
             ROUTE_MAP_KEY,
             bundleOf(
                 ROUTE_MAP_BUNDLE_KEY to selectedType,
-                FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedList[0],
-                SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedList[1]
+                FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedContactListLiveData.value?.get(0)?.id,
+                SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedContactListLiveData.value?.get(1)?.id
             )
         )
         parentFragmentManager.popBackStack()

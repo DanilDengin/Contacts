@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lessons.contactMapPicker.presentation.PlotRouteButtonState
 import com.example.lessons.utils.constans.BUS_BUNDLE_PAIR
 import com.example.lessons.utils.constans.CAR_BUNDLE_PAIR
 import com.example.lessons.utils.constans.FOOT_BUNDLE_PAIR
@@ -33,5 +34,16 @@ class ContactMapPickerRadioButtonViewHolder(
                     R.id.radioButtonMixedFormat -> initRadioGroupListener(MIXED_FORMAT_BUNDLE_PAIR)
                 }
             }
+    }
+
+    fun bind(state: PlotRouteButtonState) {
+        when(state){
+            PlotRouteButtonState.VALID_DATA -> {
+                itemView.findViewById<Button>(R.id.plotRouteButton).isEnabled = true
+            }
+            PlotRouteButtonState.NO_VALID_DATA -> {
+                itemView.findViewById<Button>(R.id.plotRouteButton).isEnabled = true
+            }
+        }
     }
 }

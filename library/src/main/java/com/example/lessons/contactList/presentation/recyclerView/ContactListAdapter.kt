@@ -16,7 +16,7 @@ internal class ContactListAdapter(private val navigateToContactDetailsById: (Str
             oldContact.id == newContact.id
 
         override fun areContentsTheSame(oldContact: Contact, newContact: Contact) =
-            oldContact == newContact
+            oldContact.name == newContact.name &&  oldContact.number1 == newContact.number1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListViewHolder {
