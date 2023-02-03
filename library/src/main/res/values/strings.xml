@@ -6,7 +6,7 @@
     <string name="contact_map_toolbar">Contact&#8217;s location</string>
     <string name="set_birthday_text_view">Set a birthday</string>
     <string name="remind_birthday_toast">You will be reminded about birthday</string>
-    <string name="toast_cancel_birthday_remind_toast">Birthday notification is off</string>
+    <string name="cancel_birthday_remind_toast">Birthday notification is off</string>
     <string name="require_permission_toast">Without permission the app can&#8217;t function properly</string>
     <string name="birthday_notification_title">Don&#8217;t forget to congratulate</string>
     <string name="birthday_switch_text">Remind me about birthday</string>

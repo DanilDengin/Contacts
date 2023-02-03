@@ -12,9 +12,12 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.FIRST_CONTACT_BUNDLE_KEY
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.ROUTE_MAP_BUNDLE_KEY
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.ROUTE_MAP_KEY
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.SECOND_CONTACT_BUNDLE_KEY
 import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerViewModel.Companion.SELECT_LIST_ALLOWED_SIZE
 import com.example.lessons.contactMapPicker.presentation.recyclerView.ContactMapPickerAdapter
@@ -22,10 +25,6 @@ import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
-import com.example.lessons.utils.constans.FIRST_CONTACT_BUNDLE_KEY
-import com.example.lessons.utils.constans.ROUTE_MAP_BUNDLE_KEY
-import com.example.lessons.utils.constans.ROUTE_MAP_KEY
-import com.example.lessons.utils.constans.SECOND_CONTACT_BUNDLE_KEY
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
@@ -33,7 +32,8 @@ import com.example.library.R
 import com.example.library.databinding.FragmentContactMapPickerBinding
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map_picker) {
 
@@ -64,14 +64,15 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        val recyclerView: RecyclerView = binding.contactMapRecyclerView
-        val horizontalISpaceItemDecorator = ContactItemDecorator()
-        recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
-        recyclerView.adapter = contactMapPickerAdapter
-        viewModel.getAllContactMaps()
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.contactMapPickerList.collect(contactMapPickerAdapter::submitList)
+        with(binding.contactMapRecyclerView) {
+            val horizontalSpaceItemDecorator = ContactItemDecorator()
+            addItemDecoration(horizontalSpaceItemDecorator)
+            adapter = contactMapPickerAdapter
         }
+        viewModel.getAllContactMaps()
+        viewModel.contactMapPickerList
+            .onEach(contactMapPickerAdapter::submitList)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun chooseContact(contactMapPicker: ContactMapPicker, selected: Boolean) {

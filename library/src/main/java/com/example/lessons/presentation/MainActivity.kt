@@ -11,13 +11,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_DEFAULT_ID
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_ID_INTENT_KEY
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.NOTIFICATION_CHANNEL_ID
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.presentation.ContactListFragment
 import com.example.lessons.themePicker.presentation.ThemeDelegate
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
-import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_ID
-import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_NAME
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.library.R
 
@@ -31,7 +30,7 @@ internal class MainActivity : AppCompatActivity() {
     private var readContactsGranted = false
 
     private val contactId: Int by unsafeLazy {
-        intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID )
+        intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,5 +115,6 @@ internal class MainActivity : AppCompatActivity() {
     private companion object {
         val BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY: String =
             ContactDetailsFragment::class.java.simpleName
+        const val NOTIFICATION_CHANNEL_NAME = "birthdayReminders"
     }
 }

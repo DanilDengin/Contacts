@@ -2,37 +2,37 @@ package com.example.lessons.contactMap.data.address.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-internal data class AddressDto(
+internal class AddressDto(
     @SerializedName("response")
     val response: Response
 ) {
 
-    data class Response(
+    class Response(
         @SerializedName("GeoObjectCollection")
         val geoObjectCollection: GeoObjectCollection
     ) {
 
-        data class GeoObjectCollection(
+        class GeoObjectCollection(
             @SerializedName("featureMember")
             val featureMember: List<FeatureMember>
         ) {
 
-            data class FeatureMember(
+            class FeatureMember(
                 @SerializedName("GeoObject")
                 val geoObject: GeoObject
             ) {
 
-                data class GeoObject(
+                class GeoObject(
                     @SerializedName("metaDataProperty")
                     val metaDataProperty: GeoObjectMetaDataProperty,
                 ) {
 
-                    data class GeoObjectMetaDataProperty(
+                    class GeoObjectMetaDataProperty(
                         @SerializedName("GeocoderMetaData")
                         val geocoderMetaData: GeocoderMetaData
                     ) {
 
-                        data class GeocoderMetaData(
+                        class GeocoderMetaData(
                             @SerializedName("text")
                             val text: String
                         )

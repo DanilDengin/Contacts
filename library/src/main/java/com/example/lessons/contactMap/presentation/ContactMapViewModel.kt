@@ -5,9 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.lessons.contactMapPicker.presentation.ContactMapException
 import com.example.lessons.contacts.domain.api.response.ApiResponse
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
-import com.example.lessons.contacts.domain.entity.Address
+import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap
 import com.example.lessons.utils.liveData.SingleLiveEvent
 import javax.inject.Inject
@@ -26,26 +27,29 @@ internal class ContactMapViewModel @Inject constructor(
 
     val contactMapList: StateFlow<List<ContactMap>?> get() = _contactMapList.asStateFlow()
     val contactMap: LiveData<ContactMap?> get() = _contactMap
-    val contactAddress: LiveData<Address?> get() = _contactAddress
-    val fatalExceptionState: LiveData<Unit> get() = _fatalExceptionState
-    val networkExceptionState: LiveData<Unit> get() = _networkExceptionState
-    val serverExceptionState: LiveData<Unit> get() = _serverExceptionState
+    val contactAddress: LiveData<ContactAddress?> get() = _contactAddress
+    val exceptionState: LiveData<ContactMapException> get() = _exceptionState
+    private val _exceptionState = SingleLiveEvent<ContactMapException>()
     private val _contactMapList = MutableStateFlow<List<ContactMap>?>(emptyList())
     private val _contactMap = MutableLiveData<ContactMap?>()
-    private val _contactAddress = MutableLiveData<Address?>()
-    private val _networkExceptionState = SingleLiveEvent<Unit>()
-    private val _fatalExceptionState = SingleLiveEvent<Unit>()
-    private val _serverExceptionState = SingleLiveEvent<Unit>()
+    private val _contactAddress = MutableLiveData<ContactAddress?>()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(CONTACT_MAP_VIEW_MODEL_TAG, throwable.toString())
     }
 
     fun fetchAddress(latitude: String, longitude: String) {
         viewModelScope.launch {
-            when (val result = contactMapUseCase.getAddress(geocode = "$longitude,$latitude")) {
-                is ApiResponse.Failure.HttpFailure -> _serverExceptionState.value = Unit
-                is ApiResponse.Failure.NetworkFailure -> _networkExceptionState.value = Unit
-                is ApiResponse.Failure.UnknownFailure -> _fatalExceptionState.value = Unit
+            when (val result =
+                contactMapUseCase.getAddress(latitude = longitude, longitude = latitude)) {
+                is ApiResponse.Failure.HttpFailure -> {
+                    _exceptionState.value = ContactMapException.ServerException
+                }
+                is ApiResponse.Failure.NetworkFailure -> {
+                    _exceptionState.value = ContactMapException.NetworkException
+                }
+                is ApiResponse.Failure.UnknownFailure -> {
+                    _exceptionState.value = ContactMapException.FatalException
+                }
                 is ApiResponse.Success -> _contactAddress.value = result.data
             }
         }

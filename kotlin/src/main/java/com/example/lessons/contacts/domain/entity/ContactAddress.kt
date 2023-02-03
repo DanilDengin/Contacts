@@ -1,6 +1,6 @@
 package com.example.lessons.contacts.domain.entity
 
 @JvmInline
-value class Address(
+value class ContactAddress(
     val address: String
 )

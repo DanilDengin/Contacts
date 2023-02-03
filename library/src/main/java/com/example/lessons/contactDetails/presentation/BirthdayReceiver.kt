@@ -9,11 +9,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
-import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
-import com.example.lessons.utils.constans.NOTIFICATION_CHANNEL_ID
 import com.example.library.R
 import java.util.Calendar
 
@@ -70,6 +65,14 @@ internal class BirthdayReceiver : BroadcastReceiver() {
             calendar.timeInMillis,
             pendingIntentBirthday
         )
+    }
+
+    companion object {
+        const val NOTIFICATION_CHANNEL_ID = "birthday"
+        const val BIRTHDAY_RECEIVER_INTENT_ACTION = "birthdayReceiver"
+        const val BIRTHDAY_CONTACT_NAME_INTENT_KEY = "contactName"
+        const val BIRTHDAY_CONTACT_ID_INTENT_KEY = "contactId"
+        const val BIRTHDAY_CONTACT_DEFAULT_ID = -1
     }
 }
 

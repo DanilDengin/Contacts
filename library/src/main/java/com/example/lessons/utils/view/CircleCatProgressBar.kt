@@ -22,7 +22,7 @@ class CircleCatProgressBar @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        setImageResource(imageId)
+        setImageResource(R.drawable.ic_cat_progress_bar)
         startAnimation()
     }
 
@@ -65,7 +65,6 @@ class CircleCatProgressBar @JvmOverloads constructor(
     }
 
     private companion object {
-        val imageId = R.drawable.ic_cat_progress_bar
         const val rotateAnimationDurationDefault = 1400
         const val rotateAnimationDurationMin = 600
         const val rotateAnimationDurationMax = 2800

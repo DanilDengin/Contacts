@@ -12,8 +12,6 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.di.DaggerContactListComponent
@@ -63,13 +61,14 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
-        val recyclerView: RecyclerView = binding.contactListRecyclerView
-        val horizontalISpaceItemDecorator = ContactItemDecorator()
+        with(binding.contactListRecyclerView) {
+            val horizontalSpaceItemDecorator = ContactItemDecorator()
+            adapter = contactsListAdapter
+            addItemDecoration(horizontalSpaceItemDecorator)
+        }
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
-        recyclerView.adapter = contactsListAdapter
-        recyclerView.addItemDecoration(horizontalISpaceItemDecorator)
     }
 
     private fun initActionBar() {

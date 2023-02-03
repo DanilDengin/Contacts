@@ -4,11 +4,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lessons.utils.constans.BUS_BUNDLE_PAIR
-import com.example.lessons.utils.constans.CAR_BUNDLE_PAIR
-import com.example.lessons.utils.constans.FOOT_BUNDLE_PAIR
-import com.example.lessons.utils.constans.MIXED_FORMAT_BUNDLE_PAIR
-import com.example.lessons.utils.constans.UNDERGROUND_BUNDLE_PAIR
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.BUS_BUNDLE_PAIR
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.CAR_BUNDLE_PAIR
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.FOOT_BUNDLE_PAIR
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.MIXED_FORMAT_BUNDLE_PAIR
+import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.UNDERGROUND_BUNDLE_PAIR
 import com.example.library.R
 
 internal class ContactMapPickerRadioButtonViewHolder(

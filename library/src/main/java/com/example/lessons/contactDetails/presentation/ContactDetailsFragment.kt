@@ -20,15 +20,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.di.DaggerContactDetailsComponent
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_ID_INTENT_KEY
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_NAME_INTENT_KEY
+import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_RECEIVER_INTENT_ACTION
 import com.example.lessons.contactMap.data.model.toArguments
 import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.di.contactListDetails.ContactComponentDependencies
 import com.example.lessons.di.contactListDetails.ContactComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
-import com.example.lessons.utils.constans.BIRTHDAY_CONTACT_NAME_INTENT_KEY
-import com.example.lessons.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
@@ -124,7 +124,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             } else {
                 Toast.makeText(
                     context,
-                    getString(R.string.toast_cancel_birthday_remind_toast),
+                    getString(R.string.cancel_birthday_remind_toast),
                     Toast.LENGTH_LONG
                 )
                     .show()

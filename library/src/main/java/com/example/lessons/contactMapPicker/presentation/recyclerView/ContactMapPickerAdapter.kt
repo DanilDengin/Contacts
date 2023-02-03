@@ -22,8 +22,7 @@ internal class ContactMapPickerAdapter(
         override fun areContentsTheSame(
             oldContact: ContactMapPicker,
             newContact: ContactMapPicker
-        ) =
-            oldContact.isSelected == newContact.isSelected
+        ) = oldContact.isSelected == newContact.isSelected
     }
 
     override fun getItemViewType(position: Int) =
@@ -49,7 +48,7 @@ internal class ContactMapPickerAdapter(
 
     override fun getItemCount(): Int = currentList.size
 
-    companion object {
+    private companion object {
         const val CONTACT_MAP_VIEW_TYPE = 0
         const val ENDING_VIEW_TYPE = 1
     }

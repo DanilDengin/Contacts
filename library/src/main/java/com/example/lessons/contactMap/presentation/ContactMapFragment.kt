@@ -21,21 +21,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactMap.data.model.ContactMapArguments
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
+import com.example.lessons.contactMapPicker.presentation.ContactMapException
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment
-import com.example.lessons.contacts.domain.entity.Address
+import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap
 import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
 import com.example.lessons.presentation.MainActivity
-import com.example.lessons.utils.constans.BUS_BUNDLE_PAIR
-import com.example.lessons.utils.constans.CAR_BUNDLE_PAIR
-import com.example.lessons.utils.constans.FIRST_CONTACT_BUNDLE_KEY
-import com.example.lessons.utils.constans.FOOT_BUNDLE_PAIR
-import com.example.lessons.utils.constans.MIXED_FORMAT_BUNDLE_PAIR
-import com.example.lessons.utils.constans.ROUTE_MAP_BUNDLE_KEY
-import com.example.lessons.utils.constans.ROUTE_MAP_KEY
-import com.example.lessons.utils.constans.SECOND_CONTACT_BUNDLE_KEY
-import com.example.lessons.utils.constans.UNDERGROUND_BUNDLE_PAIR
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
@@ -136,9 +128,8 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         } else {
             arguments?.getParcelable(ARG)
         }
-        viewModel.networkExceptionState.observe(viewLifecycleOwner) { showNetworkExceptionToast() }
-        viewModel.serverExceptionState.observe(viewLifecycleOwner) { showServerExceptionToast() }
-        viewModel.fatalExceptionState.observe(viewLifecycleOwner) { showFatalExceptionToast() }
+        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
+
         if (contactArgument != null) {
             doActionForSingleContact()
         } else {
@@ -321,7 +312,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         }
     }
 
-    private fun updateContactMap(address: Address?) {
+    private fun updateContactMap(address: ContactAddress?) {
         if (address != null) {
             showAddressToast(address = address)
             val contactMap = ContactMap(
@@ -455,7 +446,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         mapObjects.addCollection().addPlacemark(point, viewProvider)
     }
 
-    private fun showAddressToast(address: Address) {
+    private fun showAddressToast(address: ContactAddress) {
         Toast.makeText(
             requireContext(),
             address.address,
@@ -463,31 +454,31 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         ).show()
     }
 
-    private fun showNetworkExceptionToast() {
+    private fun showExceptionToast(contactMapException: ContactMapException) {
         val contextNotNull = requireContext()
-        Toast.makeText(
-            contextNotNull,
-            contextNotNull.getText(R.string.network_exception_toast),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showFatalExceptionToast() {
-        val contextNotNull = requireContext()
-        Toast.makeText(
-            contextNotNull,
-            contextNotNull.getText(R.string.exception_toast),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showServerExceptionToast() {
-        val contextNotNull = requireContext()
-        Toast.makeText(
-            contextNotNull,
-            contextNotNull.getText(R.string.server_exception_toast),
-            Toast.LENGTH_LONG
-        ).show()
+        when (contactMapException) {
+            is ContactMapException.NetworkException -> {
+                Toast.makeText(
+                    contextNotNull,
+                    contextNotNull.getText(R.string.network_exception_toast),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            is ContactMapException.ServerException -> {
+                Toast.makeText(
+                    contextNotNull,
+                    contextNotNull.getText(R.string.server_exception_toast),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            is ContactMapException.FatalException -> {
+                Toast.makeText(
+                    contextNotNull,
+                    contextNotNull.getText(R.string.exception_toast),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     private fun drawSection(
@@ -585,6 +576,15 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         private const val TILT = 0.0f
         private const val AZIMUTH = 0.0f
         private const val ARG: String = "arg"
+        const val ROUTE_MAP_KEY = "routeMapKey"
+        const val ROUTE_MAP_BUNDLE_KEY = "routeMapBundleKey"
+        const val BUS_BUNDLE_PAIR = "bus"
+        const val CAR_BUNDLE_PAIR = "car"
+        const val FOOT_BUNDLE_PAIR = "foot"
+        const val UNDERGROUND_BUNDLE_PAIR = "underground"
+        const val MIXED_FORMAT_BUNDLE_PAIR = "mixedFormat"
+        const val FIRST_CONTACT_BUNDLE_KEY = "firstContact"
+        const val SECOND_CONTACT_BUNDLE_KEY = "secondContact"
         fun newInstance(contactMapDto: ContactMapArguments?) = ContactMapFragment().apply {
             arguments = bundleOf(
                 ARG to contactMapDto
