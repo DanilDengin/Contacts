@@ -455,19 +455,12 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     }
 
     private fun showExceptionToast(contactMapException: ContactMapException) {
-        val contextNotNull = requireContext()
         val exceptionMessage = when (contactMapException) {
-            ContactMapException.SERVER_EXCEPTION -> {
-                contextNotNull.getText(R.string.server_exception_toast).toString()
-            }
-            ContactMapException.NETWORK_EXCEPTION -> {
-                contextNotNull.getText(R.string.network_exception_toast).toString()
-            }
-            ContactMapException.FATAL_EXCEPTION -> {
-                contextNotNull.getText(R.string.exception_toast).toString()
-            }
+            ContactMapException.SERVER_EXCEPTION -> getString(R.string.server_exception_toast)
+            ContactMapException.NETWORK_EXCEPTION -> getString(R.string.network_exception_toast)
+            ContactMapException.FATAL_EXCEPTION -> getString(R.string.exception_toast)
         }
-        Toast.makeText(contextNotNull, exceptionMessage, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), exceptionMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun drawSection(
