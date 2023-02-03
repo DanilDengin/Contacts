@@ -39,16 +39,15 @@ internal class ContactMapViewModel @Inject constructor(
 
     fun fetchAddress(latitude: String, longitude: String) {
         viewModelScope.launch {
-            when (val result =
-                contactMapUseCase.getAddress(latitude = longitude, longitude = latitude)) {
+            when (val result = contactMapUseCase.getAddress(longitude, latitude)) {
                 is ApiResponse.Failure.HttpFailure -> {
-                    _exceptionState.value = ContactMapException.ServerException
+                    _exceptionState.value = ContactMapException.SERVER_EXCEPTION
                 }
                 is ApiResponse.Failure.NetworkFailure -> {
-                    _exceptionState.value = ContactMapException.NetworkException
+                    _exceptionState.value = ContactMapException.NETWORK_EXCEPTION
                 }
                 is ApiResponse.Failure.UnknownFailure -> {
-                    _exceptionState.value = ContactMapException.FatalException
+                    _exceptionState.value = ContactMapException.FATAL_EXCEPTION
                 }
                 is ApiResponse.Success -> _contactAddress.value = result.data
             }

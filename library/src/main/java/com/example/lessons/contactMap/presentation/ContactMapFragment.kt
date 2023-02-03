@@ -456,29 +456,18 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
 
     private fun showExceptionToast(contactMapException: ContactMapException) {
         val contextNotNull = requireContext()
-        when (contactMapException) {
-            is ContactMapException.NetworkException -> {
-                Toast.makeText(
-                    contextNotNull,
-                    contextNotNull.getText(R.string.network_exception_toast),
-                    Toast.LENGTH_LONG
-                ).show()
+        val exceptionMessage = when (contactMapException) {
+            ContactMapException.SERVER_EXCEPTION -> {
+                contextNotNull.getText(R.string.server_exception_toast).toString()
             }
-            is ContactMapException.ServerException -> {
-                Toast.makeText(
-                    contextNotNull,
-                    contextNotNull.getText(R.string.server_exception_toast),
-                    Toast.LENGTH_LONG
-                ).show()
+            ContactMapException.NETWORK_EXCEPTION -> {
+                contextNotNull.getText(R.string.network_exception_toast).toString()
             }
-            is ContactMapException.FatalException -> {
-                Toast.makeText(
-                    contextNotNull,
-                    contextNotNull.getText(R.string.exception_toast),
-                    Toast.LENGTH_LONG
-                ).show()
+            ContactMapException.FATAL_EXCEPTION -> {
+                contextNotNull.getText(R.string.exception_toast).toString()
             }
         }
+        Toast.makeText(contextNotNull, exceptionMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun drawSection(

@@ -1,10 +1,7 @@
 package com.example.lessons.contactMapPicker.presentation
 
-sealed class ContactMapException{
-
-    object ServerException : ContactMapException()
-
-    object NetworkException : ContactMapException()
-
-    object FatalException : ContactMapException()
+internal enum class ContactMapException {
+    SERVER_EXCEPTION,
+    NETWORK_EXCEPTION,
+    FATAL_EXCEPTION
 }
