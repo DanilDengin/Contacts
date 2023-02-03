@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
 import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
+import com.example.lessons.contactMapPicker.presentation.ContactMapPickerViewModel.Companion.SELECT_LIST_ALLOWED_SIZE
 import com.example.lessons.contactMapPicker.presentation.recyclerView.ContactMapPickerAdapter
 import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
@@ -43,10 +44,10 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
 
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
-    private var selectedType: String? = null
+    private var selectedRouteType: String? = null
 
     private val contactMapPickerAdapter: ContactMapPickerAdapter by unsafeLazy {
-        ContactMapPickerAdapter(::changeContactMap, ::sendData, ::initRadioGroupListener)
+        ContactMapPickerAdapter(::chooseContact, ::sendData, ::selectRoute)
     }
 
     override fun onAttach(context: Context) {
@@ -69,28 +70,12 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
         recyclerView.adapter = contactMapPickerAdapter
         viewModel.getAllContactMaps()
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.contactMapPickerList.collect { contactList ->
-                contactMapPickerAdapter.submitList(contactList)
-            }
-        }
-        viewModel.selectedContactListLiveData.observe(viewLifecycleOwner) {
-            if (it?.size!! >=2 && selectedType !=null){
-                contactMapPickerAdapter.state = PlotRouteButtonState.VALID_DATA
-            }
+            viewModel.contactMapPickerList.collect(contactMapPickerAdapter::submitList)
         }
     }
 
-
-    private fun checkDataValidation(plotRouteButton: Button): Unit {
-        viewModel.selectedContactListLiveData.value?.let {
-            if (it.size >= SELECT_LIST_ALLOWED_SIZE && selectedType != null) {
-                plotRouteButton.isEnabled = true
-            }
-        }
-    }
-
-    private fun changeContactMap(contactMapPicker: ContactMapPicker, selected: Boolean) {
-        viewModel.changeItem(contactMapPicker, selected)
+    private fun chooseContact(contactMapPicker: ContactMapPicker, selected: Boolean) {
+        viewModel.changeContactSelection(contactMapPicker, selected)
     }
 
     private fun initActionBar() {
@@ -116,23 +101,27 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
         }
     }
 
-    private fun initRadioGroupListener(selectedRadioButton: String) {
-        selectedType = selectedRadioButton
+    private fun selectRoute(selectedRadioButton: String) {
+        selectedRouteType = selectedRadioButton
     }
 
-    private fun sendData(unit: Unit) {
-        parentFragmentManager.setFragmentResult(
-            ROUTE_MAP_KEY,
-            bundleOf(
-                ROUTE_MAP_BUNDLE_KEY to selectedType,
-                FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedContactListLiveData.value?.get(0)?.id,
-                SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedContactListLiveData.value?.get(1)?.id
+    private fun sendData() {
+        if (selectedRouteType != null && viewModel.selectedContactList.size == SELECT_LIST_ALLOWED_SIZE) {
+            parentFragmentManager.setFragmentResult(
+                ROUTE_MAP_KEY,
+                bundleOf(
+                    ROUTE_MAP_BUNDLE_KEY to selectedRouteType,
+                    FIRST_CONTACT_BUNDLE_KEY to viewModel.selectedContactList[0].id,
+                    SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedContactList[1].id
+                )
             )
-        )
-        parentFragmentManager.popBackStack()
-    }
-
-    private companion object {
-        const val SELECT_LIST_ALLOWED_SIZE = 2
+            parentFragmentManager.popBackStack()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.not_valid_data_toast),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }

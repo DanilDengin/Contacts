@@ -31,7 +31,7 @@ internal class ContactMapViewModel @Inject constructor(
     val networkExceptionState: LiveData<Unit> get() = _networkExceptionState
     val serverExceptionState: LiveData<Unit> get() = _serverExceptionState
     private val _contactMapList = MutableStateFlow<List<ContactMap>?>(emptyList())
-    private val _contactMap = SingleLiveEvent<ContactMap?>()
+    private val _contactMap = MutableLiveData<ContactMap?>()
     private val _contactAddress = MutableLiveData<Address?>()
     private val _networkExceptionState = SingleLiveEvent<Unit>()
     private val _fatalExceptionState = SingleLiveEvent<Unit>()

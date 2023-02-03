@@ -23,7 +23,6 @@ import com.example.lessons.contactMap.data.model.ContactMapArguments
 import com.example.lessons.contactMap.di.DaggerContactMapComponent
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment
 import com.example.lessons.contacts.domain.entity.Address
-import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.contacts.domain.entity.ContactMap
 import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
@@ -133,7 +132,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
         contactArgument = if (Build.VERSION.SDK_INT >= TIRAMISU) {
-           arguments?.getParcelable(ARG, ContactMapArguments::class.java)
+            arguments?.getParcelable(ARG, ContactMapArguments::class.java)
         } else {
             arguments?.getParcelable(ARG)
         }
@@ -244,7 +243,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
         }
         viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
         viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
-        contactArgument?.id?.also (viewModel::getContactMapById)
+        contactArgument?.id?.also(viewModel::getContactMapById)
         binding.mapView.map.addInputListener(object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
                 mapObjects.clear()

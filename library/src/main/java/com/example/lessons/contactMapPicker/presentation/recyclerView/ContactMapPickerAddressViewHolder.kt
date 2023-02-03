@@ -8,7 +8,7 @@ import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
 import com.example.library.R
 
 internal class ContactMapPickerAddressViewHolder(
-    itemView: View, chooseElement: (ContactMapPicker, Boolean) -> Unit
+    itemView: View, chooseContact: (ContactMapPicker, Boolean) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val name: TextView = itemView.findViewById(R.id.nameMapTextView)
@@ -18,7 +18,7 @@ internal class ContactMapPickerAddressViewHolder(
     init {
         itemView.setOnClickListener {
             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                contactMap?.also { contact -> chooseElement(contact, !contact.isSelected) }
+                contactMap?.also { contact -> chooseContact(contact, !contact.isSelected) }
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.example.lessons.contactMapPicker.presentation
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
@@ -23,9 +22,7 @@ internal class ContactMapPickerViewModel @Inject constructor(
 ) : ViewModel() {
 
     val contactMapPickerList: StateFlow<List<ContactMapPicker>?> get() = _contactMapPickerList.asStateFlow()
-    val selectedContactListLiveData: MutableLiveData<ArrayList<ContactMapPicker>?> get() = _selectedContactListLiveData
-    private val selectedContactList = ArrayList<ContactMapPicker>()
-    private val _selectedContactListLiveData = MutableLiveData<ArrayList<ContactMapPicker>?>()
+    val selectedContactList = ArrayList<ContactMapPicker>()
     private val _contactMapPickerList = MutableStateFlow<List<ContactMapPicker>?>(emptyList())
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(CONTACT_MAP_PICKER_VIEW_MODEL_TAG, throwable.toString())
@@ -42,7 +39,7 @@ internal class ContactMapPickerViewModel @Inject constructor(
             .launchIn(viewModelScope + coroutineExceptionHandler)
     }
 
-    fun changeItem(contactMapPicker: ContactMapPicker, isSelected: Boolean) {
+    fun changeContactSelection(contactMapPicker: ContactMapPicker, isSelected: Boolean) {
         viewModelScope.launch(coroutineExceptionHandler) {
             if (isSelected) {
                 checkSelectedList()
@@ -61,7 +58,6 @@ internal class ContactMapPickerViewModel @Inject constructor(
                     } else {
                         selectedContactList.remove(contactMapPicker)
                     }
-                    selectedContactListLiveData.value = selectedContactList
                 }
                 return@map newContact
             }?.toList()
@@ -72,7 +68,7 @@ internal class ContactMapPickerViewModel @Inject constructor(
     }
 
     private suspend fun checkSelectedList() {
-        if (selectedContactList.size == 2) {
+        if (selectedContactList.size == SELECT_LIST_ALLOWED_SIZE) {
             val contactId = selectedContactList[0].id
             contactMapPickerList.value?.map { contactMap ->
                 var newContact = contactMap
@@ -84,7 +80,6 @@ internal class ContactMapPickerViewModel @Inject constructor(
                         !contactMap.isSelected
                     )
                     selectedContactList.removeAt(0)
-                    selectedContactListLiveData.value = selectedContactList
                 }
                 return@map newContact
             }?.toList()
@@ -94,8 +89,9 @@ internal class ContactMapPickerViewModel @Inject constructor(
         }
     }
 
-    private companion object {
-        val CONTACT_MAP_PICKER_VIEW_MODEL_TAG: String =
+    companion object {
+        const val SELECT_LIST_ALLOWED_SIZE = 2
+        private val CONTACT_MAP_PICKER_VIEW_MODEL_TAG: String =
             ContactMapPickerViewModel::class.java.simpleName
     }
 }
