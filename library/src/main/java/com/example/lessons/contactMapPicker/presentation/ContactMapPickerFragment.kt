@@ -22,11 +22,10 @@ import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerViewModel.Companion.SELECT_LIST_ALLOWED_SIZE
 import com.example.lessons.contactMapPicker.presentation.recyclerView.ContactMapPickerAdapter
 import com.example.lessons.di.contactMap.MapComponentDependencies
-import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getDependenciesProvider
+import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentContactMapPickerBinding
@@ -53,8 +52,7 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
     override fun onAttach(context: Context) {
         DaggerContactMapComponent.builder()
             .mapComponentDependencies(
-                requireContext()
-                    .getDependenciesProvider<MapComponentDependenciesProvider>() as? MapComponentDependencies
+                requireContext().getDataDependenciesProvider<MapComponentDependencies>()
             )
             .build()
             .also { it.inject(this) }

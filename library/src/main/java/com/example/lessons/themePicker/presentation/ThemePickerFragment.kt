@@ -1,5 +1,6 @@
 package com.example.lessons.themePicker.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,19 +10,35 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.di.themePicker.ThemePickerComponentDependencies
+import com.example.lessons.presentation.mainActivity.MainActivity
+import com.example.lessons.themePicker.di.DaggerThemePickerComponent
+import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.library.R
 import com.example.library.databinding.FragmentThemePickerBinding
+import javax.inject.Inject
 
-internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
+class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
 
     private val binding by viewBinding(FragmentThemePickerBinding::bind)
+
+    @Inject
+    lateinit var themeDelegate: ThemeDelegate
+
+    override fun onAttach(context: Context) {
+        DaggerThemePickerComponent.builder()
+            .themePickerComponentDependencies(
+                (requireContext().getDataDependenciesProvider<ThemePickerComponentDependencies>())
+            )
+            .build()
+            .also { it.inject(this) }
+        super.onAttach(context)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? MainActivity)?.also { mainActivity ->
             initActionBar(mainActivity)
-            val themeDelegate = mainActivity.themeDelegate
             setSelectedButton(themeDelegate)
             binding.radioGroupThemePicker.setOnCheckedChangeListener { _, checkedId ->
                 when (checkedId) {

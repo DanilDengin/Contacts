@@ -27,10 +27,9 @@ import com.example.lessons.contactMap.data.model.toArguments
 import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.di.contactListDetails.ContactComponentDependencies
-import com.example.lessons.di.contactListDetails.ContactComponentDependenciesProvider
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getDependenciesProvider
+import com.example.lessons.utils.di.getAppDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentDetailsBinding
@@ -63,7 +62,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
             context,
             contactId,
             intentBirthday,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -86,8 +85,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onAttach(context: Context) {
         DaggerContactDetailsComponent.builder()
             .contactComponentDependencies(
-                requireContext()
-                    .getDependenciesProvider<ContactComponentDependenciesProvider>() as? ContactComponentDependencies
+                requireContext().getAppDependenciesProvider<ContactComponentDependencies>()
             )
             .build()
             .also { it.inject(this) }
@@ -107,7 +105,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
                 context,
                 contactId,
                 intentBirthday,
-                PendingIntent.FLAG_NO_CREATE
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
             ) != null
         ) {
             binding.birthdaySwitch.isChecked = true
@@ -118,8 +116,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
                     context,
                     getString(R.string.remind_birthday_toast),
                     Toast.LENGTH_LONG
-                )
-                    .show()
+                ).show()
                 doAlarm()
             } else {
                 Toast.makeText(

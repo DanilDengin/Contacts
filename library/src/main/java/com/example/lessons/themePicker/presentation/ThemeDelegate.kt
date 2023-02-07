@@ -1,18 +1,10 @@
 package com.example.lessons.themePicker.presentation
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.lessons.utils.delegate.unsafeLazy
+import javax.inject.Inject
 
-internal class ThemeDelegate(val context: Context) {
-
-    private val sharedPreferences by unsafeLazy {
-        context.getSharedPreferences(
-            CURRENT_THEME_KEY,
-            AppCompatActivity.MODE_PRIVATE
-        )
-    }
+class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private fun getCurrentTheme() = sharedPreferences.getString(CURRENT_MODE, LIGHT_MODE)
 

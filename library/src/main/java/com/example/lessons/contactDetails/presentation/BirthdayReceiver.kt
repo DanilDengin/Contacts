@@ -8,7 +8,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.library.R
 import java.util.Calendar
 
@@ -23,7 +23,7 @@ internal class BirthdayReceiver : BroadcastReceiver() {
             context,
             contactId,
             notificationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
@@ -58,7 +58,7 @@ internal class BirthdayReceiver : BroadcastReceiver() {
             context,
             contactId,
             intentBirthdayReceiver,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(
             AlarmManager.RTC,

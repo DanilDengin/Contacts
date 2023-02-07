@@ -18,12 +18,11 @@ import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.di.contactListDetails.ContactComponentDependencies
-import com.example.lessons.di.contactListDetails.ContactComponentDependenciesProvider
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.themePicker.presentation.ThemePickerFragment
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getDependenciesProvider
+import com.example.lessons.utils.di.getAppDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentListBinding
@@ -50,8 +49,7 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     override fun onAttach(context: Context) {
         DaggerContactListComponent.builder()
             .contactComponentDependencies(
-                requireContext()
-                    .getDependenciesProvider<ContactComponentDependenciesProvider>() as? ContactComponentDependencies
+                requireContext().getAppDependenciesProvider<ContactComponentDependencies>()
             )
             .build()
             .also { it.inject(this) }

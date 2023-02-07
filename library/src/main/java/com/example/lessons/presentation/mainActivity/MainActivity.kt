@@ -1,4 +1,4 @@
-package com.example.lessons.presentation
+package com.example.lessons.presentation.mainActivity
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -16,14 +16,19 @@ import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companio
 import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.NOTIFICATION_CHANNEL_ID
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.presentation.ContactListFragment
+import com.example.lessons.di.themePicker.ThemePickerComponentDependencies
+import com.example.lessons.presentation.mainActivity.di.DaggerMainActivityComponent
 import com.example.lessons.themePicker.presentation.ThemeDelegate
 import com.example.lessons.utils.delegate.unsafeLazy
+import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.library.R
+import javax.inject.Inject
 
 
-internal class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
-    val themeDelegate: ThemeDelegate by unsafeLazy { ThemeDelegate(this) }
+    @Inject
+    lateinit var themeDelegate: ThemeDelegate
 
     private val requestCodeReadContacts = 1
 
@@ -35,6 +40,12 @@ internal class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DaggerMainActivityComponent.builder()
+            .themePickerComponentDependencies(
+                this.getDataDependenciesProvider<ThemePickerComponentDependencies>()
+            )
+            .build()
+            .also { it.inject(this) }
         createNotificationChannel()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))

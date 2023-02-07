@@ -17,7 +17,7 @@ class ContactMapUseCaseImpl @Inject constructor(
         latitude: String,
         longitude: String
     ): ApiResponse<ContactAddress?> {
-        return addressRepository.getAddress(geocode = "$longitude,$latitude")
+        return addressRepository.getAddress(geocode = "$latitude,$longitude")
     }
 
     override suspend fun createContactMap(contactMap: ContactMap) {

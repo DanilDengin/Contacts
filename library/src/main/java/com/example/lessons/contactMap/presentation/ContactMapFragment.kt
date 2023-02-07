@@ -26,10 +26,9 @@ import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragmen
 import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap
 import com.example.lessons.di.contactMap.MapComponentDependencies
-import com.example.lessons.di.contactMap.MapComponentDependenciesProvider
-import com.example.lessons.presentation.MainActivity
+import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getDependenciesProvider
+import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentMapBinding
@@ -98,8 +97,7 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     override fun onAttach(context: Context) {
         DaggerContactMapComponent.builder()
             .mapComponentDependencies(
-                requireContext()
-                    .getDependenciesProvider<MapComponentDependenciesProvider>() as? MapComponentDependencies
+                requireContext().getDataDependenciesProvider<MapComponentDependencies>()
             )
             .build()
             .also { it.inject(this) }

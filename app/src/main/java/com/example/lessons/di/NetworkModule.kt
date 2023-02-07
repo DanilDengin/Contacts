@@ -29,14 +29,19 @@ internal object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        @YandexUrlQualifier yandexUrl: String
+    ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(MAP_YANDEX_BASE_URL)
+            .baseUrl(yandexUrl)
             .client(okHttpClient)
             .addCallAdapterFactory(ApiResponseCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    private const val MAP_YANDEX_BASE_URL = "https://geocode-maps.yandex.ru/1.x/"
+    @Provides
+    @YandexUrlQualifier
+    fun provideYandexUrl() = "https://geocode-maps.yandex.ru/1.x/"
 }
