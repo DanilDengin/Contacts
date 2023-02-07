@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import javax.inject.Inject
 
-class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPreferences) {
+internal class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private fun getCurrentTheme() = sharedPreferences.getString(CURRENT_MODE, LIGHT_MODE)
 

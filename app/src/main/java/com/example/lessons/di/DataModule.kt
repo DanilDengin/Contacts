@@ -9,7 +9,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object DataModule {
+internal object DataModule {
 
     @DataScope
     @Provides

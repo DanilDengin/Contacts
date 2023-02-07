@@ -12,7 +12,7 @@ import retrofit2.Retrofit
     modules = [DataModule::class],
     dependencies = [AppComponent::class],
 )
-interface DataComponent : ThemePickerComponentDependencies, MapComponentDependencies {
+internal interface DataComponent : ThemePickerComponentDependencies, MapComponentDependencies {
 
     override fun getSharedPref(): SharedPreferences
 

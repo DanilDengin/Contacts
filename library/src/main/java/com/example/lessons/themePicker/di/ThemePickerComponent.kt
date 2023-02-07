@@ -6,7 +6,7 @@ import dagger.Component
 
 @ThemePickerScope
 @Component(dependencies = [ThemePickerComponentDependencies::class])
-interface ThemePickerComponent {
+internal interface ThemePickerComponent {
 
     fun inject(themePickerFragment: ThemePickerFragment)
 }

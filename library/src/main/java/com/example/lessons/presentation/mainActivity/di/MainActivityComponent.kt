@@ -6,7 +6,7 @@ import dagger.Component
 
 @MainActivityScope
 @Component(dependencies = [ThemePickerComponentDependencies::class])
-interface MainActivityComponent {
+internal interface MainActivityComponent {
 
     fun inject(mainActivity: MainActivity)
 }

@@ -18,7 +18,7 @@ import com.example.library.R
 import com.example.library.databinding.FragmentThemePickerBinding
 import javax.inject.Inject
 
-class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
+internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
 
     private val binding by viewBinding(FragmentThemePickerBinding::bind)
 

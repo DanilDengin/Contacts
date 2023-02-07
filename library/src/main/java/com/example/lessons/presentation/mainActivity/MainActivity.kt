@@ -25,7 +25,7 @@ import com.example.library.R
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity() {
+internal class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var themeDelegate: ThemeDelegate
