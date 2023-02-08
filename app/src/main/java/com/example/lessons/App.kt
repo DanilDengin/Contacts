@@ -31,13 +31,11 @@ internal class App : Application(), AppDependenciesProvider, DataDependenciesPro
         appComponent = DaggerAppComponent.factory()
             .create(this)
 
-        dataComponent = DaggerDataComponent.builder()
-            .appComponent(appComponent)
-            .build()
+        dataComponent = DaggerDataComponent.factory()
+            .create(appComponent)
 
-        themeComponent = DaggerThemeComponent.builder()
-            .themeComponentDependencies(dataComponent)
-            .build()
+        themeComponent = DaggerThemeComponent.factory()
+            .create(dataComponent)
     }
 
     override fun getAppDependencies(): AppDependencies {

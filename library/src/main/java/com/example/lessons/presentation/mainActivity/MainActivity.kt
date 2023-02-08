@@ -40,10 +40,9 @@ internal class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DaggerMainActivityComponent.builder()
-            .themeComponent((applicationContext as ThemeDependenciesProvider).getThemeDependencies())
-            .build()
-            .also { it.inject(this) }
+        DaggerMainActivityComponent.factory()
+            .create((applicationContext as ThemeDependenciesProvider).getThemeDependencies())
+            .inject(this)
         createNotificationChannel()
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))

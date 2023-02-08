@@ -84,12 +84,9 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     override fun onAttach(context: Context) {
-        DaggerContactDetailsComponent.builder()
-            .contactComponentDependencies(
-                requireContext().getAppDependenciesProvider<ContactComponentDependencies>()
-            )
-            .build()
-            .also { it.inject(this) }
+        DaggerContactDetailsComponent.factory()
+            .create( requireContext().getAppDependenciesProvider())
+            .inject(this)
         super.onAttach(context)
     }
 

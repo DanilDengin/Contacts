@@ -96,12 +96,9 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     private val roadNotFountMessage by unsafeLazy { getString(R.string.road_not_found_toast) }
 
     override fun onAttach(context: Context) {
-        DaggerContactMapComponent.builder()
-            .mapComponentDependencies(
-                requireContext().getDataDependenciesProvider<MapComponentDependencies>()
-            )
-            .build()
-            .also { it.inject(this) }
+        DaggerContactMapComponent.factory()
+            .create(requireContext().getDataDependenciesProvider())
+            .inject(this)
         super.onAttach(context)
     }
 

@@ -48,12 +48,9 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
-        DaggerContactListComponent.builder()
-            .contactComponentDependencies(
-                requireContext().getAppDependenciesProvider<ContactComponentDependencies>()
-            )
-            .build()
-            .also { it.inject(this) }
+        DaggerContactListComponent.factory()
+            .create(requireContext().getAppDependenciesProvider())
+            .inject(this)
         super.onAttach(context)
     }
 

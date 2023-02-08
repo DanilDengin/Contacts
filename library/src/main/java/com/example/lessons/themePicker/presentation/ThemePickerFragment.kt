@@ -25,10 +25,9 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
     lateinit var themeDelegate: ThemeDelegate
 
     override fun onAttach(context: Context) {
-        DaggerThemePickerComponent.builder()
-            .themeComponent((requireContext().applicationContext as ThemeDependenciesProvider).getThemeDependencies())
-            .build()
-            .also { it.inject(this) }
+        DaggerThemePickerComponent.factory()
+            .create((requireContext().applicationContext as ThemeDependenciesProvider).getThemeDependencies())
+            .inject(this)
         super.onAttach(context)
     }
 

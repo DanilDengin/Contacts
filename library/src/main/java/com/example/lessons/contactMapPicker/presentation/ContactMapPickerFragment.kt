@@ -50,12 +50,9 @@ internal class ContactMapPickerFragment : Fragment(R.layout.fragment_contact_map
     }
 
     override fun onAttach(context: Context) {
-        DaggerContactMapComponent.builder()
-            .mapComponentDependencies(
-                requireContext().getDataDependenciesProvider<MapComponentDependencies>()
-            )
-            .build()
-            .also { it.inject(this) }
+        DaggerContactMapComponent.factory()
+            .create(requireContext().getDataDependenciesProvider())
+            .inject(this)
         super.onAttach(context)
     }
 
