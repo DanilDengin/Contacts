@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
@@ -112,27 +113,30 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
     }
 
     private fun navigateToThemePickerFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ThemePickerFragment())
-            .addToBackStack(THEME_PICKER_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+        parentFragmentManager.commit {
+            replace(R.id.fragmentContainer, ThemePickerFragment())
+            setReorderingAllowed(true)
+            addToBackStack(THEME_PICKER_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private fun navigateToMapFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ContactMapFragment())
-            .addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+        parentFragmentManager.commit {
+            replace(R.id.fragmentContainer, ContactMapFragment())
+            setReorderingAllowed(true)
+            addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private fun navigateToDetailsFragment(id: String) {
-        parentFragmentManager.beginTransaction()
-            .replace(
+        parentFragmentManager.commit {
+            replace(
                 R.id.fragmentContainer,
                 ContactDetailsFragment.newInstance(id.toInt())
             )
-            .addToBackStack(CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+            setReorderingAllowed(true)
+            addToBackStack(CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private fun setLoadingIndicator(isVisible: Boolean) {

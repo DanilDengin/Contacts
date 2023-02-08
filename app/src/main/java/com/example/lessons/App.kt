@@ -9,22 +9,34 @@ import com.example.lessons.di.provider.AppDependencies
 import com.example.lessons.di.provider.AppDependenciesProvider
 import com.example.lessons.di.provider.DataDependencies
 import com.example.lessons.di.provider.DataDependenciesProvider
+import com.example.lessons.di.provider.ThemeDependenciesProvider
+import com.example.lessons.di.themePicker.DaggerThemeComponent
+import com.example.lessons.di.themePicker.ThemeComponent
 import com.example.lessons.utils.constans.MAPKIT_API_KEY
 import com.yandex.mapkit.MapKitFactory
 
-internal class App : Application(), AppDependenciesProvider, DataDependenciesProvider {
+internal class App : Application(), AppDependenciesProvider, DataDependenciesProvider,
+    ThemeDependenciesProvider {
 
     private lateinit var appComponent: AppComponent
 
     private lateinit var dataComponent: DataComponent
 
+    private lateinit var themeComponent: ThemeComponent
+
     override fun onCreate() {
         super.onCreate()
+
         MapKitFactory.setApiKey(MAPKIT_API_KEY)
         appComponent = DaggerAppComponent.factory()
             .create(this)
+
         dataComponent = DaggerDataComponent.builder()
             .appComponent(appComponent)
+            .build()
+
+        themeComponent = DaggerThemeComponent.builder()
+            .themeComponentDependencies(dataComponent)
             .build()
     }
 
@@ -34,5 +46,9 @@ internal class App : Application(), AppDependenciesProvider, DataDependenciesPro
 
     override fun getDataDependencies(): DataDependencies {
         return dataComponent
+    }
+
+    override fun getThemeDependencies(): ThemeComponent {
+        return themeComponent
     }
 }

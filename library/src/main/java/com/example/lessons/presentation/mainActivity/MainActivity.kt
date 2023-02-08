@@ -11,16 +11,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commit
 import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_DEFAULT_ID
 import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companion.NOTIFICATION_CHANNEL_ID
 import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.presentation.ContactListFragment
-import com.example.lessons.di.themePicker.ThemePickerComponentDependencies
+import com.example.lessons.di.provider.ThemeDependenciesProvider
 import com.example.lessons.presentation.mainActivity.di.DaggerMainActivityComponent
 import com.example.lessons.themePicker.presentation.ThemeDelegate
 import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.library.R
 import javax.inject.Inject
 
@@ -41,9 +41,7 @@ internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DaggerMainActivityComponent.builder()
-            .themePickerComponentDependencies(
-                this.getDataDependenciesProvider<ThemePickerComponentDependencies>()
-            )
+            .themeComponent((applicationContext as ThemeDependenciesProvider).getThemeDependencies())
             .build()
             .also { it.inject(this) }
         createNotificationChannel()
@@ -111,16 +109,18 @@ internal class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToListFragment() {
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, ContactListFragment())
-            .commit()
+        supportFragmentManager.commit {
+            add(R.id.fragmentContainer, ContactListFragment())
+            setReorderingAllowed(true)
+        }
     }
 
     private fun navigateToBirthdayContact() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, ContactDetailsFragment.newInstance(contactId))
-            .addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+        supportFragmentManager.commit {
+            replace(R.id.fragmentContainer, ContactDetailsFragment.newInstance(contactId))
+            setReorderingAllowed(true)
+            addToBackStack(BIRTHDAY_CONTACT_DETAILS_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private companion object {

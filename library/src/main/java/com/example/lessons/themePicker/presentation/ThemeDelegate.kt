@@ -2,9 +2,11 @@ package com.example.lessons.themePicker.presentation
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.lessons.di.themePicker.ThemeScope
 import javax.inject.Inject
 
-internal class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPreferences) {
+@ThemeScope
+class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private fun getCurrentTheme() = sharedPreferences.getString(CURRENT_MODE, LIGHT_MODE)
 
@@ -55,6 +57,5 @@ internal class ThemeDelegate @Inject constructor(private val sharedPreferences: 
         const val NIGHT_MODE = "nightMode"
         const val SYSTEM_MODE = "systemMode"
         const val CURRENT_MODE = "currentMode"
-        private const val CURRENT_THEME_KEY = "currentThemeKey"
     }
 }

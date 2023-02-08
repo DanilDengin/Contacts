@@ -16,6 +16,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -136,13 +137,14 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun navigateToContactMapFragment() {
-        parentFragmentManager.beginTransaction()
-            .replace(
+        parentFragmentManager.commit {
+            replace(
                 R.id.fragmentContainer,
                 ContactMapFragment.newInstance(viewModel.user.value?.toArguments())
             )
-            .addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+            setReorderingAllowed(true)
+            addToBackStack(CONTACT_MAP_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private fun initActionBar() {

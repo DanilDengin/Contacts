@@ -10,10 +10,9 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.lessons.di.themePicker.ThemePickerComponentDependencies
+import com.example.lessons.di.provider.ThemeDependenciesProvider
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.themePicker.di.DaggerThemePickerComponent
-import com.example.lessons.utils.di.getDataDependenciesProvider
 import com.example.library.R
 import com.example.library.databinding.FragmentThemePickerBinding
 import javax.inject.Inject
@@ -27,9 +26,7 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
 
     override fun onAttach(context: Context) {
         DaggerThemePickerComponent.builder()
-            .themePickerComponentDependencies(
-                (requireContext().getDataDependenciesProvider<ThemePickerComponentDependencies>())
-            )
+            .themeComponent((requireContext().applicationContext as ThemeDependenciesProvider).getThemeDependencies())
             .build()
             .also { it.inject(this) }
         super.onAttach(context)

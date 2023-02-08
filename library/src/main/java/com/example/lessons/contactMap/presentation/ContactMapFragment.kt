@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -325,11 +326,12 @@ internal class ContactMapFragment : Fragment(R.layout.fragment_map), DrivingRout
     }
 
     private fun navigateToMapPickerFragment() {
-        parentFragmentManager.beginTransaction()
-            .add(R.id.fragmentContainer, ContactMapPickerFragment())
-            .hide(this)
-            .addToBackStack(CONTACT_MAP_PICKER_FRAGMENT_BACK_STACK_KEY)
-            .commit()
+        parentFragmentManager.commit {
+            add(R.id.fragmentContainer, ContactMapPickerFragment())
+            hide(this@ContactMapFragment)
+            setReorderingAllowed(true)
+            addToBackStack(CONTACT_MAP_PICKER_FRAGMENT_BACK_STACK_KEY)
+        }
     }
 
     private fun paintAllContactsMap() {
