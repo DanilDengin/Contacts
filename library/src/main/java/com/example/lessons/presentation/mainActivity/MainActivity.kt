@@ -21,6 +21,7 @@ import com.example.lessons.di.provider.ThemeDependenciesProvider
 import com.example.lessons.presentation.mainActivity.di.DaggerMainActivityComponent
 import com.example.lessons.themePicker.presentation.ThemeDelegate
 import com.example.lessons.utils.delegate.unsafeLazy
+import com.example.lessons.utils.di.getThemeDependenciesProvider
 import com.example.library.R
 import javax.inject.Inject
 
@@ -41,7 +42,7 @@ internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DaggerMainActivityComponent.factory()
-            .create((applicationContext as ThemeDependenciesProvider).getThemeDependencies())
+            .create(applicationContext.getThemeDependenciesProvider())
             .inject(this)
         createNotificationChannel()
         setContentView(R.layout.activity_main)

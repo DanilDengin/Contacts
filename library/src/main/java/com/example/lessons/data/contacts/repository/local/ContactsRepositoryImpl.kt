@@ -40,7 +40,10 @@ class ContactsRepositoryImpl @Inject constructor(
                                 number1 = numbers[0],
                                 id = id
                             )
-                        contacts.add(contact)
+                        if (contacts.none { contactIn ->
+                                contactIn.number1 == contact.number1 }) {
+                            contacts.add(contact)
+                        }
                     }
                 }
             }
@@ -66,7 +69,7 @@ class ContactsRepositoryImpl @Inject constructor(
                     val email = getEmail(contactId)
                     val birthday = getBirthday(contactId)
                     when {
-                        numbers.size == NUMBER_ARRAY_LIST_SIZE_ONE_KEY -> {
+                        numbers.size == NUMBER_ARRAY_LIST_SIZE_ONE -> {
                             contact = Contact(
                                 name = name,
                                 number1 = numbers[0],
@@ -76,7 +79,7 @@ class ContactsRepositoryImpl @Inject constructor(
                                 id = contactId
                             )
                         }
-                        numbers.size > NUMBER_ARRAY_LIST_SIZE_ONE_KEY -> {
+                        numbers.size > NUMBER_ARRAY_LIST_SIZE_ONE -> {
                             contact = Contact(
                                 name = name,
                                 number1 = numbers[0],
@@ -189,6 +192,6 @@ class ContactsRepositoryImpl @Inject constructor(
     }
 
     private companion object {
-        const val NUMBER_ARRAY_LIST_SIZE_ONE_KEY = 1
+        const val NUMBER_ARRAY_LIST_SIZE_ONE = 1
     }
 }

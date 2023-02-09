@@ -18,7 +18,6 @@ import com.example.lessons.contactDetails.presentation.ContactDetailsFragment
 import com.example.lessons.contactList.di.DaggerContactListComponent
 import com.example.lessons.contactList.presentation.recyclerView.ContactListAdapter
 import com.example.lessons.contactMap.presentation.ContactMapFragment
-import com.example.lessons.di.contactListDetails.ContactComponentDependencies
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.themePicker.presentation.ThemePickerFragment

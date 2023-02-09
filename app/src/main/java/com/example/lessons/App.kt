@@ -10,8 +10,8 @@ import com.example.lessons.di.provider.AppDependenciesProvider
 import com.example.lessons.di.provider.DataDependencies
 import com.example.lessons.di.provider.DataDependenciesProvider
 import com.example.lessons.di.provider.ThemeDependenciesProvider
-import com.example.lessons.di.themePicker.DaggerThemeComponent
-import com.example.lessons.di.themePicker.ThemeComponent
+import com.example.lessons.di.theme.DaggerThemeComponent
+import com.example.lessons.di.theme.ThemeComponent
 import com.example.lessons.utils.constans.MAPKIT_API_KEY
 import com.yandex.mapkit.MapKitFactory
 

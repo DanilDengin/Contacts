@@ -21,7 +21,6 @@ import com.example.lessons.contactMap.presentation.ContactMapFragment.Companion.
 import com.example.lessons.contactMapPicker.data.model.ContactMapPicker
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerViewModel.Companion.SELECT_LIST_ALLOWED_SIZE
 import com.example.lessons.contactMapPicker.presentation.recyclerView.ContactMapPickerAdapter
-import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.utils.delegate.unsafeLazy

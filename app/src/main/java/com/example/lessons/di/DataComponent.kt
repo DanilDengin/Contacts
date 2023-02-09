@@ -1,11 +1,9 @@
 package com.example.lessons.di
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.example.lessons.contactMap.data.address.local.room.database.ContactMapDatabase
 import com.example.lessons.di.contactMap.MapComponentDependencies
-import com.example.lessons.di.themePicker.ThemeComponentDependencies
-import dagger.BindsInstance
+import com.example.lessons.di.theme.ThemeComponentDependencies
 import dagger.Component
 import retrofit2.Retrofit
 

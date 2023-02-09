@@ -27,7 +27,6 @@ import com.example.lessons.contactDetails.presentation.BirthdayReceiver.Companio
 import com.example.lessons.contactMap.data.model.toArguments
 import com.example.lessons.contactMap.presentation.ContactMapFragment
 import com.example.lessons.contacts.domain.entity.Contact
-import com.example.lessons.di.contactListDetails.ContactComponentDependencies
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getAppDependenciesProvider
@@ -85,7 +84,7 @@ internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onAttach(context: Context) {
         DaggerContactDetailsComponent.factory()
-            .create( requireContext().getAppDependenciesProvider())
+            .create(requireContext().getAppDependenciesProvider())
             .inject(this)
         super.onAttach(context)
     }

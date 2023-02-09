@@ -1,6 +1,6 @@
 package com.example.lessons.di.provider
 
-import com.example.lessons.di.themePicker.ThemeComponent
+import com.example.lessons.di.theme.ThemeComponent
 
 interface ThemeDependenciesProvider {
 

@@ -1,4 +1,4 @@
-package com.example.lessons.di.themePicker
+package com.example.lessons.di.theme
 
 import javax.inject.Scope
 

@@ -16,13 +16,13 @@ internal class ContactListAdapter(private val navigateToContactDetailsById: (Str
             oldContact.id == newContact.id
 
         override fun areContentsTheSame(oldContact: Contact, newContact: Contact) =
-            oldContact.name == newContact.name &&  oldContact.number1 == newContact.number1
+            oldContact.name == newContact.name && oldContact.number1 == newContact.number1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.contact_item, parent, false)
-        return ContactListViewHolder(itemView, navigateToContactDetailsById )
+        return ContactListViewHolder(itemView, navigateToContactDetailsById)
     }
 
     override fun onBindViewHolder(holder: ContactListViewHolder, position: Int) {

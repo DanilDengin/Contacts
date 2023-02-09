@@ -1,8 +1,6 @@
-package com.example.lessons.di.themePicker
+package com.example.lessons.di.theme
 
-import android.content.Context
 import com.example.lessons.themePicker.presentation.ThemeDelegate
-import dagger.BindsInstance
 import dagger.Component
 
 @ThemeScope

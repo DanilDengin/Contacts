@@ -17,7 +17,6 @@ internal class ContactMapPickerRadioButtonViewHolder(
     checkRoute: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
-
     init {
         itemView.findViewById<Button>(R.id.plotRouteButton).setOnClickListener {
             sendData()

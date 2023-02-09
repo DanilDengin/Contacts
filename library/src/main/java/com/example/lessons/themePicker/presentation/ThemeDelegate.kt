@@ -2,7 +2,8 @@ package com.example.lessons.themePicker.presentation
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.lessons.di.themePicker.ThemeScope
+import com.example.lessons.di.theme.ThemeScope
+import com.example.lessons.utils.sharedPref.putData
 import javax.inject.Inject
 
 @ThemeScope
@@ -45,9 +46,8 @@ class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPre
     }
 
     private fun updateTheme(mode: String) {
-        sharedPreferences.edit().apply {
+        sharedPreferences.putData {
             putString(CURRENT_MODE, mode)
-            apply()
         }
         setTheme()
     }

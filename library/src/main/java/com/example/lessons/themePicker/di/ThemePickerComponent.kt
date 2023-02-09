@@ -1,8 +1,7 @@
 package com.example.lessons.themePicker.di
 
-import com.example.lessons.di.themePicker.ThemeComponent
+import com.example.lessons.di.theme.ThemeComponent
 import com.example.lessons.themePicker.presentation.ThemePickerFragment
-import dagger.BindsInstance
 import dagger.Component
 
 @ThemePickerScope

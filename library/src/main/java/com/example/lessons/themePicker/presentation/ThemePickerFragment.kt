@@ -13,6 +13,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.lessons.di.provider.ThemeDependenciesProvider
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.themePicker.di.DaggerThemePickerComponent
+import com.example.lessons.utils.di.getThemeDependenciesProvider
 import com.example.library.R
 import com.example.library.databinding.FragmentThemePickerBinding
 import javax.inject.Inject
@@ -26,7 +27,7 @@ internal class ThemePickerFragment : Fragment(R.layout.fragment_theme_picker) {
 
     override fun onAttach(context: Context) {
         DaggerThemePickerComponent.factory()
-            .create((requireContext().applicationContext as ThemeDependenciesProvider).getThemeDependencies())
+            .create(requireContext().applicationContext.getThemeDependenciesProvider())
             .inject(this)
         super.onAttach(context)
     }

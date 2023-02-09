@@ -26,7 +26,6 @@ import com.example.lessons.contactMapPicker.presentation.ContactMapException
 import com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment
 import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap
-import com.example.lessons.di.contactMap.MapComponentDependencies
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getDataDependenciesProvider
