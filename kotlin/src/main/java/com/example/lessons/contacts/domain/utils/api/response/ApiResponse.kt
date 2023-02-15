@@ -1,4 +1,4 @@
-package com.example.lessons.contacts.domain.api.response
+package com.example.lessons.contacts.domain.utils.api.response
 
 import java.io.IOException
 

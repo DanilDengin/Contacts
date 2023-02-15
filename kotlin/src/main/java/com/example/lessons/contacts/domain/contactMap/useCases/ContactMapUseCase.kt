@@ -1,6 +1,6 @@
 package com.example.lessons.contacts.domain.contactMap.useCases
 
-import com.example.lessons.contacts.domain.api.response.ApiResponse
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse
 import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap
 import kotlinx.coroutines.flow.Flow

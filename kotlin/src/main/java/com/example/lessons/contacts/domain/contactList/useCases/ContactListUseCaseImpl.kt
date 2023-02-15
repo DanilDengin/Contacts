@@ -21,7 +21,7 @@ class ContactListUseCaseImpl @Inject constructor(
         val filteredList = ArrayList<Contact>()
         withContext(Dispatchers.Default) {
             val trimmedQuery = query.trim()
-            contacts.forEach { user ->
+            getContacts().forEach { user ->
                 if (user.name.contains(trimmedQuery, ignoreCase = true)) {
                     filteredList.add(user)
                 }
@@ -29,4 +29,6 @@ class ContactListUseCaseImpl @Inject constructor(
         }
         return filteredList
     }
+
+    private fun getContacts()= contacts
 }

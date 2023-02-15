@@ -1,11 +1,11 @@
 package com.example.lessons.utils.response
 
 import android.util.Log
-import com.example.lessons.contacts.domain.api.response.ApiResponse
-import com.example.lessons.contacts.domain.api.response.ApiResponse.Failure.HttpFailure
-import com.example.lessons.contacts.domain.api.response.ApiResponse.Failure.NetworkFailure
-import com.example.lessons.contacts.domain.api.response.ApiResponse.Failure.UnknownFailure
-import com.example.lessons.contacts.domain.api.response.ApiResponse.Success
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse.Failure.HttpFailure
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse.Failure.NetworkFailure
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse.Failure.UnknownFailure
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse.Success
 import java.io.IOException
 import retrofit2.Call
 import retrofit2.Callback

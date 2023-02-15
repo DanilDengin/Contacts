@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
@@ -30,6 +31,7 @@ import com.example.lessons.contacts.domain.entity.Contact
 import com.example.lessons.presentation.mainActivity.MainActivity
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getAppDependenciesProvider
+import com.example.lessons.utils.idlingResource.SimpleIdlingResource
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentDetailsBinding
@@ -43,6 +45,9 @@ import javax.inject.Provider
 import kotlinx.coroutines.launch
 
 internal class ContactDetailsFragment : Fragment(R.layout.fragment_details) {
+
+    @VisibleForTesting
+    val idlingResource = SimpleIdlingResource()
 
     @Inject
     lateinit var viewModelFactoryProvider: Provider<ContactDetailsViewModel.Factory>

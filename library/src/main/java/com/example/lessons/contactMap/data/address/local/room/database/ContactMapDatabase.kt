@@ -7,7 +7,8 @@ import com.example.lessons.contactMap.data.address.local.room.model.ContactMapDb
 
 @Database(
     version = 1,
-    entities = [ContactMapDbEntity::class]
+    entities = [ContactMapDbEntity::class],
+    exportSchema = false
 )
 abstract class ContactMapDatabase : RoomDatabase() {
 

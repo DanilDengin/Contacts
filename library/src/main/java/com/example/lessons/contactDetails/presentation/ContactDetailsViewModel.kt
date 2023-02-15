@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lessons.contacts.domain.contactDetails.useCases.ContactDetailsUseCase
 import com.example.lessons.contacts.domain.entity.Contact
+import com.example.lessons.contacts.domain.utils.time.CurrentTime
 import com.example.lessons.utils.liveData.SingleLiveEvent
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

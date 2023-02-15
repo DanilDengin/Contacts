@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lessons.contactMapPicker.presentation.ContactMapException
-import com.example.lessons.contacts.domain.api.response.ApiResponse
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse
 import com.example.lessons.contacts.domain.contactMap.useCases.ContactMapUseCase
 import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.entity.ContactMap

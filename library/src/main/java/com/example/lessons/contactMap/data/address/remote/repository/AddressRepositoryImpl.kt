@@ -2,7 +2,7 @@ package com.example.lessons.contactMap.data.address.remote.repository
 
 import com.example.lessons.contactMap.data.address.remote.api.AddressService
 import com.example.lessons.contactMap.data.address.remote.model.toAddress
-import com.example.lessons.contacts.domain.api.response.ApiResponse
+import com.example.lessons.contacts.domain.utils.api.response.ApiResponse
 import com.example.lessons.contacts.domain.entity.ContactAddress
 import com.example.lessons.contacts.domain.repository.remote.AddressRepository
 import javax.inject.Inject

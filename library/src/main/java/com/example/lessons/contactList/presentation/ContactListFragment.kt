@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -23,6 +24,7 @@ import com.example.lessons.presentation.recyclerView.ContactItemDecorator
 import com.example.lessons.themePicker.presentation.ThemePickerFragment
 import com.example.lessons.utils.delegate.unsafeLazy
 import com.example.lessons.utils.di.getAppDependenciesProvider
+import com.example.lessons.utils.idlingResource.SimpleIdlingResource
 import com.example.lessons.utils.viewModel.viewModel
 import com.example.library.R
 import com.example.library.databinding.FragmentListBinding
@@ -30,6 +32,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 internal class ContactListFragment : Fragment(R.layout.fragment_list) {
+
+    @VisibleForTesting
+    val idlingResource = SimpleIdlingResource()
 
     @Inject
     lateinit var viewModelProvider: Provider<ContactListViewModel>
@@ -137,6 +142,7 @@ internal class ContactListFragment : Fragment(R.layout.fragment_list) {
 
     private fun setLoadingIndicator(isVisible: Boolean) {
         binding.progressBarList.isVisible = isVisible
+        idlingResource.setIdleState(isVisible)
     }
 
     private fun showExceptionToast() {
