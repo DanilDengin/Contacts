@@ -5,7 +5,7 @@ import com.example.impl.map.domain.entity.ContactMap
 import com.example.network.response.ApiResponse
 import kotlinx.coroutines.flow.Flow
 
-interface ContactMapUseCase {
+internal interface ContactMapUseCase {
 
     suspend fun getAddress(latitude: String, longitude: String): ApiResponse<ContactAddress?>
 

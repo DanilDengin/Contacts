@@ -10,7 +10,7 @@ import dagger.Component
     modules = [MapModule::class],
     dependencies = [MapExternalDependencies::class]
 )
-interface MapComponent {
+internal interface MapComponent {
 
     fun inject(mapFragment: ContactMapFragment)
 

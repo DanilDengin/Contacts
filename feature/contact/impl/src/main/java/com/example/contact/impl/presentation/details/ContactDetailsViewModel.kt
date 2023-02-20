@@ -17,7 +17,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class ContactDetailsViewModel @AssistedInject constructor(
+internal class ContactDetailsViewModel @AssistedInject constructor(
     @Assisted id: String,
     private val contactDetailsUseCase: ContactDetailsUseCase,
     private val router: Router,

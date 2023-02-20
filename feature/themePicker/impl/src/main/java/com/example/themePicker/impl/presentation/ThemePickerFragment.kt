@@ -12,7 +12,7 @@ import com.example.themePicker.impl.databinding.FragmentThemePickerBinding
 import com.example.ui.R
 import javax.inject.Inject
 
-class ThemePickerFragment : Fragment(FutureRes.layout.fragment_theme_picker) {
+internal class ThemePickerFragment : Fragment(FutureRes.layout.fragment_theme_picker) {
 
     private val binding by viewBinding(FragmentThemePickerBinding::bind)
 

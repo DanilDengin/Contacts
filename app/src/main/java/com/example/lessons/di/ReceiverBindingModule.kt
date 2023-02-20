@@ -7,7 +7,7 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-interface ReceiverBindingModule {
+internal interface ReceiverBindingModule {
 
     @AppScope
     @Binds

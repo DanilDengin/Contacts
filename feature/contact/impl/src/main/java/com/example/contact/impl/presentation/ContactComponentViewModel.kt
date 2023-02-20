@@ -6,7 +6,7 @@ import com.example.contact.impl.di.DaggerContactsComponent
 import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider.featureDependencies
 import com.example.utils.delegate.unsafeLazy
 
-class ContactComponentViewModel : ViewModel() {
+internal class ContactComponentViewModel : ViewModel() {
     val component by unsafeLazy {
         DaggerContactsComponent.factory()
             .create(checkNotNull(featureDependencies))
@@ -18,6 +18,6 @@ class ContactComponentViewModel : ViewModel() {
     }
 }
 
-object ContactsComponentDependenciesProvider {
+internal object ContactsComponentDependenciesProvider {
     var featureDependencies: ContactsExternalDependencies? = null
 }

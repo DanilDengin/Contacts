@@ -2,7 +2,7 @@ package com.example.contact.impl.domain.useCases
 
 import com.example.entity.Contact
 
-interface ContactListUseCase {
+internal interface ContactListUseCase {
 
     suspend fun getContactList(): List<Contact>
 

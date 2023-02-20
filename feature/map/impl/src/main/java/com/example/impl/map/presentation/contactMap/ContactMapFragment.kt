@@ -62,7 +62,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.coroutines.launch
 
-class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), DrivingRouteListener,
+internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), DrivingRouteListener,
     RouteListener {
 
     @Inject

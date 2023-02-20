@@ -7,7 +7,7 @@ import com.example.utils.constans.MAPKIT_API_KEY
 import com.github.terrakok.cicerone.Cicerone
 import com.yandex.mapkit.MapKitFactory
 
-class App : Application() {
+internal class App : Application() {
 
     lateinit var appComponent: AppComponent
 

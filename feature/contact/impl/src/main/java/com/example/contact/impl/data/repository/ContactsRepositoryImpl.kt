@@ -10,7 +10,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactsRepositoryImpl @Inject constructor(
+internal class ContactsRepositoryImpl @Inject constructor(
     private val context: Context
 ) : ContactsRepository {
 

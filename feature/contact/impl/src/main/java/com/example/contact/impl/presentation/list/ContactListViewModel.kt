@@ -17,7 +17,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
-class ContactListViewModel @Inject constructor(
+internal class ContactListViewModel @Inject constructor(
     private val contactListUseCase: ContactListUseCase,
     private val router: Router,
     private val themeScreenApi: ThemeScreenApi,

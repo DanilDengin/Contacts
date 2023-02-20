@@ -4,4 +4,4 @@ import javax.inject.Qualifier
 
 @Retention(AnnotationRetention.RUNTIME)
 @Qualifier
-annotation class YandexUrlQualifier
+internal annotation class YandexUrlQualifier

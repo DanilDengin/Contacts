@@ -6,7 +6,7 @@ import com.example.themePicker.impl.di.ThemeExternalDependencies
 import com.example.themePicker.impl.presentation.ThemeFeatureComponentDependenciesProvider.featureDependencies
 import com.example.utils.delegate.unsafeLazy
 
-class ThemeComponentViewModel : ViewModel() {
+internal class ThemeComponentViewModel : ViewModel() {
     val component by unsafeLazy {
         DaggerThemeComponent.factory()
             .create(checkNotNull(featureDependencies))
@@ -18,6 +18,6 @@ class ThemeComponentViewModel : ViewModel() {
     }
 }
 
-object ThemeFeatureComponentDependenciesProvider {
+internal object ThemeFeatureComponentDependenciesProvider {
     var featureDependencies: ThemeExternalDependencies? = null
 }

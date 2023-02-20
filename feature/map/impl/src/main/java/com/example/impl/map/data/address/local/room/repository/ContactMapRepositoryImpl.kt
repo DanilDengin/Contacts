@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-class ContactMapRepositoryImpl @Inject constructor(
+internal class ContactMapRepositoryImpl @Inject constructor(
     private val contactMapDao: ContactMapDao
 ) : ContactMapRepository {
 

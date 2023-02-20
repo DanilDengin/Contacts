@@ -6,7 +6,7 @@ import dagger.Component
 
 @FeatureScope
 @Component(dependencies = [ThemeExternalDependencies::class])
-interface ThemeComponent {
+internal interface ThemeComponent {
 
     fun inject(themePickerFragment: ThemePickerFragment)
 

@@ -13,7 +13,7 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-interface ContactsModule {
+internal interface ContactsModule {
 
     @FeatureScope
     @Binds

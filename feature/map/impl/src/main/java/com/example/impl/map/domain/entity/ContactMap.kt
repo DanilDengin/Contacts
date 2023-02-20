@@ -1,6 +1,6 @@
 package com.example.impl.map.domain.entity
 
-class ContactMap(
+internal class ContactMap(
     val name: String,
     val address: String,
     val latitude: Double,

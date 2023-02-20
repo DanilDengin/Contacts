@@ -6,7 +6,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactListUseCaseImpl @Inject constructor(
+internal class ContactListUseCaseImpl @Inject constructor(
     private val contactsRepository: ContactsRepository
 ) : ContactListUseCase {
 

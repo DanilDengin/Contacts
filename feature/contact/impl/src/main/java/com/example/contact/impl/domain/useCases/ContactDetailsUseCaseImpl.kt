@@ -8,7 +8,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ContactDetailsUseCaseImpl @Inject constructor(
+internal class ContactDetailsUseCaseImpl @Inject constructor(
     private val contactsRepository: ContactsRepository,
     private val currentTime: CurrentTime
 ) : ContactDetailsUseCase {

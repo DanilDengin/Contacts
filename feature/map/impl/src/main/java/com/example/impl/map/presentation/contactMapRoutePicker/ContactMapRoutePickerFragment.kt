@@ -30,7 +30,7 @@ import javax.inject.Provider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class ContactMapRoutePickerFragment :
+internal class ContactMapRoutePickerFragment :
     Fragment(FeatureRes.layout.fragment_contact_map_route_picker) {
 
     @Inject

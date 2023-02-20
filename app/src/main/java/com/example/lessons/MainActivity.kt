@@ -14,19 +14,19 @@ import androidx.core.content.ContextCompat
 import com.example.contact.api.ContactsScreenApi
 import com.example.di.dependency.FeatureExternalDepsContainer
 import com.example.di.dependency.FeatureExternalDepsProvider
-import com.example.utils.delegate.unsafeLazy
 import com.example.themePicker.impl.presentation.ThemeDelegate
 import com.example.ui.R
 import com.example.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
 import com.example.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
 import com.example.utils.constans.NOTIFICATION_CHANNEL_ID
+import com.example.utils.delegate.unsafeLazy
 import com.github.terrakok.cicerone.Navigator
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(R.layout.activity_main), FeatureExternalDepsProvider {
+internal class MainActivity : AppCompatActivity(R.layout.activity_main), FeatureExternalDepsProvider {
 
     @Inject
     override lateinit var deps: FeatureExternalDepsContainer

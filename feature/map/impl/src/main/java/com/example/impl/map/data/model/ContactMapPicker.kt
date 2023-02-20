@@ -1,6 +1,6 @@
 package com.example.impl.map.data.model
 
-data class ContactMapPicker(
+internal data class ContactMapPicker(
     val name: String,
     val address: String,
     val id: String,

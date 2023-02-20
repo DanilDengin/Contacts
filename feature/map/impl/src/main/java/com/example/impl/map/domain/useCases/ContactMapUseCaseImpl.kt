@@ -8,7 +8,7 @@ import com.example.network.response.ApiResponse
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class ContactMapUseCaseImpl @Inject constructor(
+internal class ContactMapUseCaseImpl @Inject constructor(
     private val addressRepository: AddressRepository,
     private val contactMapRepository: ContactMapRepository
 ) : ContactMapUseCase {

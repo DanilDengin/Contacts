@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.time
 
-interface CurrentTime {
+internal interface CurrentTime {
 
     fun getCurrentTime(): Long
 }

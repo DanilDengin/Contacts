@@ -9,7 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AddressRepositoryImpl @Inject constructor(
+internal class AddressRepositoryImpl @Inject constructor(
     private val addressService: AddressService
 ) : AddressRepository {
 

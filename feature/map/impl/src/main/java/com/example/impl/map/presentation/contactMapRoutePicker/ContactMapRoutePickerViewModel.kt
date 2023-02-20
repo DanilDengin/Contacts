@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
-class ContactMapRoutePickerViewModel @Inject constructor(
+internal class ContactMapRoutePickerViewModel @Inject constructor(
     private val contactMapUseCase: ContactMapUseCase
 ) : ViewModel() {
 

@@ -16,7 +16,7 @@ import dagger.Provides
 import retrofit2.Retrofit
 
 @Module
-interface MapModule {
+internal interface MapModule {
 
     @FeatureScope
     @Binds

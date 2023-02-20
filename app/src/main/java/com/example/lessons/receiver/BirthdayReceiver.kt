@@ -17,7 +17,7 @@ import com.example.utils.constans.BIRTHDAY_RECEIVER_INTENT_ACTION
 import com.example.utils.constans.NOTIFICATION_CHANNEL_ID
 import java.util.Calendar
 
-class BirthdayReceiver : BroadcastReceiver() {
+internal class BirthdayReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val contactId =

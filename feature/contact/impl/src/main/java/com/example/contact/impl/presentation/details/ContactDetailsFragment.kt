@@ -38,7 +38,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 import kotlinx.coroutines.launch
 
-class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_details) {
+internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_details) {
 
     @VisibleForTesting
     val idlingResource = TestIdlingResource()

@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.useCases
 
-interface ContactDetailsUseCase {
+internal interface ContactDetailsUseCase {
 
     suspend fun getContactById(id: String): com.example.entity.Contact?
 

@@ -10,7 +10,7 @@ import dagger.Component
     modules = [ContactsModule::class],
     dependencies = [ContactsExternalDependencies::class]
 )
-interface ContactsComponent {
+internal interface ContactsComponent {
 
     @Component.Factory
     interface Factory {

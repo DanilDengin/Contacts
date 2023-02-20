@@ -29,7 +29,7 @@ import com.example.utils.idlingResource.TestIdlingResource
 import javax.inject.Inject
 import javax.inject.Provider
 
-class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
+internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
 
     @VisibleForTesting
     val idlingResource = TestIdlingResource()

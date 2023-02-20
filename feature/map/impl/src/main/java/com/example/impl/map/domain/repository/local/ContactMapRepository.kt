@@ -3,7 +3,7 @@ package com.example.impl.map.domain.repository.local
 import com.example.impl.map.domain.entity.ContactMap
 import kotlinx.coroutines.flow.Flow
 
-interface ContactMapRepository {
+internal interface ContactMapRepository {
 
     suspend fun createContactMap(contactMap: ContactMap)
 

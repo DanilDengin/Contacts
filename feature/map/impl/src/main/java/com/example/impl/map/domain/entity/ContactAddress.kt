@@ -1,6 +1,6 @@
 package com.example.impl.map.domain.entity
 
 @JvmInline
-value class ContactAddress(
+internal value class ContactAddress(
     val address: String
 )

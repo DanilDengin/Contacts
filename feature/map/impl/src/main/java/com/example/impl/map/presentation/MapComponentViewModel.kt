@@ -6,7 +6,7 @@ import com.example.impl.map.di.MapExternalDependencies
 import com.example.impl.map.presentation.MapComponentDependenciesProvider.featureDependencies
 import com.example.utils.delegate.unsafeLazy
 
-class MapComponentViewModel : ViewModel() {
+internal class MapComponentViewModel : ViewModel() {
 
     val component by unsafeLazy {
         DaggerMapComponent.factory()
@@ -19,6 +19,6 @@ class MapComponentViewModel : ViewModel() {
     }
 }
 
-object MapComponentDependenciesProvider {
+internal object MapComponentDependenciesProvider {
     var featureDependencies: MapExternalDependencies? = null
 }
