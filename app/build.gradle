@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.lessons"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -35,9 +35,22 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':library')
-    implementation project(path: ':kotlin')
+    implementation project(path: ':core:network')
+    implementation project(path: ':core:ui')
+    implementation project(path: ':core:utils')
+    implementation project(path: ':core:di')
+    implementation project(path: ':core:db')
+    implementation project(path: ':feature:contacts:api')
+    implementation project(path: ':feature:contacts:impl')
+    implementation project(path: ':feature:themePicker:api')
+    implementation project(path: ':feature:themePicker:impl')
+    implementation project(path: ':feature:map:api')
+    implementation project(path: ':feature:map:impl')
+
     implementation "androidx.appcompat:appcompat:1.5.1"
+
+    //Cicerone
+    implementation("com.github.terrakok:cicerone:7.1")
 
     //Room with coroutines
     def room_version = "2.5.0"
@@ -73,8 +86,8 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.8.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
     implementation("androidx.activity:activity-ktx:1.6.1")
     implementation 'androidx.fragment:fragment-ktx:1.5.5'

@@ -4,14 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
-import com.example.lessons.contactMap.data.address.local.room.database.ContactMapDatabase
+import com.example.db.database.ContactMapDatabase
+import com.example.di.AppScope
 import dagger.Module
 import dagger.Provides
 
 @Module
 internal object DataModule {
 
-    @DataScope
+    @AppScope
     @Provides
     fun provideContactMapDatabase(context: Context): ContactMapDatabase {
         return Room.databaseBuilder(
@@ -21,7 +22,7 @@ internal object DataModule {
         ).build()
     }
 
-    @DataScope
+    @AppScope
     @Provides
     fun provideSharedPrefTheme(context: Context): SharedPreferences {
         return context.getSharedPreferences(SHARED_PREF_KEY, AppCompatActivity.MODE_PRIVATE)

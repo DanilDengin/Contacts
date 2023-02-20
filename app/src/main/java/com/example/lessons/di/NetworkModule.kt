@@ -1,45 +1,33 @@
 package com.example.lessons.di
 
-import com.example.lessons.utils.response.ApiResponseCallAdapterFactory
-import com.example.library.BuildConfig
+import com.example.di.AppScope
+import com.example.network.response.ApiResponseFactoryProvider
+import com.example.network.retrofit.OkHttpClientProvider
+import com.example.network.retrofit.RetrofitProvider
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.CallAdapter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 internal object NetworkModule {
 
-    @Singleton
+    @AppScope
     @Provides
-    fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = if (BuildConfig.DEBUG) {
-                    HttpLoggingInterceptor.Level.BODY
-                } else {
-                    HttpLoggingInterceptor.Level.NONE
-                }
-            })
-            .build()
-    }
+    fun provideHttpClient(): OkHttpClient = OkHttpClientProvider.get()
 
-    @Singleton
+    @AppScope
+    @Provides
+    fun provideApiResponseFactory(): CallAdapter.Factory = ApiResponseFactoryProvider.get()
+
+    @AppScope
     @Provides
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
-        @YandexUrlQualifier yandexUrl: String
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(yandexUrl)
-            .client(okHttpClient)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+        @YandexUrlQualifier yandexUrl: String,
+        apiResponseFactory: CallAdapter.Factory,
+    ): Retrofit = RetrofitProvider.get(okHttpClient, yandexUrl, apiResponseFactory)
 
     @Provides
     @YandexUrlQualifier
