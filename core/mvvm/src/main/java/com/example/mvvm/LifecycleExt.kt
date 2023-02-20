@@ -5,6 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 
-inline fun <reified VM : ViewModel> Fragment.getViewModel(): VM {
+inline fun <reified VM : ViewModel> Fragment.getRootViewModel(): VM {
     return ViewModelProvider(this).get()
 }

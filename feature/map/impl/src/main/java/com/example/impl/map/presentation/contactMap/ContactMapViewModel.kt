@@ -10,8 +10,8 @@ import com.example.impl.map.domain.entity.ContactMap
 import com.example.impl.map.domain.useCases.ContactMapUseCase
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapException
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapRoutePickerFragment
-import com.example.lessons.utils.liveData.SingleLiveEvent
 import com.example.network.response.ApiResponse
+import com.example.utils.liveData.SingleLiveEvent
 import com.example.utils.tag.tagObj
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.FragmentScreen

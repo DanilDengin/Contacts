@@ -1,8 +1,8 @@
 package com.example.lessons.di
 
+import com.example.contact.impl.di.ContactsExternalDependencies
 import com.example.di.dependency.FeatureExternalDeps
 import com.example.di.dependency.FeatureExternalDepsKey
-import com.example.impl.contacts.di.ContactsExternalDependencies
 import com.example.impl.map.di.MapExternalDependencies
 import com.example.themePicker.impl.di.ThemeExternalDependencies
 import dagger.Binds

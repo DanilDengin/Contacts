@@ -5,6 +5,6 @@ import com.example.themePicker.impl.presentation.ThemePickerFragment
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import javax.inject.Inject
 
-class ThemeScreenApiImpl @Inject constructor(): ThemeScreenApi {
+class ThemeScreenApiImpl @Inject constructor() : ThemeScreenApi {
     override fun getThemeScreen() = FragmentScreen { ThemePickerFragment() }
 }

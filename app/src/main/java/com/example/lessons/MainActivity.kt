@@ -11,10 +11,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.api.contacts.ContactsScreenApi
+import com.example.contact.api.ContactsScreenApi
 import com.example.di.dependency.FeatureExternalDepsContainer
 import com.example.di.dependency.FeatureExternalDepsProvider
-import com.example.lessons.utils.delegate.unsafeLazy
+import com.example.utils.delegate.unsafeLazy
 import com.example.themePicker.impl.presentation.ThemeDelegate
 import com.example.ui.R
 import com.example.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), FeatureExternalD
         checkReadContactPermission()
         themeDelegate.setTheme()
 
-        if ( savedInstanceState == null && readContactsGranted) {
+        if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
         }
         if (contactId != -1 && savedInstanceState == null && readContactsGranted) {

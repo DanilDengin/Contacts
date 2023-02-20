@@ -1,10 +1,10 @@
 package com.example.impl.map.presentation.contactMapRoutePicker.recyclerView
 
+import com.example.impl.map.R as FeatureRes
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
-import com.example.impl.map.R as FeatureRes
 import com.example.impl.map.data.model.ContactMapPicker
 import com.example.ui.R
 

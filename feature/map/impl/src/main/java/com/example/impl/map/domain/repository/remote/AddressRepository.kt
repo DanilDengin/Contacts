@@ -6,5 +6,4 @@ import com.example.network.response.ApiResponse
 interface AddressRepository {
 
     suspend fun getAddress(geocode: String): ApiResponse<ContactAddress?>
-
 }

@@ -10,6 +10,7 @@ import com.yandex.mapkit.MapKitFactory
 class App : Application() {
 
     lateinit var appComponent: AppComponent
+
     private val cicerone = Cicerone.create()
 
     private val router = cicerone.router

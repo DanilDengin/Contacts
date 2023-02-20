@@ -3,10 +3,10 @@ package com.example.lessons.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.api.map.MapScreenApi
+import com.example.contact.impl.di.ContactsExternalDependencies
+import com.example.contact.impl.domain.receiver.BirthdayReceiverProvider
 import com.example.db.database.ContactMapDatabase
 import com.example.di.AppScope
-import com.example.impl.contacts.di.ContactsExternalDependencies
-import com.example.impl.contacts.domain.receiver.BirthdayReceiverProvider
 import com.example.impl.map.di.MapExternalDependencies
 import com.example.lessons.MainActivity
 import com.example.themePicker.api.ThemeScreenApi
@@ -27,8 +27,11 @@ import retrofit2.Retrofit
         ReceiverBindingModule::class
     ]
 )
-interface AppComponent : ContactsExternalDependencies, ThemeExternalDependencies, MapExternalDependencies
-{
+interface AppComponent :
+    ContactsExternalDependencies,
+    ThemeExternalDependencies,
+    MapExternalDependencies {
+
     override val router: Router
     override val context: Context
     override val themeApi: ThemeScreenApi

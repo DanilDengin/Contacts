@@ -12,4 +12,5 @@ inline fun <reified T : FeatureExternalDeps> FeatureExternalDepsProvider.get(): 
     deps.getValue(T::class.java) as T
 
 inline fun <reified T : FeatureExternalDeps> Fragment.findFeatureExternalDeps(): T =
-    (requireActivity() as? FeatureExternalDepsProvider)?.get() ?: error("Feature external deps not found")
+    (requireActivity() as? FeatureExternalDepsProvider)?.get()
+        ?: error("Feature external deps not found")

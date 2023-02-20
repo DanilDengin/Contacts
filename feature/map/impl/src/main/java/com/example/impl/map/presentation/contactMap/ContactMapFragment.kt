@@ -24,10 +24,10 @@ import com.example.impl.map.domain.entity.ContactMap
 import com.example.impl.map.presentation.MapComponentDependenciesProvider
 import com.example.impl.map.presentation.MapComponentViewModel
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapException
-import com.example.lessons.utils.delegate.unsafeLazy
-import com.example.mvvm.getViewModel
+import com.example.mvvm.getRootViewModel
 import com.example.mvvm.viewModel
 import com.example.ui.R
+import com.example.utils.delegate.unsafeLazy
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.RequestPoint
@@ -91,7 +91,7 @@ class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), DrivingRout
 
     override fun onAttach(context: Context) {
         MapComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getViewModel<MapComponentViewModel>().component.inject(this)
+        getRootViewModel<MapComponentViewModel>().component.inject(this)
         super.onAttach(context)
     }
 

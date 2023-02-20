@@ -1,10 +1,11 @@
 package com.example.network.response
 
 import android.util.Log
-import com.example.network.response.ApiResponse.Success
 import com.example.network.response.ApiResponse.Failure.HttpFailure
 import com.example.network.response.ApiResponse.Failure.NetworkFailure
 import com.example.network.response.ApiResponse.Failure.UnknownFailure
+import com.example.network.response.ApiResponse.Success
+import com.example.utils.tag.tagObj
 import java.io.IOException
 import retrofit2.Call
 import retrofit2.Callback
@@ -62,6 +63,6 @@ internal class ApiResponseCall(private val call: Call<ApiResponse<*>>) :
         })
 
     private companion object {
-        val API_RESPONSE_CALL_TAG: String = ApiResponseCall::class.java.simpleName
+        val API_RESPONSE_CALL_TAG: String = ApiResponseCall.tagObj()
     }
 }

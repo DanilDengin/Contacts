@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.example.impl.map.di.DaggerMapComponent
 import com.example.impl.map.di.MapExternalDependencies
 import com.example.impl.map.presentation.MapComponentDependenciesProvider.featureDependencies
-import com.example.lessons.utils.delegate.unsafeLazy
+import com.example.utils.delegate.unsafeLazy
 
-class MapComponentViewModel: ViewModel() {
+class MapComponentViewModel : ViewModel() {
 
     val component by unsafeLazy {
         DaggerMapComponent.factory()

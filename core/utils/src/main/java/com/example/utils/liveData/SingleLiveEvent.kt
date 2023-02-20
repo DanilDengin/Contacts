@@ -1,4 +1,4 @@
-package com.example.lessons.utils.liveData
+package com.example.utils.liveData
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner

@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.di.dependency.findFeatureExternalDeps
-import com.example.mvvm.getViewModel
+import com.example.mvvm.getRootViewModel
 import com.example.themePicker.impl.databinding.FragmentThemePickerBinding
 import com.example.ui.R
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class ThemePickerFragment : Fragment(FutureRes.layout.fragment_theme_picker) {
 
     override fun onAttach(context: Context) {
         ThemeFeatureComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getViewModel<ThemeComponentViewModel>().component.inject(this)
+        getRootViewModel<ThemeComponentViewModel>().component.inject(this)
         super.onAttach(context)
     }
 
