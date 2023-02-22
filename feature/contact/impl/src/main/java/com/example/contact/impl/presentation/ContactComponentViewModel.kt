@@ -3,21 +3,21 @@ package com.example.contact.impl.presentation
 import androidx.lifecycle.ViewModel
 import com.example.contact.impl.di.ContactsExternalDependencies
 import com.example.contact.impl.di.DaggerContactsComponent
-import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider.featureDependencies
+import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider.contactsExternalDependencies
 import com.example.utils.delegate.unsafeLazy
 
 internal class ContactComponentViewModel : ViewModel() {
-    val component by unsafeLazy {
+    val contactsComponent by unsafeLazy {
         DaggerContactsComponent.factory()
-            .create(checkNotNull(featureDependencies))
+            .create(checkNotNull(contactsExternalDependencies))
     }
 
     override fun onCleared() {
         super.onCleared()
-        featureDependencies = null
+        contactsExternalDependencies = null
     }
 }
 
 internal object ContactsComponentDependenciesProvider {
-    var featureDependencies: ContactsExternalDependencies? = null
+    var contactsExternalDependencies: ContactsExternalDependencies? = null
 }

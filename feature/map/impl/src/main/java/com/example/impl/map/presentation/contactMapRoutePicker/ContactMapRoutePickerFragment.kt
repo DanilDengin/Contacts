@@ -20,7 +20,7 @@ import com.example.impl.map.presentation.contactMap.ContactMapFragment.Companion
 import com.example.impl.map.presentation.contactMap.ContactMapFragment.Companion.SECOND_CONTACT_BUNDLE_KEY
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapRoutePickerViewModel.Companion.SELECT_LIST_ALLOWED_SIZE
 import com.example.impl.map.presentation.contactMapRoutePicker.recyclerView.ContactMapPickerAdapter
-import com.example.mvvm.getRootViewModel
+import com.example.mvvm.getComponentViewModel
 import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.ui.recyclerView.ContactItemDecorator
@@ -47,8 +47,8 @@ internal class ContactMapRoutePickerFragment :
     }
 
     override fun onAttach(context: Context) {
-        MapComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getRootViewModel<MapComponentViewModel>().component.inject(this)
+        MapComponentDependenciesProvider.mapExternalDependencies = findFeatureExternalDeps()
+        getComponentViewModel<MapComponentViewModel>().mapComponent.inject(this)
         super.onAttach(context)
     }
 

@@ -5,5 +5,11 @@ import com.example.impl.map.di.MapScreenApiModule
 import com.example.themePicker.impl.di.ThemeScreenApiModule
 import dagger.Module
 
-@Module
-internal interface AppModule : ContactsScreenApiModule, ThemeScreenApiModule, MapScreenApiModule
+@Module(
+    includes = [
+        ContactsScreenApiModule::class,
+        ThemeScreenApiModule::class,
+        MapScreenApiModule::class
+    ]
+)
+internal interface AppModule

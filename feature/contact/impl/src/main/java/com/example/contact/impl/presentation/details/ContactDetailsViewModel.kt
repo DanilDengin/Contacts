@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api.map.MapScreenApi
+import com.example.api.map.screen.MapScreenApi
+import com.example.contact.api.entity.Contact
 import com.example.contact.impl.data.model.toArguments
 import com.example.contact.impl.domain.useCases.ContactDetailsUseCase
 import com.example.utils.liveData.SingleLiveEvent
@@ -24,10 +25,10 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
     private val mapScreenApi: MapScreenApi
 ) : ViewModel() {
 
-    val user: LiveData<com.example.entity.Contact> get() = _user
+    val user: LiveData<Contact> get() = _user
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _user = MutableLiveData<com.example.entity.Contact>()
+    private val _user = MutableLiveData<Contact>()
     private val _progressBarState = MutableLiveData<Boolean>()
     private val _exceptionState = SingleLiveEvent<Unit>()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->

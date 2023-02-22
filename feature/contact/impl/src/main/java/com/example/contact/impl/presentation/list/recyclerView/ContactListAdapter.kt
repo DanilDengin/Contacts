@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.example.contact.api.entity.Contact
 import com.example.contact.impl.R
-import com.example.entity.Contact
 
 internal class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
     ListAdapter<Contact, ContactListViewHolder>(DiffCallback()) {

@@ -1,4 +1,4 @@
-package com.example.entity
+package com.example.contact.api.entity
 
 import java.util.GregorianCalendar
 

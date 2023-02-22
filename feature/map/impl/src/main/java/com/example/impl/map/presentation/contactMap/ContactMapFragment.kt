@@ -17,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.api.map.entity.ContactMapArguments
 import com.example.di.dependency.findFeatureExternalDeps
 import com.example.impl.map.databinding.FragmentMapBinding
 import com.example.impl.map.domain.entity.ContactAddress
@@ -24,7 +25,7 @@ import com.example.impl.map.domain.entity.ContactMap
 import com.example.impl.map.presentation.MapComponentDependenciesProvider
 import com.example.impl.map.presentation.MapComponentViewModel
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapException
-import com.example.mvvm.getRootViewModel
+import com.example.mvvm.getComponentViewModel
 import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.utils.delegate.unsafeLazy
@@ -45,6 +46,7 @@ import com.yandex.mapkit.geometry.SubpolylineHelper
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
 import com.yandex.mapkit.map.Map
+import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.transport.TransportFactory
 import com.yandex.mapkit.transport.masstransit.FilterVehicleTypes
 import com.yandex.mapkit.transport.masstransit.Route
@@ -79,9 +81,9 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
 
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
-    private val mapObjects by unsafeLazy { binding.mapView.map.mapObjects }
+    private var mapObjects: MapObjectCollection? = null
 
-    private var contactArgument: com.example.entity.ContactMapArguments? = null
+    private var contactArgument: ContactMapArguments? = null
 
     private var chosenPoint = Point()
 
@@ -90,8 +92,8 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
     private val roadNotFountMessage by unsafeLazy { getString(R.string.road_not_found_toast) }
 
     override fun onAttach(context: Context) {
-        MapComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getRootViewModel<MapComponentViewModel>().component.inject(this)
+        MapComponentDependenciesProvider.mapExternalDependencies = findFeatureExternalDeps()
+        getComponentViewModel<MapComponentViewModel>().mapComponent.inject(this)
         super.onAttach(context)
     }
 
@@ -101,6 +103,24 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         TransportFactory.initialize(contextNotNull)
         DirectionsFactory.initialize(contextNotNull)
         MapKitFactory.initialize(contextNotNull)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mapObjects = binding.mapView.map.mapObjects
+        requireActivity().title = getString(R.string.contact_map_toolbar)
+        contactArgument = if (Build.VERSION.SDK_INT >= TIRAMISU) {
+            arguments?.getParcelable(ARG, ContactMapArguments::class.java)
+        } else {
+            arguments?.getParcelable(ARG)
+        }
+        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
+
+        if (contactArgument != null) {
+            doActionForSingleContact()
+        } else {
+            doActionForContacts()
+        }
     }
 
     override fun onStart() {
@@ -119,33 +139,21 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         super.onPause()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().title = getString(R.string.contact_map_toolbar)
-        contactArgument = if (Build.VERSION.SDK_INT >= TIRAMISU) {
-            arguments?.getParcelable(ARG, com.example.entity.ContactMapArguments::class.java)
-        } else {
-            arguments?.getParcelable(ARG)
-        }
-        viewModel.exceptionState.observe(viewLifecycleOwner, ::showExceptionToast)
-
-        if (contactArgument != null) {
-            doActionForSingleContact()
-        } else {
-            doActionForContacts()
-        }
-    }
-
     override fun onStop() {
         binding.mapView.onStop()
         MapKitFactory.getInstance().onStop()
         super.onStop()
     }
 
+    override fun onDestroyView() {
+        mapObjects = null
+        super.onDestroyView()
+    }
+
     override fun onDrivingRoutes(routes: List<DrivingRoute>) {
         if (routes.isNotEmpty()) {
             val route = routes.first()
-            mapObjects.addPolyline(route.geometry)
+            mapObjects?.addPolyline(route.geometry)
             val boundingBox = BoundingBoxHelper.getBounds(route.geometry)
             var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
             cameraPosition = CameraPosition(
@@ -206,14 +214,14 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         binding.deleteContactMapImageView.visibility = View.VISIBLE
         binding.deleteContactMapImageView.setOnClickListener {
             contactArgument?.id?.also(viewModel::deleteContactMap)
-            mapObjects.clear()
+            mapObjects?.clear()
         }
         viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
         viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
         contactArgument?.id?.also(viewModel::getContactMapById)
         binding.mapView.map.addInputListener(object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
-                mapObjects.clear()
+                mapObjects?.clear()
                 chosenPoint = point
                 viewModel.fetchAddress(
                     point.latitude.toString(),
@@ -396,7 +404,7 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
             contactMap.latitude,
             contactMap.longitude
         )
-        mapObjects.addCollection().addPlacemark(point, contactMapImage)
+        mapObjects?.addCollection()?.addPlacemark(point, contactMapImage)
         val description = "${contactMap.name} [${contactMap.address}]"
         showContactAddress(point, description)
     }
@@ -415,7 +423,7 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
             text = description
         }
         val viewProvider = ViewProvider(textView)
-        mapObjects.addCollection().addPlacemark(point, viewProvider)
+        mapObjects?.addCollection()?.addPlacemark(point, viewProvider)
     }
 
     private fun showAddressToast(address: ContactAddress) {
@@ -439,13 +447,13 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         data: SectionData,
         geometry: Polyline
     ) {
-        val polylineMapObject = mapObjects.addPolyline(geometry)
+        val polylineMapObject = mapObjects?.addPolyline(geometry)
         val dataTransport = data.transports
         if (dataTransport != null) {
             for (transport in dataTransport) {
                 if (transport.line.style != null) {
                     transport.line.style?.color?.let { color ->
-                        polylineMapObject.setStrokeColor(
+                        polylineMapObject?.setStrokeColor(
                             color.or(Color.BLACK)
                         )
                     }
@@ -460,16 +468,16 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
                 val sectionVehicleType: String =
                     getVehicleType(transport, knownVehicleTypes).orEmpty()
                 if (sectionVehicleType == VEHICLE_TYPE_BUS) {
-                    polylineMapObject.setStrokeColor(Color.GREEN)
+                    polylineMapObject?.setStrokeColor(Color.GREEN)
                     return
                 } else if (sectionVehicleType == VEHICLE_TYPE_TRAMWAY) {
-                    polylineMapObject.setStrokeColor(Color.RED)
+                    polylineMapObject?.setStrokeColor(Color.RED)
                     return
                 }
             }
-            polylineMapObject.setStrokeColor(Color.BLUE)
+            polylineMapObject?.setStrokeColor(Color.BLUE)
         } else {
-            polylineMapObject.setStrokeColor(Color.BLACK)
+            polylineMapObject?.setStrokeColor(Color.BLACK)
         }
     }
 
@@ -537,7 +545,7 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         const val MIXED_FORMAT_BUNDLE_PAIR = "mixedFormat"
         const val FIRST_CONTACT_BUNDLE_KEY = "firstContact"
         const val SECOND_CONTACT_BUNDLE_KEY = "secondContact"
-        fun newInstance(contactMapDto: com.example.entity.ContactMapArguments?) =
+        fun newInstance(contactMapDto: ContactMapArguments?) =
             ContactMapFragment().apply {
                 arguments = bundleOf(
                     ARG to contactMapDto

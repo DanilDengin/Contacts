@@ -2,7 +2,7 @@ package com.example.lessons.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.api.map.MapScreenApi
+import com.example.api.map.screen.MapScreenApi
 import com.example.contact.impl.di.ContactsExternalDependencies
 import com.example.contact.impl.domain.receiver.BirthdayReceiverProvider
 import com.example.db.database.ContactMapDatabase
@@ -27,7 +27,7 @@ import retrofit2.Retrofit
         ReceiverBindingModule::class
     ]
 )
-internal interface AppComponent :
+internal interface  AppComponent :
     ContactsExternalDependencies,
     ThemeExternalDependencies,
     MapExternalDependencies {

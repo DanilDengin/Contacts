@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.contact.api.ContactsScreenApi
+import com.example.contact.api.screen.ContactsScreenApi
 import com.example.di.dependency.FeatureExternalDepsContainer
 import com.example.di.dependency.FeatureExternalDepsProvider
 import com.example.themePicker.impl.presentation.ThemeDelegate

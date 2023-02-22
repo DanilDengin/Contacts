@@ -1,6 +1,6 @@
-package com.example.api.map
+package com.example.api.map.screen
 
-import com.example.entity.ContactMapArguments
+import com.example.api.map.entity.ContactMapArguments
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
 interface MapScreenApi {

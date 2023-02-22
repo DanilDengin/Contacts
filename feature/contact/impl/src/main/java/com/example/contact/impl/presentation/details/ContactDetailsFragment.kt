@@ -16,12 +16,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.example.contact.api.entity.Contact
 import com.example.contact.impl.databinding.FragmentDetailsBinding
 import com.example.contact.impl.domain.receiver.BirthdayReceiverProvider
 import com.example.contact.impl.presentation.ContactComponentViewModel
 import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider
 import com.example.di.dependency.findFeatureExternalDeps
-import com.example.mvvm.getRootViewModel
+import com.example.mvvm.getComponentViewModel
 import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.utils.constans.BIRTHDAY_CONTACT_ID_INTENT_KEY
@@ -85,8 +86,8 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
     }
 
     override fun onAttach(context: Context) {
-        ContactsComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getRootViewModel<ContactComponentViewModel>().component.inject(this)
+        ContactsComponentDependenciesProvider.contactsExternalDependencies = findFeatureExternalDeps()
+        getComponentViewModel<ContactComponentViewModel>().contactsComponent.inject(this)
         super.onAttach(context)
     }
 
@@ -140,7 +141,7 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
         viewModel.navigateToMapFragment()
     }
 
-    private fun updateView(contactForDetails: com.example.entity.Contact) {
+    private fun updateView(contactForDetails: Contact) {
         with(binding) {
             nameTextView.text = contactForDetails.name
             number1TextView.text = contactForDetails.numberPrimary

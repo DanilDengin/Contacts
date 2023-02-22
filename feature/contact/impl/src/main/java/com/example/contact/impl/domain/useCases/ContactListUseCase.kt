@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.useCases
 
-import com.example.entity.Contact
+import com.example.contact.api.entity.Contact
 
 internal interface ContactListUseCase {
 

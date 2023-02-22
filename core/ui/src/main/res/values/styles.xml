@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="textAppearanceHeadline" format="reference" />
-    <attr name="textAppearanceBodyLarge" format="reference" />
-    <attr name="textAppearanceBodyMedium" format="reference" />
-    <attr name="textAppearanceSwitchCompat" format="reference" />
-    <attr name="textColorToolbar" format="color" />
-
     <style name="Widget.MyApplication.HeaderTextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>

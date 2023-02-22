@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.impl.map.data.model.ContactMapPicker
 import com.example.impl.map.data.model.toContactMapPicker
 import com.example.impl.map.domain.useCases.ContactMapUseCase
+import com.example.utils.tag.tagObj
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,6 +91,6 @@ internal class ContactMapRoutePickerViewModel @Inject constructor(
     companion object {
         const val SELECT_LIST_ALLOWED_SIZE = 2
         private val CONTACT_MAP_PICKER_VIEW_MODEL_TAG: String =
-            ContactMapRoutePickerViewModel::class.java.simpleName
+            ContactMapRoutePickerViewModel.tagObj()
     }
 }

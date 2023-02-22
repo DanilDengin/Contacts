@@ -1,8 +1,8 @@
 package com.example.contact.impl.domain.useCases
 
+import com.example.contact.api.entity.Contact
 import com.example.contact.impl.domain.repository.ContactsRepository
 import com.example.contact.impl.domain.time.CurrentTime
-import com.example.entity.Contact
 import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers

@@ -2,8 +2,8 @@ package com.example.contact.impl.data.repository
 
 import android.content.Context
 import android.provider.ContactsContract
+import com.example.contact.api.entity.Contact
 import com.example.contact.impl.domain.repository.ContactsRepository
-import com.example.entity.Contact
 import java.sql.Date
 import java.util.GregorianCalendar
 import javax.inject.Inject

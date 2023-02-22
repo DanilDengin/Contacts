@@ -1,4 +1,4 @@
-package com.example.entity
+package com.example.api.map.entity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

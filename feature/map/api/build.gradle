@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id("kotlin-parcelize")
 }
 
 android {
@@ -31,7 +32,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':core:entity')
 
     //Cicerone
     implementation("com.github.terrakok:cicerone:7.1")

@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.repository
 
-import com.example.entity.Contact
+import com.example.contact.api.entity.Contact
 
 internal interface ContactsRepository {
 

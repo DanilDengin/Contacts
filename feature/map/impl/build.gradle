@@ -37,7 +37,6 @@ android {
 dependencies {
     implementation project(path: ':core:ui')
     implementation project(path: ':core:mvvm')
-    implementation project(path: ':core:entity')
     implementation project(path: ':core:di')
     implementation project(path: ':core:utils')
     implementation project(path: ':core:network')

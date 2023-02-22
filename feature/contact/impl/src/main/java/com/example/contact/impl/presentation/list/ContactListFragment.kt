@@ -20,7 +20,7 @@ import com.example.contact.impl.presentation.ContactComponentViewModel
 import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider
 import com.example.contact.impl.presentation.list.recyclerView.ContactListAdapter
 import com.example.di.dependency.findFeatureExternalDeps
-import com.example.mvvm.getRootViewModel
+import com.example.mvvm.getComponentViewModel
 import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.ui.recyclerView.ContactItemDecorator
@@ -50,8 +50,8 @@ internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
-        ContactsComponentDependenciesProvider.featureDependencies = findFeatureExternalDeps()
-        getRootViewModel<ContactComponentViewModel>().component.inject(this)
+        ContactsComponentDependenciesProvider.contactsExternalDependencies = findFeatureExternalDeps()
+        getComponentViewModel<ContactComponentViewModel>().contactsComponent.inject(this)
         super.onAttach(context)
     }
 

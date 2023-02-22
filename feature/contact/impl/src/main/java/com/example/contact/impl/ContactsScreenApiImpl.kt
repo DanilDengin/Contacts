@@ -1,6 +1,6 @@
 package com.example.contact.impl
 
-import com.example.contact.api.ContactsScreenApi
+import com.example.contact.api.screen.ContactsScreenApi
 import com.example.contact.impl.presentation.details.ContactDetailsFragment
 import com.example.contact.impl.presentation.list.ContactListFragment
 import com.github.terrakok.cicerone.androidx.FragmentScreen

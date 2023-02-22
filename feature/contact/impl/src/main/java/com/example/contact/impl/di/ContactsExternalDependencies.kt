@@ -1,7 +1,7 @@
 package com.example.contact.impl.di
 
 import android.content.Context
-import com.example.api.map.MapScreenApi
+import com.example.api.map.screen.MapScreenApi
 import com.example.contact.impl.domain.receiver.BirthdayReceiverProvider
 import com.example.di.dependency.FeatureExternalDeps
 import com.example.themePicker.api.ThemeScreenApi

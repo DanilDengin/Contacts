@@ -1,4 +1,4 @@
-package com.example.contact.api
+package com.example.contact.api.screen
 
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
