@@ -1,6 +1,6 @@
-package com.example.impl.contacts.domain
+package com.example.contact.impl.domain
 
-import com.example.entity.Contact
+import com.example.contact.api.entity.Contact
 import java.util.Calendar
 import java.util.GregorianCalendar
 

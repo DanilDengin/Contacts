@@ -4,32 +4,7 @@ plugins {
     id(Plugins.jetbrainsAndroid)
 }
 
-android {
-    compileSdk = AppConfig.compileSdkVersion
-    namespace="com.example.themePicker.impl"
-    defaultConfig {
-        minSdk = AppConfig.minSdkVersion
-        targetSdk = AppConfig.targetSdkVersion
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        viewBinding = true
-    }
-    kotlinOptions {
-        jvmTarget = AppConfig.javaVersion
-    }
-}
+applyAndroid(useViewBinding = true)
 
 dependencies {
     implementation(project(":core:ui"))

@@ -1,9 +1,9 @@
 package com.example.contact.impl.domain.useCases
 
+import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.contactListTest
+import com.example.contact.impl.domain.contactSortedListTest
 import com.example.contact.impl.domain.repository.ContactsRepository
-import com.example.entity.Contact
-import com.example.impl.contacts.domain.contactListTest
-import com.example.impl.contacts.domain.contactSortedListTest
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

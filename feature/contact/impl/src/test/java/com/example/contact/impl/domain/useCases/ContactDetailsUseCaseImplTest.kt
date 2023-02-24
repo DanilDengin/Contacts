@@ -1,10 +1,10 @@
 package com.example.contact.impl.domain.useCases
 
+import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.currentDateTest
+import com.example.contact.impl.domain.danil
 import com.example.contact.impl.domain.repository.ContactsRepository
 import com.example.contact.impl.domain.time.CurrentTimeImpl
-import com.example.entity.Contact
-import com.example.impl.contacts.domain.currentDateTest
-import com.example.impl.contacts.domain.danil
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

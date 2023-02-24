@@ -24,20 +24,17 @@ object Dependencies {
     const val http = "com.squareup.okhttp3:okhttp:${Versions.http}"
     const val coreKtx = "androidx.core:core-ktx:${Versions.coreKtx}"
     const val activityKtx = "androidx.activity:activity-ktx:${Versions.activityKtx}"
-    //    const val fragmentKtx = "androidx.fragment:fragment-ktx:${Versions.fragmentKtx}"
     const val material = "com.google.android.material:material:${Versions.material}"
     const val espresso = "androidx.test.espresso:espresso-core:${Versions.espresso}"
     const val espressoIdlingResource =
         "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
-    const val jupiter = "org.junit.jupiter:junit-jupiter:${Versions.jupiter}"
     const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
+    const val coroutinesTest =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
+    const val junitApi = "org.junit.jupiter:junit-jupiter-api:${Versions.junit}"
+    const val junitEngine = "org.junit.jupiter:junit-jupiter-engine:${Versions.junit}"
     const val mockk = "io.mockk:mockk:${Versions.mockk}"
-    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
-    const val junitTest ="androidx.test.ext:junit:${Versions.junitTest}"
-    const val junit = "junit:junit:${Versions.junit}"
+    const val logger = "org.slf4j:slf4j-log4j12:${Versions.logger}"
     const val constraint = "androidx.constraintlayout:constraintlayout:${Versions.constraint}"
-//    const val viewModelKtx =
-//        "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.viewModelKtx}"
-
 }
 
