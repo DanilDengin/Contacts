@@ -1,23 +1,45 @@
 package com.example.contact.impl.domain.useCases
 
-import com.example.contact.api.entity.Contact
+import com.example.common.address.domain.entity.ContactMap
+import com.example.common.address.domain.local.repository.ContactMapRepository
+import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.repository.ContactsRepository
 import com.example.contact.impl.domain.time.CurrentTime
 import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 internal class ContactDetailsUseCaseImpl @Inject constructor(
     private val contactsRepository: ContactsRepository,
+    private val contactMapRepository: ContactMapRepository,
     private val currentTime: CurrentTime
 ) : ContactDetailsUseCase {
 
-    private var contact: Contact? = null
+    private var contact: ContactDetails? = null
 
-    override suspend fun getContactById(id: String): Contact? {
-        contact = contactsRepository.getFullContactDetails(id)
-        return contact
+    override suspend fun getContactAddress(id: String): Flow<ContactMap?> {
+        return contactMapRepository.getContactMapById(id)
+    }
+
+    override suspend fun getContactDetailsById(id: String): Flow<ContactDetails?> {
+        val contactPhoneDb = contactsRepository.getFullContactDetails(id)
+        return contactMapRepository.getContactMapById(id).map { address ->
+            contactPhoneDb?.let {
+                ContactDetails(
+                    name = contactPhoneDb.name,
+                    numberPrimary = contactPhoneDb.numberPrimary,
+                    numberSecondary = contactPhoneDb.numberSecondary,
+                    emailPrimary = contactPhoneDb.emailPrimary,
+                    emailSecondary = contactPhoneDb.emailSecondary,
+                    address = address?.address,
+                    birthday = contactPhoneDb.birthday,
+                    id = contactPhoneDb.id
+                )
+            }
+        }
     }
 
     override suspend fun getAlarmDate(): Long {

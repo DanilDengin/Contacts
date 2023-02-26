@@ -31,6 +31,7 @@ private fun DependencyHandlerScope.implementation(name: String) {
 private fun DependencyHandlerScope.kapt(name: String) {
     add("kapt", name)
 }
+
 private fun DependencyHandlerScope.annotationProcessor(name: String) {
     add("annotationProcessor", name)
 }

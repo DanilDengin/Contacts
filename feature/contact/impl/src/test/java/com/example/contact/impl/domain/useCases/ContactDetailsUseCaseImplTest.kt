@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.useCases
 
-import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.currentDateTest
 import com.example.contact.impl.domain.danil
 import com.example.contact.impl.domain.repository.ContactsRepository
@@ -34,7 +34,7 @@ internal class ContactDetailsUseCaseImplTest {
     @Test
     fun `should return the same contact as in repository`() = runTest {
         coEvery { contactsRepository.getFullContactDetails(ofType()) } returns danil
-        val actual: Contact? = contactDetailsUseCaseImpl.getContactById("1")
+        val actual: ContactDetails? = contactDetailsUseCaseImpl.getContactById("1")
         coVerify(exactly = 1) { contactsRepository.getFullContactDetails(any()) }
         val expected = danil
         assertEquals(expected, actual)

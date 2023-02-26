@@ -4,19 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.contact.api.entity.Contact
 import com.example.contact.impl.R
+import com.example.contact.impl.domain.entity.ContactList
 
 internal class ContactListAdapter(private val navigateToContactDetailsById: (String) -> Unit) :
-    ListAdapter<Contact, ContactListViewHolder>(DiffCallback()) {
+    ListAdapter<ContactList, ContactListViewHolder>(DiffCallback()) {
 
-    private class DiffCallback : DiffUtil.ItemCallback<Contact>() {
+    private class DiffCallback : DiffUtil.ItemCallback<ContactList>() {
 
-        override fun areItemsTheSame(oldContact: Contact, newContact: Contact) =
+        override fun areItemsTheSame(oldContact: ContactList, newContact: ContactList) =
             oldContact.id == newContact.id
 
-        override fun areContentsTheSame(oldContact: Contact, newContact: Contact) =
-            oldContact.name == newContact.name && oldContact.numberPrimary == newContact.numberPrimary
+        override fun areContentsTheSame(oldContact: ContactList, newContact: ContactList) =
+            oldContact == newContact
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListViewHolder {

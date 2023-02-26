@@ -1,17 +1,17 @@
-package com.example.impl.map.data.address.local.room.repository
+package com.example.common.address.data.local.repository
 
+import com.example.common.address.domain.entity.ContactMap
+import com.example.common.address.domain.entity.toContactMap
+import com.example.common.address.domain.entity.toContactMapDbEntity
+import com.example.common.address.domain.local.repository.ContactMapRepository
 import com.example.db.model.ContactMapDao
-import com.example.impl.map.data.address.local.room.model.toContactMap
-import com.example.impl.map.data.address.local.room.model.toContactMapDbEntity
-import com.example.impl.map.domain.entity.ContactMap
-import com.example.impl.map.domain.repository.local.ContactMapRepository
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
-internal class ContactMapRepositoryImpl @Inject constructor(
+class ContactMapRepositoryImpl @Inject constructor(
     private val contactMapDao: ContactMapDao
 ) : ContactMapRepository {
 
@@ -31,8 +31,11 @@ internal class ContactMapRepositoryImpl @Inject constructor(
             .flowOn(Dispatchers.IO)
     }
 
-    override suspend fun getContactMapById(id: String): ContactMap? {
-        return contactMapDao.getAddressById(id)?.toContactMap()
+    override fun getContactMapById(id: String): Flow<ContactMap?> {
+        return contactMapDao.getAddressById(id).map { contactMapDbEntity ->
+            contactMapDbEntity?.toContactMap()
+        }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun deleteContactMap(id: String) {

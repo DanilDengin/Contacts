@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api.map.screen.MapScreenApi
-import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.entity.ContactList
 import com.example.contact.impl.domain.useCases.ContactListUseCase
 import com.example.contact.impl.presentation.details.ContactDetailsFragment
 import com.example.themePicker.api.ThemeScreenApi
@@ -24,10 +24,11 @@ internal class ContactListViewModel @Inject constructor(
     private val themeScreenApi: ThemeScreenApi,
     private val mapScreenApi: MapScreenApi
 ) : ViewModel() {
-    val users: LiveData<List<Contact>?> get() = _users
+
+    val users: LiveData<List<ContactList>?> get() = _users
     val progressBarState: LiveData<Boolean> get() = _progressBarState
     val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _users = MutableLiveData<List<Contact>?>()
+    private val _users = MutableLiveData<List<ContactList>?>()
     private val _progressBarState = MutableLiveData<Boolean>()
     private val _exceptionState = SingleLiveEvent<Unit>()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->

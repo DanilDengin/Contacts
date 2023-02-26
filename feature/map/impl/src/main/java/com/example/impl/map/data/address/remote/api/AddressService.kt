@@ -12,5 +12,4 @@ internal interface AddressService {
     suspend fun getAddress(
         @Query("geocode") geocode: String
     ): ApiResponse<AddressDto>
-
 }

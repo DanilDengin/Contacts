@@ -18,10 +18,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.api.map.entity.ContactMapArguments
+import com.example.common.address.domain.entity.ContactMap
 import com.example.di.dependency.findFeatureExternalDeps
 import com.example.impl.map.databinding.FragmentMapBinding
 import com.example.impl.map.domain.entity.ContactAddress
-import com.example.impl.map.domain.entity.ContactMap
 import com.example.impl.map.presentation.MapComponentDependenciesProvider
 import com.example.impl.map.presentation.MapComponentViewModel
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapException
@@ -211,14 +211,14 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
     }
 
     private fun doActionForSingleContact() {
+        contactArgument?.id?.also(viewModel::getContactMapById)
+        viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
         binding.deleteContactMapImageView.visibility = View.VISIBLE
         binding.deleteContactMapImageView.setOnClickListener {
             contactArgument?.id?.also(viewModel::deleteContactMap)
             mapObjects?.clear()
         }
-        viewModel.contactMap.observe(viewLifecycleOwner, ::updateMap)
         viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
-        contactArgument?.id?.also(viewModel::getContactMapById)
         binding.mapView.map.addInputListener(object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
                 mapObjects?.clear()

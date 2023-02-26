@@ -3,10 +3,11 @@ package com.example.impl.map.presentation.contactMapRoutePicker
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.impl.map.data.model.ContactMapPicker
-import com.example.impl.map.data.model.toContactMapPicker
-import com.example.impl.map.domain.useCases.ContactMapUseCase
+import com.example.impl.map.domain.entity.ContactMapPicker
+import com.example.impl.map.domain.entity.toContactMapPicker
+import com.example.impl.map.domain.useCase.ContactMapUseCase
 import com.example.utils.tag.tagObj
+import com.github.terrakok.cicerone.Router
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 internal class ContactMapRoutePickerViewModel @Inject constructor(
-    private val contactMapUseCase: ContactMapUseCase
+    private val contactMapUseCase: ContactMapUseCase,
+    private val router: Router
 ) : ViewModel() {
 
     val contactMapPickerList: StateFlow<List<ContactMapPicker>?> get() = _contactMapPickerList.asStateFlow()
@@ -66,6 +68,10 @@ internal class ContactMapRoutePickerViewModel @Inject constructor(
                     _contactMapPickerList.emit(contactMapPickerList)
                 }
         }
+    }
+
+    fun exit() {
+        router.exit()
     }
 
     private suspend fun removeRedundantSelectedContact() {

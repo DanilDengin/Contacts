@@ -3,8 +3,8 @@ package com.example.contact.impl.presentation.list.recyclerView
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.contact.api.entity.Contact
 import com.example.contact.impl.R
+import com.example.contact.impl.domain.entity.ContactList
 
 internal class ContactListViewHolder(
     itemView: View, navigateToContactDetailsById: (String) -> Unit
@@ -21,7 +21,7 @@ internal class ContactListViewHolder(
         }
     }
 
-    fun bind(contact: Contact) {
+    fun bind(contact: ContactList) {
         name.text = contact.name
         number.text = contact.numberPrimary
         contactId = contact.id

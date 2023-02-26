@@ -17,7 +17,7 @@ interface ContactMapDao {
     fun getAllAddresses(): Flow<List<ContactMapDbEntity>>
 
     @Query("SELECT * FROM contacts WHERE id = :id")
-    suspend fun getAddressById(id: String): ContactMapDbEntity?
+    fun getAddressById(id: String): Flow<ContactMapDbEntity?>
 
     @Query("DELETE FROM contacts WHERE id = :id")
     suspend fun deleteContactAddress(id: String)

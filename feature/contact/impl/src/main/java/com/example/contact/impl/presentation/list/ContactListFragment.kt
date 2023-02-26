@@ -14,8 +14,6 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.contact.impl.databinding.FragmentListBinding
 import com.example.contact.impl.presentation.ContactComponentViewModel
@@ -30,7 +28,6 @@ import com.example.utils.delegate.unsafeLazy
 import com.example.utils.idlingResource.TestIdlingResource
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlinx.coroutines.launch
 
 internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
 
@@ -53,7 +50,8 @@ internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
 
     override fun onAttach(context: Context) {
-        ContactsComponentDependenciesProvider.contactsExternalDependencies = findFeatureExternalDeps()
+        ContactsComponentDependenciesProvider.contactsExternalDependencies =
+            findFeatureExternalDeps()
         getComponentViewModel<ContactComponentViewModel>().contactsComponent.inject(this)
         super.onAttach(context)
     }
@@ -61,11 +59,19 @@ internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initActionBar()
+        initRecyclerView()
+        initObservers()
+    }
+
+    private fun initRecyclerView() {
         with(binding.contactListRecyclerView) {
             val horizontalSpaceItemDecorator = ContactItemDecorator()
             adapter = contactsListAdapter
             addItemDecoration(horizontalSpaceItemDecorator)
         }
+    }
+
+    private fun initObservers() {
         viewModel.users.observe(viewLifecycleOwner, contactsListAdapter::submitList)
         viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
         viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }

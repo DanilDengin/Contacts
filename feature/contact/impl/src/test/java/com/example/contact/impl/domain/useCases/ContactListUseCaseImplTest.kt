@@ -1,6 +1,6 @@
 package com.example.contact.impl.domain.useCases
 
-import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.contactListTest
 import com.example.contact.impl.domain.contactSortedListTest
 import com.example.contact.impl.domain.repository.ContactsRepository
@@ -22,7 +22,7 @@ internal class ContactListUseCaseImplTest {
 
     private lateinit var contactListUseCaseImpl: ContactListUseCase
 
-    private var actual: List<Contact>? = null
+    private var actual: List<ContactDetails>? = null
 
     @BeforeEach
     fun setUp() {
@@ -35,7 +35,7 @@ internal class ContactListUseCaseImplTest {
         coEvery { contactRepository.getShortContactsDetails() } returns contactListTest
         actual = contactListUseCaseImpl.getContactList()
         coVerify(exactly = 1) { contactListUseCaseImpl.getContactList() }
-        val expected: List<Contact> = contactListTest
+        val expected: List<ContactDetails> = contactListTest
         assertEquals(expected, actual)
     }
 
@@ -53,7 +53,7 @@ internal class ContactListUseCaseImplTest {
         val mock = spyk(contactListUseCaseImpl, recordPrivateCalls = true)
         every { mock["getContacts"]() } returns contactListTest
         actual = mock.searchContactByQuery("freferd")
-        val expected = emptyList<Contact>()
+        val expected = emptyList<ContactDetails>()
         assertEquals(expected, actual)
     }
 

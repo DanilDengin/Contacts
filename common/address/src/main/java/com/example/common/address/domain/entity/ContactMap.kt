@@ -1,6 +1,6 @@
-package com.example.impl.map.domain.entity
+package com.example.common.address.domain.entity
 
-internal class ContactMap(
+class ContactMap(
     val name: String,
     val address: String,
     val latitude: Double,

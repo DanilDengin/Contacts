@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,7 +28,8 @@ import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import javax.inject.Inject
 
-internal class MainActivity : AppCompatActivity(R.layout.activity_main), FeatureExternalDepsProvider {
+internal class MainActivity : AppCompatActivity(R.layout.activity_main),
+    FeatureExternalDepsProvider {
 
     @Inject
     override lateinit var deps: FeatureExternalDepsContainer
@@ -46,9 +49,9 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
     @Inject
     lateinit var contactsScreenApi: ContactsScreenApi
 
-    private val requestCodeReadContacts = 1
-
     private var readContactsGranted = false
+
+    private var permissionButton: Button? = null
 
     private val contactId: Int by unsafeLazy {
         intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID)
@@ -60,14 +63,13 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
         setSupportActionBar(findViewById(R.id.toolbar))
         createNotificationChannel()
         checkReadContactPermission()
+        checkPermissionButtonState()
         themeDelegate.setTheme()
-
-        if (savedInstanceState == null && readContactsGranted) {
-            navigateToListFragment()
+        permissionButton = findViewById(R.id.permissionButton)
+        permissionButton?.setOnClickListener {
+            checkReadContactPermission()
         }
-        if (contactId != -1 && savedInstanceState == null && readContactsGranted) {
-            navigateToBirthdayContact()
-        }
+        navigateToFragment(savedInstanceState)
     }
 
     override fun onResumeFragments() {
@@ -78,6 +80,35 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
     override fun onPause() {
         navigatorHolder.removeNavigator()
         super.onPause()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_READ_CONTACTS && grantResults.isNotEmpty()) {
+            when (grantResults[0]) {
+                PackageManager.PERMISSION_GRANTED -> {
+                    navigateToListFragment()
+                    readContactsGranted = true
+                }
+                PackageManager.PERMISSION_DENIED -> {
+                    permissionButton?.visibility = View.VISIBLE
+                    Toast.makeText(
+                        this,
+                        getString(R.string.require_permission_toast),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        permissionButton = null
+        super.onDestroy()
     }
 
     private fun createNotificationChannel() {
@@ -94,25 +125,18 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == requestCodeReadContacts) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readContactsGranted = true
-            }
-        }
-        if (readContactsGranted) {
+    private fun navigateToFragment(savedInstanceState: Bundle?) {
+        if (savedInstanceState == null && readContactsGranted) {
             navigateToListFragment()
-        } else {
-            Toast.makeText(
-                this,
-                getString(R.string.require_permission_toast),
-                Toast.LENGTH_LONG
-            ).show()
+        }
+        if (contactId != -1 && savedInstanceState == null && readContactsGranted) {
+            navigateToBirthdayContact()
+        }
+    }
+
+    private fun checkPermissionButtonState() {
+        if (readContactsGranted) {
+            permissionButton?.visibility = View.GONE
         }
     }
 
@@ -125,12 +149,13 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_CONTACTS),
-                requestCodeReadContacts
+                REQUEST_CODE_READ_CONTACTS
             )
         }
     }
 
     private fun navigateToListFragment() {
+        permissionButton?.visibility = View.GONE
         router.newRootScreen(contactsScreenApi.getListScreen())
     }
 
@@ -140,5 +165,6 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main), Feature
 
     private companion object {
         const val NOTIFICATION_CHANNEL_NAME = "birthdayReminders"
+        const val REQUEST_CODE_READ_CONTACTS = 1
     }
 }

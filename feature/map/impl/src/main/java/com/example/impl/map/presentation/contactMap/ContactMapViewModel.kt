@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.address.domain.entity.ContactMap
 import com.example.impl.map.domain.entity.ContactAddress
-import com.example.impl.map.domain.entity.ContactMap
-import com.example.impl.map.domain.useCases.ContactMapUseCase
+import com.example.impl.map.domain.useCase.ContactMapUseCase
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapException
 import com.example.impl.map.presentation.contactMapRoutePicker.ContactMapRoutePickerFragment
 import com.example.network.response.ApiResponse
@@ -75,9 +75,9 @@ internal class ContactMapViewModel @Inject constructor(
     }
 
     fun getContactMapById(id: String) {
-        viewModelScope.launch {
-            _contactMap.value = contactMapUseCase.getContactMapById(id)
-        }
+        contactMapUseCase.getContactMapById(id).onEach { contact ->
+            _contactMap.value = contact
+        }.launchIn(viewModelScope + coroutineExceptionHandler)
     }
 
     fun deleteContactMap(id: String) {

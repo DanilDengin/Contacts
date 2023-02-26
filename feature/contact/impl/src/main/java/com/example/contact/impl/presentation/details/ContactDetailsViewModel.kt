@@ -2,12 +2,11 @@ package com.example.contact.impl.presentation.details
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api.map.screen.MapScreenApi
-import com.example.contact.api.entity.Contact
-import com.example.contact.impl.data.model.toArguments
+import com.example.contact.impl.domain.entity.ContactDetails
+import com.example.contact.impl.domain.mappers.toArguments
 import com.example.contact.impl.domain.useCases.ContactDetailsUseCase
 import com.example.utils.liveData.SingleLiveEvent
 import com.example.utils.tag.tagObj
@@ -16,6 +15,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal class ContactDetailsViewModel @AssistedInject constructor(
@@ -25,15 +27,12 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
     private val mapScreenApi: MapScreenApi
 ) : ViewModel() {
 
-    val user: LiveData<Contact> get() = _user
-    val progressBarState: LiveData<Boolean> get() = _progressBarState
+    val user: StateFlow<ContactDetails?> get() = _user.asStateFlow()
     val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _user = MutableLiveData<Contact>()
-    private val _progressBarState = MutableLiveData<Boolean>()
+    private val _user = MutableStateFlow<ContactDetails?>(null)
     private val _exceptionState = SingleLiveEvent<Unit>()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         _exceptionState.value = Unit
-        _progressBarState.value = false
         Log.e(CONTACT_DETAILS_VIEW_MODEL_TAG, throwable.toString())
     }
 
@@ -51,9 +50,8 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
 
     private fun loadUserDetail(id: String) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            _progressBarState.value = true
-            _user.value = contactDetailsUseCase.getContactById(id)
-            _progressBarState.value = false
+            contactDetailsUseCase.getContactDetailsById(id)
+                .collect(_user::emit)
         }
     }
 

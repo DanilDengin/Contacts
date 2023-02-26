@@ -1,5 +1,6 @@
 package com.example.contact.impl.di
 
+import com.example.common.address.di.ContactMapRepositoryBinding
 import com.example.contact.impl.presentation.details.ContactDetailsFragment
 import com.example.contact.impl.presentation.list.ContactListFragment
 import com.example.di.FeatureScope
@@ -7,7 +8,7 @@ import dagger.Component
 
 @FeatureScope
 @Component(
-    modules = [ContactsModule::class],
+    modules = [ContactsModule::class, ContactMapRepositoryBinding::class],
     dependencies = [ContactsExternalDependencies::class]
 )
 internal interface ContactsComponent {

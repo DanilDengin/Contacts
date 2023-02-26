@@ -1,8 +1,8 @@
-package com.example.impl.map.domain.useCases
+package com.example.impl.map.domain.useCase
 
+import com.example.common.address.domain.entity.ContactMap
+import com.example.common.address.domain.local.repository.ContactMapRepository
 import com.example.impl.map.domain.entity.ContactAddress
-import com.example.impl.map.domain.entity.ContactMap
-import com.example.impl.map.domain.repository.local.ContactMapRepository
 import com.example.impl.map.domain.repository.remote.AddressRepository
 import com.example.network.response.ApiResponse
 import javax.inject.Inject
@@ -28,7 +28,7 @@ internal class ContactMapUseCaseImpl @Inject constructor(
         return contactMapRepository.getAllContactMaps()
     }
 
-    override suspend fun getContactMapById(id: String): ContactMap? {
+    override fun getContactMapById(id: String): Flow<ContactMap?> {
         return contactMapRepository.getContactMapById(id)
     }
 

@@ -2,7 +2,7 @@ package com.example.contact.impl.data.repository
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.example.contact.api.entity.Contact
+import com.example.contact.impl.data.model.ContactPhoneDb
 import com.example.contact.impl.domain.repository.ContactsRepository
 import java.sql.Date
 import java.util.GregorianCalendar
@@ -14,11 +14,11 @@ internal class ContactsRepositoryImpl @Inject constructor(
     private val context: Context
 ) : ContactsRepository {
 
-    override suspend fun getShortContactsDetails(): List<Contact> {
+    override suspend fun getShortContactsDetails(): List<ContactPhoneDb> {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        val contacts = ArrayList<Contact>()
+        val contacts = ArrayList<ContactPhoneDb>()
         val cursor = context.contentResolver.query(
             contentUri, null,
             null, null, "$displayName ASC"
@@ -35,7 +35,7 @@ internal class ContactsRepositoryImpl @Inject constructor(
                             continue
                         }
                         val contact =
-                            Contact(
+                            ContactPhoneDb(
                                 name = name,
                                 numberPrimary = numbers[0],
                                 id = id
@@ -52,11 +52,11 @@ internal class ContactsRepositoryImpl @Inject constructor(
         return contacts
     }
 
-    override suspend fun getFullContactDetails(contactId: String): Contact? {
+    override suspend fun getFullContactDetails(contactId: String): ContactPhoneDb? {
         val contentUri = ContactsContract.Contacts.CONTENT_URI
         val idColumn = ContactsContract.Contacts._ID
         val displayName = ContactsContract.Contacts.DISPLAY_NAME
-        var contact: Contact? = null
+        var contact: ContactPhoneDb? = null
         val cursor = context.contentResolver.query(
             contentUri, null,
             "$idColumn = $contactId", null, null
@@ -71,7 +71,7 @@ internal class ContactsRepositoryImpl @Inject constructor(
                     val birthday = getBirthday(contactId)
                     when {
                         numbers.size == NUMBER_ARRAY_LIST_SIZE_ONE -> {
-                            contact = Contact(
+                            contact = ContactPhoneDb(
                                 name = name,
                                 numberPrimary = numbers[0],
                                 emailPrimary = email[0],
@@ -81,7 +81,7 @@ internal class ContactsRepositoryImpl @Inject constructor(
                             )
                         }
                         numbers.size > NUMBER_ARRAY_LIST_SIZE_ONE -> {
-                            contact = Contact(
+                            contact = ContactPhoneDb(
                                 name = name,
                                 numberPrimary = numbers[0],
                                 numberSecondary = numbers[1],

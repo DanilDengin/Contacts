@@ -7,7 +7,7 @@
     </style>
 
     <style name="Widget.MyApplication.BodyLargeTextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textColor">@color/gray_light</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
     </style>
 

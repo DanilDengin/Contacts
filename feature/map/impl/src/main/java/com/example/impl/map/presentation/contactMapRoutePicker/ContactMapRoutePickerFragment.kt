@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.di.dependency.findFeatureExternalDeps
-import com.example.impl.map.data.model.ContactMapPicker
 import com.example.impl.map.databinding.FragmentContactMapRoutePickerBinding
+import com.example.impl.map.domain.entity.ContactMapPicker
 import com.example.impl.map.presentation.MapComponentDependenciesProvider
 import com.example.impl.map.presentation.MapComponentViewModel
 import com.example.impl.map.presentation.contactMap.ContactMapFragment.Companion.FIRST_CONTACT_BUNDLE_KEY
@@ -55,12 +55,20 @@ internal class ContactMapRoutePickerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().title = getString(R.string.contact_map_picker_toolbar)
+        viewModel.getAllContactMaps()
+        initRecyclerView()
+        initObservers()
+    }
+
+    private fun initRecyclerView() {
         with(binding.contactMapRecyclerView) {
             val horizontalSpaceItemDecorator = ContactItemDecorator()
             addItemDecoration(horizontalSpaceItemDecorator)
             adapter = contactMapPickerAdapter
         }
-        viewModel.getAllContactMaps()
+    }
+
+    private fun initObservers() {
         viewModel.contactMapPickerList
             .onEach(contactMapPickerAdapter::submitList)
             .launchIn(viewLifecycleOwner.lifecycleScope)
@@ -84,7 +92,7 @@ internal class ContactMapRoutePickerFragment :
                     SECOND_CONTACT_BUNDLE_KEY to viewModel.selectedContactList[1].id
                 )
             )
-            parentFragmentManager.popBackStack()
+            viewModel.exit()
         } else {
             Toast.makeText(
                 requireContext(),

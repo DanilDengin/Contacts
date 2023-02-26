@@ -8,5 +8,5 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:context="com.example.lessons.contactMapPicker.presentation.ContactMapPickerFragment"
+    tools:context="com.example.impl.map.presentation.contactMapRoutePicker.ContactMapRoutePickerFragment"
     tools:listitem="@layout/contact_map_item" />

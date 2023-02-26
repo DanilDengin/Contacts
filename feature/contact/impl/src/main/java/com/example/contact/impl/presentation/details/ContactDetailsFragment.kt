@@ -12,12 +12,13 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.contact.api.entity.Contact
 import com.example.contact.impl.databinding.FragmentDetailsBinding
+import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.receiver.BirthdayReceiverProvider
 import com.example.contact.impl.presentation.ContactComponentViewModel
 import com.example.contact.impl.presentation.ContactsComponentDependenciesProvider
@@ -86,7 +87,8 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
     }
 
     override fun onAttach(context: Context) {
-        ContactsComponentDependenciesProvider.contactsExternalDependencies = findFeatureExternalDeps()
+        ContactsComponentDependenciesProvider.contactsExternalDependencies =
+            findFeatureExternalDeps()
         getComponentViewModel<ContactComponentViewModel>().contactsComponent.inject(this)
         super.onAttach(context)
     }
@@ -95,10 +97,25 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
         super.onViewCreated(view, savedInstanceState)
         requireActivity().title = getString(R.string.contact_details_toolbar)
         contactId = requireArguments().getInt(ARG)
-        viewModel.user.observe(viewLifecycleOwner, ::updateView)
-        viewModel.progressBarState.observe(viewLifecycleOwner, ::setLoadingIndicator)
-        viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
+        initObservers()
+        binding.mapButton.setOnClickListener {
+            navigateToContactMapFragment()
+        }
+        checkBirthdaySwitchState()
+        initBirthdayChangeListener()
+    }
 
+    private fun initObservers() {
+        binding.detailsFragmentContainer.visibility = View.INVISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.user.collect(::updateView)
+            }
+        }
+        viewModel.exceptionState.observe(viewLifecycleOwner) { showExceptionToast() }
+    }
+
+    private fun checkBirthdaySwitchState() {
         intentBirthday.setClass(
             requireContext(),
             birthdayReceiverProvider.getReceiver()::class.java
@@ -112,6 +129,9 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
         ) {
             binding.birthdaySwitch.isChecked = true
         }
+    }
+
+    private fun initBirthdayChangeListener() {
         binding.birthdaySwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Toast.makeText(
@@ -131,47 +151,47 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
                 alarmBirthday.cancel(pendingIntentBirthday)
             }
         }
-
-        binding.mapButton.setOnClickListener {
-            navigateToContactMapFragment()
-        }
     }
 
     private fun navigateToContactMapFragment() {
         viewModel.navigateToMapFragment()
     }
 
-    private fun updateView(contactForDetails: Contact) {
+    private fun updateView(contactForDetails: ContactDetails?) {
         with(binding) {
-            nameTextView.text = contactForDetails.name
-            number1TextView.text = contactForDetails.numberPrimary
-            number2TextView.text = contactForDetails.numberSecondary
-            eMail1TextView.text = contactForDetails.emailPrimary
-            eMail2TextView.text = contactForDetails.emailSecondary
-            descriptionTextView.text = contactForDetails.description
-            number2TextView.isGone = contactForDetails.numberSecondary == null
-            number2ImageView.isGone = contactForDetails.numberSecondary == null
-            eMail1TextView.isGone = contactForDetails.emailPrimary == null
-            email1ImageView.isGone = contactForDetails.emailPrimary == null
-            eMail2TextView.isGone = contactForDetails.emailSecondary == null
-            email2ImageView.isGone = contactForDetails.emailSecondary == null
-            descriptionTextView.isGone = contactForDetails.description == null
-        }
-        birthdayDate = contactForDetails.birthday
-        if (birthdayDate != null) {
-            val data = StringJoiner(".")
-            val format = DecimalFormat("00")
-            data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
-                .add(format.format(requireNotNull(birthdayDate).get(Calendar.MONTH) + 1))
-                .add(format.format(birthdayDate?.get(YEAR)))
-            binding.birthdayTextView.text = data.toString()
-            binding.birthdaySwitch.isClickable = true
-            intentBirthday
-                .putExtra(
-                    BIRTHDAY_CONTACT_NAME_INTENT_KEY,
-                    String.format(birthdayNotificationText, " ${binding.nameTextView.text}")
-                )
-                .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
+            contactForDetails?.also {
+                detailsFragmentContainer.visibility = View.VISIBLE
+                nameTextView.text = contactForDetails.name
+                number1TextView.text = contactForDetails.numberPrimary
+                number2TextView.text = contactForDetails.numberSecondary
+                eMail1TextView.text = contactForDetails.emailPrimary
+                eMail2TextView.text = contactForDetails.emailSecondary
+                addressTextView.text = contactForDetails.address
+                number2TextView.isGone = contactForDetails.numberSecondary == null
+                number2ImageView.isGone = contactForDetails.numberSecondary == null
+                eMail1TextView.isGone = contactForDetails.emailPrimary == null
+                email1ImageView.isGone = contactForDetails.emailPrimary == null
+                eMail2TextView.isGone = contactForDetails.emailSecondary == null
+                email2ImageView.isGone = contactForDetails.emailSecondary == null
+                addressTextView.isGone = contactForDetails.address == null
+            }
+            birthdayDate = contactForDetails?.birthday
+
+            if (birthdayDate != null) {
+                val data = StringJoiner(".")
+                val format = DecimalFormat("00")
+                data.add(format.format(birthdayDate?.get(Calendar.DAY_OF_MONTH)))
+                    .add(format.format(requireNotNull(birthdayDate).get(Calendar.MONTH) + 1))
+                    .add(format.format(birthdayDate?.get(YEAR)))
+                binding.birthdayTextView.text = data.toString()
+                binding.birthdaySwitch.isClickable = true
+                intentBirthday
+                    .putExtra(
+                        BIRTHDAY_CONTACT_NAME_INTENT_KEY,
+                        String.format(birthdayNotificationText, " ${binding.nameTextView.text}")
+                    )
+                    .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
+            }
         }
     }
 
@@ -183,11 +203,6 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
                 pendingIntentBirthday
             )
         }
-    }
-
-    private fun setLoadingIndicator(isVisible: Boolean) {
-        binding.progressBarDetails.isVisible = isVisible
-        binding.detailsFragmentContainer.isVisible = isVisible.not()
     }
 
     private fun showExceptionToast() {

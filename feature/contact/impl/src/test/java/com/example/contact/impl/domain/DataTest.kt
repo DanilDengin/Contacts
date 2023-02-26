@@ -1,11 +1,11 @@
 package com.example.contact.impl.domain
 
-import com.example.contact.api.entity.Contact
+import com.example.contact.impl.domain.entity.ContactDetails
 import java.util.Calendar
 import java.util.GregorianCalendar
 
 
-val danil = Contact(
+val danil = ContactDetails(
     name = "Danil",
     numberPrimary = "+79052550577",
     numberSecondary = "911",
@@ -14,7 +14,7 @@ val danil = Contact(
     id = "1"
 )
 
-val dima = Contact(
+val dima = ContactDetails(
     name = "Dima",
     numberPrimary = "+79054324577",
     numberSecondary = "943543",
@@ -22,7 +22,7 @@ val dima = Contact(
     id = "10"
 )
 
-val artem = Contact(
+val artem = ContactDetails(
     name = "Artem",
     numberPrimary = "+790525505545",
     numberSecondary = "312412",
@@ -31,37 +31,37 @@ val artem = Contact(
 )
 
 
-val a = Contact(
+val a = ContactDetails(
     name = "Vlad",
     numberPrimary = "+790525505545",
     id = "11"
 )
 
-val b = Contact(
+val b = ContactDetails(
     name = "Gena",
     numberPrimary = "+790525505545",
     id = "11"
 )
 
-val c = Contact(
+val c = ContactDetails(
     name = "Vova",
     numberPrimary = "+790525505545",
     id = "11"
 )
 
-val e = Contact(
+val e = ContactDetails(
     name = "Lena",
     numberPrimary = "+790525505545",
     id = "11"
 )
 
-val d = Contact(
+val d = ContactDetails(
     name = "Sasha",
     numberPrimary = "+790525505545",
     id = "11"
 )
 
-val f = Contact(
+val f = ContactDetails(
     name = "Ilya",
     numberPrimary = "+790525505545",
     id = "11"

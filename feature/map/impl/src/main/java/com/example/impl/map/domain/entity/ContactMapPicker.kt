@@ -1,4 +1,4 @@
-package com.example.impl.map.data.model
+package com.example.impl.map.domain.entity
 
 internal data class ContactMapPicker(
     val name: String,

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.impl.map.R
-import com.example.impl.map.data.model.ContactMapPicker
+import com.example.impl.map.domain.entity.ContactMapPicker
 
 internal class ContactMapPickerAdapter(
     private val chooseContact: (ContactMapPicker, Boolean) -> Unit,
