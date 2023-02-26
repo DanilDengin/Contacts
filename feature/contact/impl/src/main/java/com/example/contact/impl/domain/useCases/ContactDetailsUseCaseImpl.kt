@@ -1,6 +1,5 @@
 package com.example.contact.impl.domain.useCases
 
-import com.example.common.address.domain.entity.ContactMap
 import com.example.common.address.domain.local.repository.ContactMapRepository
 import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.repository.ContactsRepository
@@ -19,10 +18,6 @@ internal class ContactDetailsUseCaseImpl @Inject constructor(
 ) : ContactDetailsUseCase {
 
     private var contact: ContactDetails? = null
-
-    override suspend fun getContactAddress(id: String): Flow<ContactMap?> {
-        return contactMapRepository.getContactMapById(id)
-    }
 
     override suspend fun getContactDetailsById(id: String): Flow<ContactDetails?> {
         val contactPhoneDb = contactsRepository.getFullContactDetails(id)
