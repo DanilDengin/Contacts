@@ -87,6 +87,8 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
 
     private var chosenPoint = Point()
 
+    private var inputListener : InputListener? = null
+
     private val networkErrorMessage by unsafeLazy { getString(R.string.network_exception_toast) }
 
     private val roadNotFountMessage by unsafeLazy { getString(R.string.road_not_found_toast) }
@@ -146,6 +148,7 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
     }
 
     override fun onDestroyView() {
+        inputListener = null
         mapObjects = null
         super.onDestroyView()
     }
@@ -219,7 +222,7 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
             mapObjects?.clear()
         }
         viewModel.contactAddress.observe(viewLifecycleOwner, ::updateContactMap)
-        binding.mapView.map.addInputListener(object : InputListener {
+        inputListener = object : InputListener {
             override fun onMapTap(map: Map, point: Point) {
                 mapObjects?.clear()
                 chosenPoint = point
@@ -230,7 +233,10 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
             }
 
             override fun onMapLongTap(map: Map, p1: Point) = Unit
-        })
+        }
+        binding.mapView.map.addInputListener(
+            requireNotNull(inputListener)
+        )
     }
 
     private fun doActionForContacts() {
