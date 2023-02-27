@@ -9,7 +9,7 @@ interface ContactMapRepository {
 
     fun getAllContactMaps(): Flow<List<ContactMap>>
 
-    fun getContactMapById(id: String): Flow<ContactMap?>
+    suspend fun getContactMapById(id: String): ContactMap?
 
     suspend fun deleteContactMap(id: String)
 

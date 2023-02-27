@@ -28,7 +28,7 @@ internal class ContactMapUseCaseImpl @Inject constructor(
         return contactMapRepository.getAllContactMaps()
     }
 
-    override fun getContactMapById(id: String): Flow<ContactMap?> {
+    override suspend fun getContactMapById(id: String): ContactMap? {
         return contactMapRepository.getContactMapById(id)
     }
 

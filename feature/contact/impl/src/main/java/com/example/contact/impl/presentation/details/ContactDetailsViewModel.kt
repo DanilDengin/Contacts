@@ -2,6 +2,7 @@ package com.example.contact.impl.presentation.details
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api.map.screen.MapScreenApi
@@ -15,29 +16,24 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal class ContactDetailsViewModel @AssistedInject constructor(
-    @Assisted id: String,
+    @Assisted private val id: String,
     private val contactDetailsUseCase: ContactDetailsUseCase,
     private val router: Router,
     private val mapScreenApi: MapScreenApi
 ) : ViewModel() {
 
-    val user: StateFlow<ContactDetails?> get() = _user.asStateFlow()
+    val user: LiveData<ContactDetails?> get() = _user
+    val progressBarState: LiveData<Boolean> get() = _progressBarState
     val exceptionState: LiveData<Unit> get() = _exceptionState
-    private val _user = MutableStateFlow<ContactDetails?>(null)
+    private val _user = MutableLiveData<ContactDetails>()
+    private val _progressBarState = MutableLiveData<Boolean>()
     private val _exceptionState = SingleLiveEvent<Unit>()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         _exceptionState.value = Unit
         Log.e(CONTACT_DETAILS_VIEW_MODEL_TAG, throwable.toString())
-    }
-
-    init {
-        loadUserDetail(id)
     }
 
     suspend fun getAlarmDate(): Long {
@@ -48,10 +44,11 @@ internal class ContactDetailsViewModel @AssistedInject constructor(
         router.navigateTo(mapScreenApi.getMapScreen(user.value?.toArguments()))
     }
 
-    private fun loadUserDetail(id: String) {
+    fun loadUserDetail() {
         viewModelScope.launch(coroutineExceptionHandler) {
-            contactDetailsUseCase.getContactDetailsById(id)
-                .collect(_user::emit)
+            _progressBarState.value = true
+            _user.value = contactDetailsUseCase.getContactDetailsById(id)
+            _progressBarState.value = false
         }
     }
 

@@ -29,6 +29,9 @@ android {
     kotlinOptions {
         jvmTarget = AppConfig.javaVersion
     }
+    buildFeatures {
+        viewBinding = true
+    }
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
@@ -37,6 +40,7 @@ android {
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
+    implementation(project(":core:mvvm"))
     implementation(project(":core:utils"))
     implementation(project(":core:di"))
     implementation(project(":core:db"))
@@ -55,4 +59,5 @@ dependencies {
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.activityKtx)
     implementation(Dependencies.yandexMap)
+    implementation(Dependencies.viewBindingDelegate)
 }

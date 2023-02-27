@@ -31,11 +31,8 @@ class ContactMapRepositoryImpl @Inject constructor(
             .flowOn(Dispatchers.IO)
     }
 
-    override fun getContactMapById(id: String): Flow<ContactMap?> {
-        return contactMapDao.getAddressById(id).map { contactMapDbEntity ->
-            contactMapDbEntity?.toContactMap()
-        }
-            .flowOn(Dispatchers.IO)
+    override suspend fun getContactMapById(id: String): ContactMap? {
+        return contactMapDao.getAddressById(id)?.toContactMap()
     }
 
     override suspend fun deleteContactMap(id: String) {

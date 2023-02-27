@@ -1,14 +1,15 @@
 package com.example.contact.impl.domain.useCases
 
 import com.example.common.address.domain.local.repository.ContactMapRepository
+import com.example.contact.impl.data.model.ContactPhoneDb
 import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.repository.ContactsRepository
 import com.example.contact.impl.domain.time.CurrentTime
+import java.text.DecimalFormat
 import java.util.Calendar
+import java.util.StringJoiner
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 internal class ContactDetailsUseCaseImpl @Inject constructor(
@@ -17,23 +18,30 @@ internal class ContactDetailsUseCaseImpl @Inject constructor(
     private val currentTime: CurrentTime
 ) : ContactDetailsUseCase {
 
-    private var contact: ContactDetails? = null
+    private var contact: ContactPhoneDb? = null
 
-    override suspend fun getContactDetailsById(id: String): Flow<ContactDetails?> {
-        val contactPhoneDb = contactsRepository.getFullContactDetails(id)
-        return contactMapRepository.getContactMapById(id).map { address ->
-            contactPhoneDb?.let {
-                ContactDetails(
-                    name = contactPhoneDb.name,
-                    numberPrimary = contactPhoneDb.numberPrimary,
-                    numberSecondary = contactPhoneDb.numberSecondary,
-                    emailPrimary = contactPhoneDb.emailPrimary,
-                    emailSecondary = contactPhoneDb.emailSecondary,
-                    address = address?.address,
-                    birthday = contactPhoneDb.birthday,
-                    id = contactPhoneDb.id
-                )
-            }
+    override suspend fun getContactDetailsById(id: String): ContactDetails? {
+        contact = contactsRepository.getFullContactDetails(id)
+        val contactMap = contactMapRepository.getContactMapById(id)
+        val birthday = contact?.birthday?.let { birthdayDate ->
+            val data = StringJoiner(".")
+            val format = DecimalFormat("00")
+            data.add(format.format(birthdayDate.get(Calendar.DAY_OF_MONTH)))
+                .add(format.format(birthdayDate.get(Calendar.MONTH) + 1))
+                .add(format.format(birthdayDate.get(Calendar.YEAR)))
+                .toString()
+        }
+        return contact?.let { contactPhone ->
+            ContactDetails(
+                name = contactPhone.name,
+                numberPrimary = contactPhone.numberPrimary,
+                numberSecondary = contactPhone.numberSecondary,
+                emailPrimary = contactPhone.emailPrimary,
+                emailSecondary = contactPhone.emailSecondary,
+                address = contactMap?.address,
+                birthday = birthday,
+                id = contactPhone.id
+            )
         }
     }
 

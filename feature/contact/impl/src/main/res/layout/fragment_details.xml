@@ -39,10 +39,10 @@
             android:id="@+id/birthdayTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/set_birthday_text_view"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+            tools:text="Set a birthday" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/birthdaySwitch"
@@ -157,6 +157,15 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/addressTextView"
             app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
+
+        <com.example.ui.view.CircleCatProgressBar
+            android:id="@+id/progressBarDetails"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

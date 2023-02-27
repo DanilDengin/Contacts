@@ -4,7 +4,6 @@
     <string name="contact_list_toolbar">Contacts</string>
     <string name="theme_picker_toolbar">Color of the app</string>
     <string name="contact_map_toolbar">Contact&#8217;s location</string>
-    <string name="set_birthday_text_view">Set a birthday</string>
     <string name="remind_birthday_toast">You will be reminded about birthday</string>
     <string name="cancel_birthday_remind_toast">Birthday notification is off</string>
     <string name="require_permission_toast">Without permission the app can&#8217;t function properly</string>

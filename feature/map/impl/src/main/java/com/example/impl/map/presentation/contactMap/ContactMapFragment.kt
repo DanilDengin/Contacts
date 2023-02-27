@@ -234,9 +234,9 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
 
             override fun onMapLongTap(map: Map, p1: Point) = Unit
         }
-        binding.mapView.map.addInputListener(
-            requireNotNull(inputListener)
-        )
+        inputListener?.also { listener ->
+            binding.mapView.map.addInputListener(listener)
+        }
     }
 
     private fun doActionForContacts() {

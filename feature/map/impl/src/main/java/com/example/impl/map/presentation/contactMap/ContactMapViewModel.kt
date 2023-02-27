@@ -75,10 +75,11 @@ internal class ContactMapViewModel @Inject constructor(
     }
 
     fun getContactMapById(id: String) {
-        contactMapUseCase.getContactMapById(id).onEach { contact ->
-            _contactMap.value = contact
-        }.launchIn(viewModelScope + coroutineExceptionHandler)
+        viewModelScope.launch {
+            _contactMap.value = contactMapUseCase.getContactMapById(id)
+        }
     }
+
 
     fun deleteContactMap(id: String) {
         viewModelScope.launch {

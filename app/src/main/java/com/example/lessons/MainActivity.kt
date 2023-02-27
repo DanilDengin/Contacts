@@ -1,5 +1,6 @@
 package com.example.lessons
 
+import com.example.lessons.R as AppRes
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,14 +9,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.contact.api.screen.ContactsScreenApi
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.di.dependency.FeatureExternalDepsContainer
 import com.example.di.dependency.FeatureExternalDepsProvider
+import com.example.lessons.databinding.ActivityMainBinding
+import com.example.mvvm.viewModel
 import com.example.themePicker.impl.presentation.ThemeDelegate
 import com.example.ui.R
 import com.example.utils.constans.BIRTHDAY_CONTACT_DEFAULT_ID
@@ -27,8 +29,9 @@ import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import javax.inject.Inject
+import javax.inject.Provider
 
-internal class MainActivity : AppCompatActivity(R.layout.activity_main),
+internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
     FeatureExternalDepsProvider {
 
     @Inject
@@ -44,14 +47,16 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
     @Inject
     lateinit var router: Router
 
-    private val navigator: Navigator = AppNavigator(this, R.id.fragmentContainer)
-
     @Inject
-    lateinit var contactsScreenApi: ContactsScreenApi
+    lateinit var viewModelProvider: Provider<MainActivityViewModel>
+
+    private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
+
+    private val binding by viewBinding(ActivityMainBinding::bind)
+
+    private val navigator: Navigator = AppNavigator(this, AppRes.id.fragmentContainer)
 
     private var readContactsGranted = false
-
-    private var permissionButton: Button? = null
 
     private val contactId: Int by unsafeLazy {
         intent.getIntExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, BIRTHDAY_CONTACT_DEFAULT_ID)
@@ -65,8 +70,7 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
         checkReadContactPermission()
         checkPermissionButtonState()
         themeDelegate.setTheme()
-        permissionButton = findViewById(R.id.permissionButton)
-        permissionButton?.setOnClickListener {
+        binding.permissionButton.setOnClickListener {
             checkReadContactPermission()
         }
         navigateToFragment(savedInstanceState)
@@ -95,7 +99,7 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
                     readContactsGranted = true
                 }
                 PackageManager.PERMISSION_DENIED -> {
-                    permissionButton?.visibility = View.VISIBLE
+                    binding.permissionButton.visibility = View.VISIBLE
                     Toast.makeText(
                         this,
                         getString(R.string.require_permission_toast),
@@ -104,11 +108,6 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        permissionButton = null
-        super.onDestroy()
     }
 
     private fun createNotificationChannel() {
@@ -136,7 +135,7 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
 
     private fun checkPermissionButtonState() {
         if (readContactsGranted) {
-            permissionButton?.visibility = View.GONE
+            binding.permissionButton.visibility = View.GONE
         }
     }
 
@@ -155,12 +154,12 @@ internal class MainActivity : AppCompatActivity(R.layout.activity_main),
     }
 
     private fun navigateToListFragment() {
-        permissionButton?.visibility = View.GONE
-        router.newRootScreen(contactsScreenApi.getListScreen())
+        binding.permissionButton.visibility = View.GONE
+        viewModel.navigateToListFragment()
     }
 
     private fun navigateToBirthdayContact() {
-        router.navigateTo(contactsScreenApi.getDetailsScreen(contactId))
+        viewModel.navigateToBirthdayContact(contactId)
     }
 
     private companion object {
