@@ -27,7 +27,7 @@ import retrofit2.Retrofit
         ReceiverBindingModule::class
     ]
 )
-internal interface  AppComponent :
+internal interface AppComponent :
     ContactsExternalDependencies,
     ThemeExternalDependencies,
     MapExternalDependencies {

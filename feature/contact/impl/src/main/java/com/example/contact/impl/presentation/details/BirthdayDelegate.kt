@@ -44,18 +44,11 @@ internal class BirthdayDelegate @AssistedInject constructor(
         context.resources.getString(R.string.birthday_notification_text)
     }
 
-    fun checkBirthdaySwitchState(contactName: String): Boolean {
+    fun checkBirthdaySwitchState(): Boolean {
         intentBirthday.setClass(
             context,
             birthdayReceiverProvider.getReceiver()::class.java
         )
-
-        intentBirthday
-            .putExtra(
-                BIRTHDAY_CONTACT_NAME_INTENT_KEY,
-                String.format(birthdayNotificationText, " $contactName")
-            )
-            .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
 
         return PendingIntent.getBroadcast(
             context,
@@ -63,6 +56,15 @@ internal class BirthdayDelegate @AssistedInject constructor(
             intentBirthday,
             PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
         ) != null
+    }
+
+    fun setContactName(contactName: String) {
+        intentBirthday
+            .putExtra(
+                BIRTHDAY_CONTACT_NAME_INTENT_KEY,
+                String.format(birthdayNotificationText, " $contactName")
+            )
+            .putExtra(BIRTHDAY_CONTACT_ID_INTENT_KEY, contactId)
     }
 
     fun doAlarm(alarmDate: Long) {

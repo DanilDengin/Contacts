@@ -13,5 +13,4 @@ import com.example.db.model.ContactMapDao
 abstract class ContactMapDatabase : RoomDatabase() {
 
     abstract fun getContactMapDao(): ContactMapDao
-
 }

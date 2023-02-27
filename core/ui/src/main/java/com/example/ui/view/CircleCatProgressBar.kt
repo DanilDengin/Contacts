@@ -17,8 +17,6 @@ class CircleCatProgressBar @JvmOverloads constructor(
 
     init {
         attrs?.also(::initAttrs)
-        isSaveEnabled = true
-        isSaveFromParentEnabled = true
     }
 
     override fun onFinishInflate() {

@@ -26,7 +26,6 @@ import com.example.utils.constans.NOTIFICATION_CHANNEL_ID
 import com.example.utils.delegate.unsafeLazy
 import com.github.terrakok.cicerone.Navigator
 import com.github.terrakok.cicerone.NavigatorHolder
-import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import javax.inject.Inject
 import javax.inject.Provider
@@ -43,9 +42,6 @@ internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
-
-    @Inject
-    lateinit var router: Router
 
     @Inject
     lateinit var viewModelProvider: Provider<MainActivityViewModel>

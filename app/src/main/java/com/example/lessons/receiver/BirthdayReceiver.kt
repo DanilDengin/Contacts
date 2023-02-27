@@ -43,7 +43,7 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         (context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager)
             .notify(contactId, builder.build())
 
-        intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY)?.let { contactName ->
+        intent.getStringExtra(BIRTHDAY_CONTACT_NAME_INTENT_KEY)?.also { contactName ->
             repeatAlarm(context, contactId, contactName)
         }
     }

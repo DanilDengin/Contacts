@@ -5,5 +5,4 @@
     <attr name="textAppearanceBodyMedium" format="reference" />
     <attr name="textAppearanceSwitchCompat" format="reference" />
     <attr name="textColorToolbar" format="color" />
-
 </resources>

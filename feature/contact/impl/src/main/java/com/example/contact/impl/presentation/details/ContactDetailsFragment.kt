@@ -102,7 +102,7 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
 
     private fun checkBirthdaySwitchState() {
         binding.birthdaySwitch.isChecked =
-            birthdayDelegate.checkBirthdaySwitchState(binding.nameTextView.text.toString())
+            birthdayDelegate.checkBirthdaySwitchState()
     }
 
 
@@ -130,6 +130,7 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
                 birthdayTextView.text = contact.birthday.orEmpty()
                 birthdaySwitch.isClickable = contact.birthday.isNullOrEmpty().not()
                 birthdaySwitch.isVisible = contact.birthday.isNullOrEmpty().not()
+                birthdayDelegate.setContactName(nameTextView.text.toString())
             }
         }
     }
@@ -146,7 +147,6 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
         binding.progressBarDetails.isVisible = isVisible
         binding.detailsFragmentContainer.isVisible = isVisible.not()
     }
-
 
     private fun showExceptionToast() {
         val contextNotNull = requireContext()
