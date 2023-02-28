@@ -64,8 +64,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.coroutines.launch
 
-internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), DrivingRouteListener,
-    RouteListener {
+internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
 
     @Inject
     lateinit var viewModelProvider: Provider<ContactMapViewModel>
@@ -87,7 +86,11 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
 
     private var chosenPoint = Point()
 
-    private var inputListener : InputListener? = null
+    private var inputListener: InputListener? = null
+
+    private var routeListener: RouteListener? = null
+
+    private var drivingRouteListener: DrivingRouteListener? = null
 
     private val networkErrorMessage by unsafeLazy { getString(R.string.network_exception_toast) }
 
@@ -122,6 +125,8 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
             doActionForSingleContact()
         } else {
             doActionForContacts()
+            initRouteListener()
+            initDrivingRouteListener()
         }
     }
 
@@ -149,68 +154,10 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
 
     override fun onDestroyView() {
         inputListener = null
+        routeListener = null
+        drivingRouteListener = null
         mapObjects = null
         super.onDestroyView()
-    }
-
-    override fun onDrivingRoutes(routes: List<DrivingRoute>) {
-        if (routes.isNotEmpty()) {
-            val route = routes.first()
-            mapObjects?.addPolyline(route.geometry)
-            val boundingBox = BoundingBoxHelper.getBounds(route.geometry)
-            var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
-            cameraPosition = CameraPosition(
-                cameraPosition.target,
-                cameraPosition.zoom - ROUTE_SMALL_ZOOM,
-                cameraPosition.azimuth,
-                cameraPosition.tilt
-            )
-            binding.mapView.map.move(
-                cameraPosition,
-                Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
-                null
-            )
-        } else {
-            Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onDrivingRoutesError(error: Error) {
-        Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onMasstransitRoutes(routesList: MutableList<Route>) {
-        if (routesList.size > 0) {
-            val boundingBox = BoundingBoxHelper.getBounds(routesList.firstOrNull()?.geometry)
-            var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
-            cameraPosition = CameraPosition(
-                cameraPosition.target,
-                cameraPosition.zoom - ROUTE_SMALL_ZOOM,
-                cameraPosition.azimuth,
-                cameraPosition.tilt
-            )
-            binding.mapView.map.move(
-                cameraPosition,
-                Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
-                null
-            )
-            routesList.firstOrNull()?.sections?.also { sectionList ->
-                for (section in sectionList) {
-                    drawSection(
-                        section.metadata.data,
-                        SubpolylineHelper.subpolyline(
-                            routesList.firstOrNull()?.geometry, section.geometry
-                        )
-                    )
-                }
-            }
-        } else {
-            Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onMasstransitRoutesError(error: Error) {
-        Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
     }
 
     private fun doActionForSingleContact() {
@@ -501,7 +448,9 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
         points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
         val mtRouter = TransportFactory.getInstance().createMasstransitRouter()
-        mtRouter.requestRoutes(points, transitOptions, this)
+        routeListener?.also { listener ->
+            mtRouter.requestRoutes(points, transitOptions, listener)
+        }
     }
 
     private fun plotRouteByCar(startPoint: Point, endPoint: Point) {
@@ -521,7 +470,9 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
                 null
             )
         )
-        drivingRouter.requestRoutes(requestPoints, DrivingOptions(), VehicleOptions(), this)
+        drivingRouteListener?.also { listener ->
+            drivingRouter.requestRoutes(requestPoints, DrivingOptions(), VehicleOptions(), listener)
+        }
     }
 
     private fun plotRouteByFoot(startPoint: Point, endPoint: Point) {
@@ -529,7 +480,79 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map), Dr
         points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
         points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
         val mtRouter = TransportFactory.getInstance().createPedestrianRouter()
-        mtRouter.requestRoutes(points, TimeOptions(), this)
+        routeListener?.also { listener ->
+            mtRouter.requestRoutes(points, TimeOptions(), listener)
+        }
+    }
+
+    private fun initDrivingRouteListener() {
+        drivingRouteListener = object : DrivingRouteListener {
+            override fun onDrivingRoutes(routes: List<DrivingRoute>) {
+                if (routes.isNotEmpty()) {
+                    val route = routes.first()
+                    mapObjects?.addPolyline(route.geometry)
+                    val boundingBox = BoundingBoxHelper.getBounds(route.geometry)
+                    var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
+                    cameraPosition = CameraPosition(
+                        cameraPosition.target,
+                        cameraPosition.zoom - ROUTE_SMALL_ZOOM,
+                        cameraPosition.azimuth,
+                        cameraPosition.tilt
+                    )
+                    binding.mapView.map.move(
+                        cameraPosition,
+                        Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+                        null
+                    )
+                } else {
+                    Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onDrivingRoutesError(error: Error) {
+                Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initRouteListener() {
+        routeListener = object : RouteListener {
+            override fun onMasstransitRoutes(routesList: MutableList<Route>) {
+                if (routesList.size > 0) {
+                    val boundingBox =
+                        BoundingBoxHelper.getBounds(routesList.firstOrNull()?.geometry)
+                    var cameraPosition = binding.mapView.map.cameraPosition(boundingBox)
+                    cameraPosition = CameraPosition(
+                        cameraPosition.target,
+                        cameraPosition.zoom - ROUTE_SMALL_ZOOM,
+                        cameraPosition.azimuth,
+                        cameraPosition.tilt
+                    )
+                    binding.mapView.map.move(
+                        cameraPosition,
+                        Animation(Animation.Type.SMOOTH, ZOOM_DURATION),
+                        null
+                    )
+                    routesList.firstOrNull()?.sections?.also { sectionList ->
+                        for (section in sectionList) {
+                            drawSection(
+                                section.metadata.data,
+                                SubpolylineHelper.subpolyline(
+                                    routesList.firstOrNull()?.geometry, section.geometry
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    Toast.makeText(requireContext(), roadNotFountMessage, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+            override fun onMasstransitRoutesError(error: Error) {
+                Toast.makeText(requireContext(), networkErrorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {
