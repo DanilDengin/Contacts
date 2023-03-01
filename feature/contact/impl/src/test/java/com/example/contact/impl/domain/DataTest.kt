@@ -13,7 +13,7 @@ val danilPhone = ContactPhoneDb(
     numberPrimary = "+79052550577",
     numberSecondary = "911",
     emailPrimary = "ddd@mail.ru",
-    birthday = GregorianCalendar(2000, 8 , 6),
+    birthday = GregorianCalendar(2000, Calendar.SEPTEMBER, 6),
     id = "1"
 )
 
@@ -130,4 +130,4 @@ val contactsListTest = listOf(danilList, dimaList, artemList)
 
 val contactSortedListTest = listOf(danilList, dimaList)
 
-val currentDateTest= GregorianCalendar(1999, Calendar.SEPTEMBER, 9)
+val currentDateTest= GregorianCalendar(2023, Calendar.OCTOBER, 9)

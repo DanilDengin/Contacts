@@ -40,9 +40,10 @@ internal class ContactDetailsUseCaseImplTest {
     @Test
     fun `should return the same contact as in repository`() = runTest {
         coEvery { contactsRepository.getFullContactDetails(ofType()) } returns danilPhone
-        coEvery { contactMapRepository.getContactMapById("1") } returns danilContactMap
+        coEvery { contactMapRepository.getContactMapById(ofType()) } returns danilContactMap
         val actual: ContactDetails? = contactDetailsUseCaseImpl.getContactDetailsById("1")
         coVerify(exactly = 1) { contactsRepository.getFullContactDetails(any()) }
+        coVerify(exactly = 1) { contactMapRepository.getContactMapById(any()) }
         val expected = danilDetails
         assertEquals(expected, actual)
     }
@@ -55,13 +56,14 @@ internal class ContactDetailsUseCaseImplTest {
         val actual = mock.getAlarmDate()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = currentDateTest.timeInMillis
+        calendar.add(Calendar.YEAR, 1)
         danilPhone.birthday?.also {
             calendar[Calendar.MILLISECOND] = 0
             calendar[Calendar.SECOND] = 0
             calendar[Calendar.MINUTE] = 0
             calendar[Calendar.HOUR_OF_DAY] = 0
             calendar[Calendar.DAY_OF_MONTH] = it.get(Calendar.DAY_OF_MONTH)
-            calendar[Calendar.MONTH] = it.get(Calendar.MONTH) - 1
+            calendar[Calendar.MONTH] = it.get(Calendar.MONTH)
         }
         coVerify(exactly = 1) { currentTime.getCurrentTime() }
         val expected = calendar.timeInMillis

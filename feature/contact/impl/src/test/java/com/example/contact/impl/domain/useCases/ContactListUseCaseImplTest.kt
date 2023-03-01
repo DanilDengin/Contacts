@@ -36,7 +36,7 @@ internal class ContactListUseCaseImplTest {
     fun `should return the same list of contacts as in repository`() = runTest {
         coEvery { contactRepository.getShortContactsDetails() } returns contactsPhoneTest
         actual = contactListUseCaseImpl.getContactList()
-        coVerify(exactly = 1) { contactListUseCaseImpl.getContactList() }
+        coVerify(exactly = 1) { contactRepository.getShortContactsDetails() }
         val expected: List<ContactList> = contactsListTest
         assertEquals(expected, actual)
     }

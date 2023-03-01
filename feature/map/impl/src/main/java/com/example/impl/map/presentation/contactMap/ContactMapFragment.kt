@@ -36,6 +36,7 @@ import com.yandex.mapkit.RequestPointType
 import com.yandex.mapkit.directions.DirectionsFactory
 import com.yandex.mapkit.directions.driving.DrivingOptions
 import com.yandex.mapkit.directions.driving.DrivingRoute
+import com.yandex.mapkit.directions.driving.DrivingRouter
 import com.yandex.mapkit.directions.driving.DrivingSession.DrivingRouteListener
 import com.yandex.mapkit.directions.driving.VehicleOptions
 import com.yandex.mapkit.geometry.BoundingBox
@@ -49,6 +50,8 @@ import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.transport.TransportFactory
 import com.yandex.mapkit.transport.masstransit.FilterVehicleTypes
+import com.yandex.mapkit.transport.masstransit.MasstransitRouter
+import com.yandex.mapkit.transport.masstransit.PedestrianRouter
 import com.yandex.mapkit.transport.masstransit.Route
 import com.yandex.mapkit.transport.masstransit.SectionMetadata.SectionData
 import com.yandex.mapkit.transport.masstransit.Session.RouteListener
@@ -90,7 +93,13 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
 
     private var routeListener: RouteListener? = null
 
+    private var masstransitRouter: MasstransitRouter? = null
+
+    private var pedestrianRouter: PedestrianRouter? = null
+
     private var drivingRouteListener: DrivingRouteListener? = null
+
+    private var drivingRouter: DrivingRouter? = null
 
     private val networkErrorMessage by unsafeLazy { getString(R.string.network_exception_toast) }
 
@@ -125,8 +134,6 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
             doActionForSingleContact()
         } else {
             doActionForContacts()
-            initRouteListener()
-            initDrivingRouteListener()
         }
     }
 
@@ -157,6 +164,9 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
         routeListener = null
         drivingRouteListener = null
         mapObjects = null
+        masstransitRouter = null
+        pedestrianRouter = null
+        drivingRouter = null
         super.onDestroyView()
     }
 
@@ -444,18 +454,20 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
     }
 
     private fun plotRoute(transitOptions: TransitOptions, startPoint: Point, endPoint: Point) {
+        initRouteListener()
         val points: MutableList<RequestPoint> = ArrayList()
         points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
         points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
-        val mtRouter = TransportFactory.getInstance().createMasstransitRouter()
+        masstransitRouter = TransportFactory.getInstance().createMasstransitRouter()
         routeListener?.also { listener ->
-            mtRouter.requestRoutes(points, transitOptions, listener)
+            masstransitRouter?.requestRoutes(points, transitOptions, listener)
         }
     }
 
     private fun plotRouteByCar(startPoint: Point, endPoint: Point) {
+        initDrivingRouteListener()
         val requestPoints: ArrayList<RequestPoint> = ArrayList()
-        val drivingRouter = DirectionsFactory.getInstance().createDrivingRouter()
+        drivingRouter = DirectionsFactory.getInstance().createDrivingRouter()
         requestPoints.add(
             RequestPoint(
                 startPoint,
@@ -471,17 +483,23 @@ internal class ContactMapFragment : Fragment(FeatureRes.layout.fragment_map) {
             )
         )
         drivingRouteListener?.also { listener ->
-            drivingRouter.requestRoutes(requestPoints, DrivingOptions(), VehicleOptions(), listener)
+            drivingRouter?.requestRoutes(
+                requestPoints,
+                DrivingOptions(),
+                VehicleOptions(),
+                listener
+            )
         }
     }
 
     private fun plotRouteByFoot(startPoint: Point, endPoint: Point) {
+        initRouteListener()
         val points: MutableList<RequestPoint> = ArrayList()
         points.add(RequestPoint(startPoint, RequestPointType.WAYPOINT, null))
         points.add(RequestPoint(endPoint, RequestPointType.WAYPOINT, null))
-        val mtRouter = TransportFactory.getInstance().createPedestrianRouter()
+        pedestrianRouter = TransportFactory.getInstance().createPedestrianRouter()
         routeListener?.also { listener ->
-            mtRouter.requestRoutes(points, TimeOptions(), listener)
+            pedestrianRouter?.requestRoutes(points, TimeOptions(), listener)
         }
     }
 
