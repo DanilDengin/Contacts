@@ -1,6 +1,5 @@
 package com.example.contact.impl.presentation.list
 
-import com.example.contact.impl.R as FutureRes
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
@@ -28,8 +27,9 @@ import com.example.utils.delegate.unsafeLazy
 import com.example.utils.idlingResource.TestIdlingResource
 import javax.inject.Inject
 import javax.inject.Provider
+import com.example.contact.impl.R as FeatureRes
 
-internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
+internal class ContactListFragment : Fragment(FeatureRes.layout.fragment_list) {
 
     @VisibleForTesting
     val idlingResource = TestIdlingResource()
@@ -44,7 +44,7 @@ internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
     private val binding by viewBinding(FragmentListBinding::bind)
 
     private val contactsListAdapter: ContactListAdapter by unsafeLazy {
-        ContactListAdapter { id -> navigateToDetailsFragment(id = id) }
+        ContactListAdapter { id -> viewModel.navigateToDetails(id) }
     }
 
     private val viewModel by unsafeLazy { viewModel { viewModelProvider.get() } }
@@ -79,52 +79,43 @@ internal class ContactListFragment : Fragment(FutureRes.layout.fragment_list) {
 
     private fun initActionBar() {
         requireActivity().title = getString(R.string.contact_list_toolbar)
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.contact_list_menu, menu)
-                val searchView: SearchView =
-                    menu.findItem(R.id.searchView).actionView as SearchView
-                searchView.queryHint = searchViewHint
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String): Boolean {
-                        viewModel.filterUsers(query = query)
-                        return false
-                    }
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.contact_list_menu, menu)
+                    val searchView: SearchView =
+                        menu.findItem(R.id.searchView).actionView as SearchView
+                    searchView.queryHint = searchViewHint
+                    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(query: String): Boolean {
+                            viewModel.filterUsers(query = query)
+                            return false
+                        }
 
-                    override fun onQueryTextChange(query: String): Boolean {
-                        viewModel.filterUsers(query = query)
-                        return false
-                    }
-                })
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.themePicker -> {
-                        navigateToThemePickerFragment()
-                        true
-                    }
-                    R.id.mapView -> {
-                        navigateToMapFragment()
-                        true
-                    }
-                    else -> false
+                        override fun onQueryTextChange(query: String): Boolean {
+                            viewModel.filterUsers(query = query)
+                            return false
+                        }
+                    })
                 }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.STARTED)
-    }
 
-
-    private fun navigateToThemePickerFragment() {
-        viewModel.navigateToThemePickerFragment()
-    }
-
-    private fun navigateToMapFragment() {
-        viewModel.navigateToMapFragment()
-    }
-
-    private fun navigateToDetailsFragment(id: String) {
-        viewModel.navigateToDetails(id)
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.themePicker -> {
+                            viewModel.navigateToThemePickerFragment()
+                            true
+                        }
+                        R.id.mapView -> {
+                            viewModel.navigateToMapFragment()
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.STARTED
+        )
     }
 
     private fun setLoadingIndicator(isVisible: Boolean) {

@@ -72,4 +72,3 @@ internal class BirthdayReceiver : BroadcastReceiver() {
         )
     }
 }
-

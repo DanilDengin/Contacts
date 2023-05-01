@@ -1,10 +1,10 @@
 package com.example.network.response
 
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
 
@@ -13,14 +13,14 @@ class ApiResponseCallAdapterFactory : CallAdapter.Factory() {
         annotations: Array<out Annotation>,
         retrofit: Retrofit
     ): CallAdapter<*, *>? {
-        if (getRawType(returnType) != Call::class.java) {
-            return null
-        }
         check(returnType is ParameterizedType) {
             "return type must be parameterized as Call<NetworkResponse<<Foo>> or Call<NetworkResponse<out Foo>>"
         }
         val innerType = getParameterUpperBound(0, returnType)
-        if (getRawType(innerType) != ApiResponse::class.java) {
+        if (
+            getRawType(returnType) != Call::class.java &&
+            getRawType(innerType) != ApiResponse::class.java
+        ) {
             return null
         }
         check(innerType is ParameterizedType) {

@@ -12,4 +12,3 @@ inline fun <VM : ViewModel> vmFactory(crossinline initializer: () -> VM) =
     object : ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T = initializer() as T
     }
-

@@ -6,10 +6,10 @@ import com.example.network.response.ApiResponse.Failure.NetworkFailure
 import com.example.network.response.ApiResponse.Failure.UnknownFailure
 import com.example.network.response.ApiResponse.Success
 import com.example.utils.tag.tagObj
-import java.io.IOException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 internal class ApiResponseCall(private val call: Call<ApiResponse<*>>) :
     Call<ApiResponse<*>> by call {

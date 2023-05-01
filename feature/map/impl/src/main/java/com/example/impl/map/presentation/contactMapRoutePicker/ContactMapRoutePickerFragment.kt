@@ -1,6 +1,5 @@
 package com.example.impl.map.presentation.contactMapRoutePicker
 
-import com.example.impl.map.R as FeatureRes
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -25,10 +24,11 @@ import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.ui.recyclerView.ContactItemDecorator
 import com.example.utils.delegate.unsafeLazy
-import javax.inject.Inject
-import javax.inject.Provider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
+import javax.inject.Provider
+import com.example.impl.map.R as FeatureRes
 
 internal class ContactMapRoutePickerFragment :
     Fragment(FeatureRes.layout.fragment_contact_map_route_picker) {

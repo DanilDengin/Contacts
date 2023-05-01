@@ -5,8 +5,8 @@ import com.example.common.address.domain.local.repository.ContactMapRepository
 import com.example.impl.map.domain.entity.ContactAddress
 import com.example.impl.map.domain.repository.remote.AddressRepository
 import com.example.network.response.ApiResponse
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 internal class ContactMapUseCaseImpl @Inject constructor(
     private val addressRepository: AddressRepository,

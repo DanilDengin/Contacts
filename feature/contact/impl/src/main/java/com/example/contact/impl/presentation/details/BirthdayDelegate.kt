@@ -19,7 +19,7 @@ internal class BirthdayDelegate @AssistedInject constructor(
     @Assisted private val contactId: Int,
     private val context: Context,
     private val birthdayReceiverProvider: BirthdayReceiverProvider
-    ) {
+) {
 
     private val intentBirthday: Intent by unsafeLazy {
         Intent(BIRTHDAY_RECEIVER_INTENT_ACTION)

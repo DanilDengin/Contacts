@@ -25,11 +25,8 @@ internal object NetworkModule {
     @Provides
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
-        @YandexUrlQualifier yandexUrl: String,
-        apiResponseFactory: CallAdapter.Factory,
-    ): Retrofit = RetrofitProvider.get(okHttpClient, yandexUrl, apiResponseFactory)
+        apiResponseFactory: CallAdapter.Factory
+    ): Retrofit = RetrofitProvider.get(okHttpClient, YANDEX_URI, apiResponseFactory)
 
-    @Provides
-    @YandexUrlQualifier
-    fun provideYandexUrl() = "https://geocode-maps.yandex.ru/1.x/"
+    private const val YANDEX_URI = "https://geocode-maps.yandex.ru/1.x/"
 }

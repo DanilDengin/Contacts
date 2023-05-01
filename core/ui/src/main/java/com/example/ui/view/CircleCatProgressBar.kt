@@ -2,15 +2,14 @@ package com.example.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.appcompat.widget.AppCompatImageView
 import com.example.ui.R
-import com.example.utils.tag.tagObj
 
 class CircleCatProgressBar @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null,
+    context: Context,
+    attrs: AttributeSet? = null
 ) : AppCompatImageView(context, attrs) {
 
     private var rotateAnimationDuration: Int? = null
@@ -31,10 +30,8 @@ class CircleCatProgressBar @JvmOverloads constructor(
                 try {
                     rotateAnimationDuration = getInteger(
                         R.styleable.CircleCatProgressBar_animationDurationCCPBmsec,
-                        rotateAnimationDurationDefault
-                    ).coerceIn(rotateAnimationDurationMin, rotateAnimationDurationMax)
-                } catch (e: Throwable) {
-                    Log.e(this.tagObj(), "Can't apply attributes", e)
+                        ROTATE_ANIMATION_DURATION_DEFAULT
+                    ).coerceIn(ROTATE_ANIMATION_DURATION_MIN, ROTATE_ANIMATION_DURATION_MAX)
                 } finally {
                     recycle()
                 }
@@ -44,9 +41,12 @@ class CircleCatProgressBar @JvmOverloads constructor(
     private fun startAnimation() {
         clearAnimation()
         val rotate = RotateAnimation(
-            360f, 0f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
+            ROTATE_ANIMATION_FROM_DEGREES,
+            ROTATE_ANIMATION_TO_DEGREES,
+            Animation.RELATIVE_TO_SELF,
+            ANIMATION_PIVOT,
+            Animation.RELATIVE_TO_SELF,
+            ANIMATION_PIVOT
         ).apply {
             rotateAnimationDuration?.also { duration = it.toLong() }
             repeatCount = Animation.INFINITE
@@ -64,8 +64,11 @@ class CircleCatProgressBar @JvmOverloads constructor(
     }
 
     private companion object {
-        const val rotateAnimationDurationDefault = 1400
-        const val rotateAnimationDurationMin = 600
-        const val rotateAnimationDurationMax = 2800
+        const val ROTATE_ANIMATION_DURATION_DEFAULT = 1400
+        const val ROTATE_ANIMATION_DURATION_MIN = 600
+        const val ROTATE_ANIMATION_DURATION_MAX = 2800
+        const val ROTATE_ANIMATION_FROM_DEGREES = 360f
+        const val ROTATE_ANIMATION_TO_DEGREES = 0f
+        const val ANIMATION_PIVOT = 0.5f
     }
 }

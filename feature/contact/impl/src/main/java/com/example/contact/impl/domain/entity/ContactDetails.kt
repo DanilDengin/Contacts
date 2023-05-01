@@ -10,6 +10,3 @@ data class ContactDetails(
     val birthday: String? = null,
     val id: String
 )
-
-
-

@@ -12,7 +12,7 @@ class ThemeDelegate @Inject constructor(private val sharedPreferences: SharedPre
     fun setThemeButton(
         setLightModeButton: () -> Unit,
         setNightModeButton: () -> Unit,
-        setSystemModeButton: () -> Unit,
+        setSystemModeButton: () -> Unit
     ) {
         when (getCurrentTheme()) {
             LIGHT_MODE -> setLightModeButton()

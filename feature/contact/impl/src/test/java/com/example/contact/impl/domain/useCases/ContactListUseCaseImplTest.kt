@@ -8,9 +8,7 @@ import com.example.contact.impl.domain.entity.ContactList
 import com.example.contact.impl.domain.repository.ContactsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -43,29 +41,28 @@ internal class ContactListUseCaseImplTest {
 
     @Test
     fun `should return valid query result`() = runTest {
-        val mock = spyk(contactListUseCaseImpl, recordPrivateCalls = true)
-        every { mock["getContacts"]() } returns contactsListTest
-        actual = mock.searchContactByQuery("d")
+        coEvery { contactRepository.getShortContactsDetails() } returns contactsPhoneTest
+        contactListUseCaseImpl.getContactList()
+        actual = contactListUseCaseImpl.searchContactByQuery("d")
         val expected = contactSortedListTest
         assertEquals(expected, actual)
     }
 
     @Test
     fun `should return empty query result`() = runTest {
-        val mock = spyk(contactListUseCaseImpl, recordPrivateCalls = true)
-        every { mock["getContacts"]() } returns contactsListTest
-        actual = mock.searchContactByQuery("freferd")
+        coEvery { contactRepository.getShortContactsDetails() } returns contactsPhoneTest
+        contactListUseCaseImpl.getContactList()
+        actual = contactListUseCaseImpl.searchContactByQuery("freferd")
         val expected = emptyList<ContactDetails>()
         assertEquals(expected, actual)
     }
 
     @Test
     fun `should return full contact list query result`() = runTest {
-        val mock = spyk(contactListUseCaseImpl, recordPrivateCalls = true)
-        every { mock["getContacts"]() } returns contactsListTest
-        actual = mock.searchContactByQuery("         ")
+        coEvery { contactRepository.getShortContactsDetails() } returns contactsPhoneTest
+        contactListUseCaseImpl.getContactList()
+        actual = contactListUseCaseImpl.searchContactByQuery("         ")
         val expected = contactsListTest
         assertEquals(expected, actual)
     }
 }
-

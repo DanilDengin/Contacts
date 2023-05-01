@@ -7,6 +7,7 @@ import com.github.terrakok.cicerone.androidx.FragmentScreen
 import javax.inject.Inject
 
 class MapScreenApiImpl @Inject constructor() : MapScreenApi {
+
     override fun getMapScreen(contactMapArgument: ContactMapArguments?) =
         FragmentScreen { ContactMapFragment.newInstance(contactMapArgument) }
 }

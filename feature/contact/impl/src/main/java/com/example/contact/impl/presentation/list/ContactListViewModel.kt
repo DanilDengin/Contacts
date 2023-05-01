@@ -14,9 +14,9 @@ import com.example.utils.liveData.SingleLiveEvent
 import com.example.utils.tag.tagObj
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.FragmentScreen
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 internal class ContactListViewModel @Inject constructor(
     private val contactListUseCase: ContactListUseCase,

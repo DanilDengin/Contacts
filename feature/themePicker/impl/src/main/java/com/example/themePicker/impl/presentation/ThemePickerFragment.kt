@@ -1,6 +1,5 @@
 package com.example.themePicker.impl.presentation
 
-import com.example.themePicker.impl.R as FutureRes
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -11,6 +10,7 @@ import com.example.mvvm.getComponentViewModel
 import com.example.themePicker.impl.databinding.FragmentThemePickerBinding
 import com.example.ui.R
 import javax.inject.Inject
+import com.example.themePicker.impl.R as FutureRes
 
 internal class ThemePickerFragment : Fragment(FutureRes.layout.fragment_theme_picker) {
 

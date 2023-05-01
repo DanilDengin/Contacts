@@ -1,6 +1,5 @@
 package com.example.lessons
 
-import com.example.lessons.R as AppRes
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -29,8 +28,10 @@ import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import javax.inject.Inject
 import javax.inject.Provider
+import com.example.lessons.R as AppRes
 
-internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
+internal class MainActivity :
+    AppCompatActivity(AppRes.layout.activity_main),
     FeatureExternalDepsProvider {
 
     @Inject
@@ -125,7 +126,7 @@ internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
             navigateToListFragment()
         }
         if (contactId != -1 && savedInstanceState == null && readContactsGranted) {
-            navigateToBirthdayContact()
+            viewModel.navigateToBirthdayContact(contactId)
         }
     }
 
@@ -133,6 +134,11 @@ internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
         if (readContactsGranted) {
             binding.permissionButton.visibility = View.GONE
         }
+    }
+
+    private fun navigateToListFragment() {
+        binding.permissionButton.visibility = View.GONE
+        viewModel.navigateToListFragment()
     }
 
     private fun checkReadContactPermission() {
@@ -147,15 +153,6 @@ internal class MainActivity : AppCompatActivity(AppRes.layout.activity_main),
                 REQUEST_CODE_READ_CONTACTS
             )
         }
-    }
-
-    private fun navigateToListFragment() {
-        binding.permissionButton.visibility = View.GONE
-        viewModel.navigateToListFragment()
-    }
-
-    private fun navigateToBirthdayContact() {
-        viewModel.navigateToBirthdayContact(contactId)
     }
 
     private companion object {

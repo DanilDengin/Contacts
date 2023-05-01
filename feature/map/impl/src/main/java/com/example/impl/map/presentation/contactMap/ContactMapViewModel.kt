@@ -15,7 +15,6 @@ import com.example.utils.liveData.SingleLiveEvent
 import com.example.utils.tag.tagObj
 import com.github.terrakok.cicerone.Router
 import com.github.terrakok.cicerone.androidx.FragmentScreen
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import javax.inject.Inject
 
 internal class ContactMapViewModel @Inject constructor(
     private val contactMapUseCase: ContactMapUseCase,
@@ -79,7 +79,6 @@ internal class ContactMapViewModel @Inject constructor(
             _contactMap.value = contactMapUseCase.getContactMapById(id)
         }
     }
-
 
     fun deleteContactMap(id: String) {
         viewModelScope.launch {

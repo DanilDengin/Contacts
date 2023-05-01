@@ -8,8 +8,7 @@ import javax.inject.Inject
 internal class MainActivityViewModel @Inject constructor(
     private val router: Router,
     private val contactsScreenApi: ContactsScreenApi
-    ) : ViewModel() {
-
+) : ViewModel() {
 
     fun navigateToListFragment() {
         router.newRootScreen(contactsScreenApi.getListScreen())

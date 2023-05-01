@@ -6,4 +6,3 @@ internal fun AddressDto.toAddress(): ContactAddress? =
     response.geoObjectCollection.featureMember
         .firstOrNull()?.geoObject?.metaDataProperty?.geocoderMetaData?.text
         ?.let(::ContactAddress)
-

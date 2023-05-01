@@ -32,7 +32,6 @@ dependencies {
     testImplementation(Dependencies.lifecycleRuntime)
     implementation(Dependencies.appCompat)
     implementation(Dependencies.coreKtx)
-    implementation(Dependencies.material)
     implementation(Dependencies.mockk)
     implementation(Dependencies.material)
     testImplementation(Dependencies.logger)
@@ -42,4 +41,3 @@ dependencies {
     implementation(Dependencies.espressoIdlingResource)
     androidTestImplementation(Dependencies.espresso)
 }
-

@@ -8,7 +8,6 @@ import com.example.impl.map.domain.entity.toContactMapPicker
 import com.example.impl.map.domain.useCase.ContactMapUseCase
 import com.example.utils.tag.tagObj
 import com.github.terrakok.cicerone.Router
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import javax.inject.Inject
 
 internal class ContactMapRoutePickerViewModel @Inject constructor(
     private val contactMapUseCase: ContactMapUseCase,

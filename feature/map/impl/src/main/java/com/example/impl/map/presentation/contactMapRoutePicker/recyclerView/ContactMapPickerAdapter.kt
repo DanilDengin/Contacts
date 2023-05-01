@@ -28,7 +28,6 @@ internal class ContactMapPickerAdapter(
     override fun getItemViewType(position: Int) =
         if (position == currentList.size) ENDING_VIEW_TYPE else CONTACT_MAP_VIEW_TYPE
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return if (viewType == CONTACT_MAP_VIEW_TYPE) {

@@ -12,5 +12,4 @@ interface ContactMapRepository {
     suspend fun getContactMapById(id: String): ContactMap?
 
     suspend fun deleteContactMap(id: String)
-
 }

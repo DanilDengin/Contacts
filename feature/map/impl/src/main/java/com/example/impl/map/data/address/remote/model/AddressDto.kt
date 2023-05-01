@@ -24,7 +24,7 @@ internal class AddressDto(
 
                 class GeoObject(
                     @SerializedName("metaDataProperty")
-                    val metaDataProperty: GeoObjectMetaDataProperty,
+                    val metaDataProperty: GeoObjectMetaDataProperty
                 ) {
 
                     class GeoObjectMetaDataProperty(

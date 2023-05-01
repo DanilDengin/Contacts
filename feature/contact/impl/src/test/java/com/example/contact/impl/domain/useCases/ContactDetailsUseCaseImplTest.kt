@@ -12,13 +12,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
-import java.util.Calendar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.Calendar
 
 @ExperimentalCoroutinesApi
 internal class ContactDetailsUseCaseImplTest {
@@ -50,10 +49,11 @@ internal class ContactDetailsUseCaseImplTest {
 
     @Test
     fun `should return the same birthday time as function`() = runTest {
-        val mock = spyk(contactDetailsUseCaseImpl, recordPrivateCalls = true)
-        every { mock["getContact"]() } returns danilPhone
+        coEvery { contactsRepository.getFullContactDetails(ofType()) } returns danilPhone
+        coEvery { contactMapRepository.getContactMapById(ofType()) } returns danilContactMap
         every { currentTime.getCurrentTime() } returns currentDateTest.timeInMillis
-        val actual = mock.getAlarmDate()
+        contactDetailsUseCaseImpl.getContactDetailsById("1")
+        val actual = contactDetailsUseCaseImpl.getAlarmDate()
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = currentDateTest.timeInMillis
         calendar.add(Calendar.YEAR, 1)
@@ -65,6 +65,8 @@ internal class ContactDetailsUseCaseImplTest {
             calendar[Calendar.DAY_OF_MONTH] = it.get(Calendar.DAY_OF_MONTH)
             calendar[Calendar.MONTH] = it.get(Calendar.MONTH)
         }
+        coVerify(exactly = 1) { contactsRepository.getFullContactDetails(any()) }
+        coVerify(exactly = 1) { contactMapRepository.getContactMapById(any()) }
         coVerify(exactly = 1) { currentTime.getCurrentTime() }
         val expected = calendar.timeInMillis
         assertEquals(expected, actual)

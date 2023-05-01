@@ -7,7 +7,8 @@ import com.example.contact.impl.R
 import com.example.contact.impl.domain.entity.ContactList
 
 internal class ContactListViewHolder(
-    itemView: View, navigateToContactDetailsById: (String) -> Unit
+    itemView: View,
+    navigateToContactDetailsById: (String) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
     private val name: TextView = itemView.findViewById(R.id.nameListTextView)
     private val number: TextView = itemView.findViewById(R.id.numberListTextView)

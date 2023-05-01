@@ -6,4 +6,5 @@ object AppConfig {
     const val compileSdkVersion = 33
     const val applicationId = "com.example.lessons"
     const val javaVersion = "11"
+    const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 }

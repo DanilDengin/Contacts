@@ -3,6 +3,7 @@ plugins {
     id(Plugins.kotlinKapt)
     id(Plugins.kotlinAndroid)
 }
+apply(plugin = "io.gitlab.arturbosch.detekt")
 
 android {
     compileSdk = AppConfig.compileSdkVersion
@@ -13,7 +14,7 @@ android {
         targetSdk = AppConfig.targetSdkVersion
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = AppConfig.testInstrumentationRunner
     }
 
     buildTypes {

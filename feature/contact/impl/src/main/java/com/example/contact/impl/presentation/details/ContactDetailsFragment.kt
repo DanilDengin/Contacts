@@ -1,6 +1,5 @@
 package com.example.contact.impl.presentation.details
 
-import com.example.contact.impl.R as FutureRes
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -22,9 +21,10 @@ import com.example.mvvm.viewModel
 import com.example.ui.R
 import com.example.utils.delegate.unsafeLazy
 import com.example.utils.idlingResource.TestIdlingResource
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlinx.coroutines.launch
+import com.example.contact.impl.R as FutureRes
 
 internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_details) {
 
@@ -65,7 +65,7 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
         viewModel.loadUserDetail()
         initObservers()
         binding.mapButton.setOnClickListener {
-            navigateToContactMapFragment()
+            viewModel.navigateToMapFragment()
         }
         checkBirthdaySwitchState()
         initBirthdayChangeListener()
@@ -103,11 +103,6 @@ internal class ContactDetailsFragment : Fragment(FutureRes.layout.fragment_detai
     private fun checkBirthdaySwitchState() {
         binding.birthdaySwitch.isChecked =
             birthdayDelegate.checkBirthdaySwitchState()
-    }
-
-
-    private fun navigateToContactMapFragment() {
-        viewModel.navigateToMapFragment()
     }
 
     private fun updateView(contactForDetails: ContactDetails?) {

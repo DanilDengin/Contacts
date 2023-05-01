@@ -1,6 +1,7 @@
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.findByType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -8,12 +9,11 @@ fun Project.applyAndroid(
     useViewBinding: Boolean = false,
 ) {
     extensions.findByType<LibraryExtension>()?.apply {
-
         compileSdk = AppConfig.compileSdkVersion
         defaultConfig {
             minSdk = AppConfig.minSdkVersion
             targetSdk = AppConfig.targetSdkVersion
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            testInstrumentationRunner = AppConfig.testInstrumentationRunner
         }
 
         buildTypes {

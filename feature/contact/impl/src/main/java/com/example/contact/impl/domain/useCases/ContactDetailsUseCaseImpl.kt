@@ -5,12 +5,12 @@ import com.example.contact.impl.data.model.ContactPhoneDb
 import com.example.contact.impl.domain.entity.ContactDetails
 import com.example.contact.impl.domain.repository.ContactsRepository
 import com.example.contact.impl.domain.time.CurrentTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.StringJoiner
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 internal class ContactDetailsUseCaseImpl @Inject constructor(
     private val contactsRepository: ContactsRepository,
@@ -49,7 +49,7 @@ internal class ContactDetailsUseCaseImpl @Inject constructor(
         return withContext(Dispatchers.Default) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = currentTime.getCurrentTime()
-            getContact()?.birthday?.also { birthday ->
+            contact?.birthday?.also { birthday ->
                 if (calendar[Calendar.DAY_OF_YEAR] > birthday.get(Calendar.DAY_OF_YEAR)) {
                     calendar.add(Calendar.YEAR, 1)
                 }
@@ -68,8 +68,6 @@ internal class ContactDetailsUseCaseImpl @Inject constructor(
             calendar.timeInMillis
         }
     }
-
-    private fun getContact() = contact
 
     private companion object {
         const val TWENTY_NINE_MONTH_DAY = 29

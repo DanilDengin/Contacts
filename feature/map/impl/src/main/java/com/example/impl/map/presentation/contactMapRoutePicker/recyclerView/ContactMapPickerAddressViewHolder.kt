@@ -1,15 +1,16 @@
 package com.example.impl.map.presentation.contactMapRoutePicker.recyclerView
 
-import com.example.impl.map.R as FeatureRes
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.impl.map.domain.entity.ContactMapPicker
 import com.example.ui.R
+import com.example.impl.map.R as FeatureRes
 
 internal class ContactMapPickerAddressViewHolder(
-    itemView: View, chooseContact: (ContactMapPicker, Boolean) -> Unit
+    itemView: View,
+    chooseContact: (ContactMapPicker, Boolean) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val name: TextView = itemView.findViewById(FeatureRes.id.nameMapTextView)

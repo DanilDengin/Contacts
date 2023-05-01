@@ -1,8 +1,8 @@
 package com.example.network.response
 
-import java.lang.reflect.Type
 import retrofit2.Call
 import retrofit2.CallAdapter
+import java.lang.reflect.Type
 
 internal class ApiResponseCallAdapter(private val responseType: Type) :
     CallAdapter<ApiResponse<*>, Call<ApiResponse<*>>> {
@@ -12,5 +12,4 @@ internal class ApiResponseCallAdapter(private val responseType: Type) :
     }
 
     override fun responseType(): Type = responseType
-
 }
